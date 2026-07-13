@@ -1,0 +1,64 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{CC3A434E-AB06-48E7-BD6B-528092C5F50E}|HRMS.Api\\HRMS.Api.csproj|c:\\users\\omar\\desktop\\hrmanagementsystem\\backend\\src\\hrms\\hrms.api\\hrms.api.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{CC3A434E-AB06-48E7-BD6B-528092C5F50E}|HRMS.Api\\HRMS.Api.csproj|solutionrelative:hrms.api\\hrms.api.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2510C227-DADB-4054-AFE9-ECF22BF7BBA1}|Solution Items{2510C227-DADB-4054-AFE9-ECF22BF7BBA1}|C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\Directory.Packages.props||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{2510C227-DADB-4054-AFE9-ECF22BF7BBA1}|Solution Items{2510C227-DADB-4054-AFE9-ECF22BF7BBA1}|solutionrelative:Directory.Packages.props||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 330,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "HRMS.Api.http",
+              "DocumentMoniker": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Api\\HRMS.Api.http",
+              "RelativeDocumentMoniker": "HRMS.Api\\HRMS.Api.http",
+              "ToolTip": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Api\\HRMS.Api.http",
+              "RelativeToolTip": "HRMS.Api\\HRMS.Api.http",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2026-07-13T06:38:44.231Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Directory.Packages.props",
+              "DocumentMoniker": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\Directory.Packages.props",
+              "RelativeDocumentMoniker": "Directory.Packages.props",
+              "ToolTip": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\Directory.Packages.props",
+              "RelativeToolTip": "Directory.Packages.props",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
+              "WhenOpened": "2026-07-13T06:37:38.655Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 70,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
