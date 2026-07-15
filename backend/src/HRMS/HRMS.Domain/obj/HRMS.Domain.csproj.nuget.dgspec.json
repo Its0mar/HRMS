@@ -53,10 +53,18 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "centralPackageVersions": {
+            "BCrypt.Net-Next": "4.2.0",
+            "ErrorOr": "2.1.1",
+            "FluentValidation.DependencyInjectionExtensions": "12.1.1",
             "Microsoft.AspNetCore.OpenApi": "10.0.9",
             "Microsoft.Data.SqlClient": "7.0.2",
+            "Microsoft.Extensions.Configuration.Abstractions": "10.0.9",
             "Microsoft.Extensions.DependencyInjection": "10.0.9",
-            "Microsoft.OpenApi": "3.8.0"
+            "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.9",
+            "Microsoft.OpenApi": "3.8.0",
+            "Swashbuckle.AspNetCore.Swagger": "10.2.3",
+            "Swashbuckle.AspNetCore.SwaggerGen": "10.2.3",
+            "Swashbuckle.AspNetCore.SwaggerUI": "10.2.3"
           },
           "imports": [
             "net461",

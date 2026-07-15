@@ -5,6 +5,7 @@
         public int UserId { get; private set; }
         public int RoleId { get; private set; }
         public DateTime CreatedAt { get; private set; }
+    
 
         public UserRole(int userId, int roleId, DateTime createdAt)
         {

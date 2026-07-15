@@ -11,7 +11,7 @@ namespace HRMS.Infrastructure.Persistence
             CancellationToken ct,
             params SqlParameter[] parameters);
 
-        Task<T?> QuerySingleAsync<T>(
+        Task<T?> QueryFirstOrDefaultAsync<T>(
             string procedure,
             Func<SqlDataReader, T> mapper,
             CancellationToken ct,

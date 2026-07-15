@@ -12,11 +12,9 @@ CREATE TABLE Organization(
 	IsActive BIT NOT NULL Default(1),
 	IsDeleted BIT NOT NULL Default(0),
 
-	CreatedBy INT,
 	UpdatedBy INT,
 	CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
 	UpdatedAt DATETIME2
-	
 )
 
 
@@ -32,14 +30,15 @@ CREATE TABLE Users (
 	CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
 	UpdatedAt DATETIME2,
 
-	OrgId INT NOT NULL,
+	OrganizationId INT NOT NULL,
 
 	CONSTRAINT fk_Org
-		FOREIGN KEY (OrgId)
+		FOREIGN KEY (OrganizationId)
 		REFERENCES Organization(Id)
 		ON DELETE CASCADE
 
 )
+
 
 
 CREATE TABLE RefreshTokens (
@@ -61,12 +60,13 @@ CREATE TABLE Roles(
 	Id INT IDENTITY(1,1) PRIMARY KEY,
 	Name varchar(30) NOT NULL,
 
-	OrgId INT NOT NULL,
+	OrgId INT,
 
 	CONSTRAINT fk_OrgId
 		FOREIGN KEY (OrgId)
 		REFERENCES Organization(Id)
 )
+
 
 CREATE TABLE Permissions(
 	Id INT IDENTITY(1,1) PRIMARY KEY,

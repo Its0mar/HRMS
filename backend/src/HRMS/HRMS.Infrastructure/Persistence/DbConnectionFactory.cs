@@ -2,7 +2,7 @@
 
 namespace HRMS.Infrastructure.Persistence
 {
-    internal class DbConnectionFactory : IDbConnectionFactory
+    internal sealed class DbConnectionFactory : IDbConnectionFactory
     {
         private readonly string _connectionString;
 
