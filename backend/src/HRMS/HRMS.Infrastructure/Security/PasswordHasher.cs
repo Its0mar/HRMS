@@ -1,4 +1,4 @@
-﻿using HRMS.Application.Authentication.Interfaces;
+﻿using HRMS.Application.Abstractions.Authentication;
 
 namespace HRMS.Infrastructure.Security
 {

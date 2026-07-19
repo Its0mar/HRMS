@@ -1,32 +1,43 @@
-﻿using HRMS.Application.Authentication.Dtos;
-using HRMS.Application.Authentication.Interfaces;
+using HRMS.Application.Abstractions.Authentication;
+using HRMS.Application.Abstractions.Messaging;
+using HRMS.Application.Features.Authentication.Login;
+using HRMS.Application.Features.Authentication.RegisterOrganization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HRMS.Api.Controllers
+namespace HRMS.Api.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public sealed class AuthController : ApiController
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthController : ControllerBase
+    [HttpPost("organizations")]
+    public async Task<IActionResult> RegisterOrganization(
+        RegisterOrganizationCommand command,
+        [FromServices] ICommandHandler<RegisterOrganizationCommand, RegisterOrganizationResponse> handler,
+        CancellationToken cancellationToken)
     {
-        private readonly IAuthService _authService;
+        var result = await handler.HandleAsync(
+            command,
+            cancellationToken);
 
-        public AuthController(IAuthService authService)
-        {
-            _authService = authService;
-        }
+        return result.Match<IActionResult>(
+            response => StatusCode(StatusCodes.Status201Created, response),
+            Problem);
+    }
 
-        [HttpPost("create-org")]
-        public async Task<IActionResult> OrganizationRegister(RegisterRequest request, CancellationToken ct)
-        {
-            var result = await _authService.RegisterAsync(request, ct);
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(
+        LoginCommand command,
+        [FromServices]
+        ICommandHandler<LoginCommand, LoginResponse> handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.HandleAsync(
+            command,
+            cancellationToken);
 
-            return result.Match<IActionResult>(
-                value => Ok("organization created successfully"),
-                error => BadRequest(new
-                {
-                    error = error.First().Description ?? "a problem occured"
-                })
-                );
-        }
+        return result.Match<IActionResult>(
+            Ok,
+            Problem);
     }
 }

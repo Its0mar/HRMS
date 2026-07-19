@@ -1,0 +1,57 @@
+# =========================
+# Visual Studio
+# =========================
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# =========================
+# ASP.NET Core
+# =========================
+bin/
+obj/
+TestResults/
+publish/
+
+# Logs
+logs/
+*.log
+
+# =========================
+# React / Vite
+# =========================
+node_modules/
+dist/
+coverage/
+.vite/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# =========================
+# VS Code
+# =========================
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Rider
+# =========================
+.idea/
+
+
+sql/
+.agents/

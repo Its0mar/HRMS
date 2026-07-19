@@ -77,6 +77,7 @@
             "BCrypt.Net-Next": "4.2.0",
             "ErrorOr": "2.1.1",
             "FluentValidation.DependencyInjectionExtensions": "12.1.1",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "10.0.10",
             "Microsoft.AspNetCore.OpenApi": "10.0.9",
             "Microsoft.Data.SqlClient": "7.0.2",
             "Microsoft.Extensions.Configuration.Abstractions": "10.0.9",
@@ -433,6 +434,7 @@
             "BCrypt.Net-Next": "4.2.0",
             "ErrorOr": "2.1.1",
             "FluentValidation.DependencyInjectionExtensions": "12.1.1",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "10.0.10",
             "Microsoft.AspNetCore.OpenApi": "10.0.9",
             "Microsoft.Data.SqlClient": "7.0.2",
             "Microsoft.Extensions.Configuration.Abstractions": "10.0.9",
@@ -798,6 +800,11 @@
               "version": "[4.2.0, )",
               "versionCentrallyManaged": true
             },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[10.0.10, )",
+              "versionCentrallyManaged": true
+            },
             "Microsoft.Data.SqlClient": {
               "target": "Package",
               "version": "[7.0.2, )",
@@ -818,6 +825,7 @@
             "BCrypt.Net-Next": "4.2.0",
             "ErrorOr": "2.1.1",
             "FluentValidation.DependencyInjectionExtensions": "12.1.1",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "10.0.10",
             "Microsoft.AspNetCore.OpenApi": "10.0.9",
             "Microsoft.Data.SqlClient": "7.0.2",
             "Microsoft.Extensions.Configuration.Abstractions": "10.0.9",

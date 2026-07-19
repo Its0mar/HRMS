@@ -1,15 +1,47 @@
 [
   {
     "ContainingType": "HRMS.Api.Controllers.AuthController",
-    "Method": "OrganizationRegister",
-    "RelativePath": "api/Auth/create-org",
+    "Method": "Login",
+    "RelativePath": "api/Auth/login",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "request",
-        "Type": "HRMS.Application.Authentication.Dtos.RegisterRequest",
+        "Name": "command",
+        "Type": "HRMS.Application.Features.Authentication.Login.LoginCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HRMS.Api.Controllers.AuthController",
+    "Method": "RegisterOrganization",
+    "RelativePath": "api/Auth/organizations",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "HRMS.Application.Features.Authentication.RegisterOrganization.RegisterOrganizationCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HRMS.Api.Controllers.DepartmentController",
+    "Method": "CreateAsync",
+    "RelativePath": "api/Department/create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "HRMS.Application.Features.Departments.CreateDepartment.CreateDepartmentCommand",
         "IsRequired": true
       }
     ],

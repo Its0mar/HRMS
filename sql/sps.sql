@@ -39,3 +39,13 @@ SELECT * FROM Users;
 SELECT * FROM Organization
 
 DELETE Organization
+
+CREATE OR ALTER PROCEDURE SP_GetUserByIdentifier
+	@Identifier VARCHAR(40)
+AS
+BEGIN
+	SELECT * FROM USERS
+	WHERE Username = @Identifier or Email = @Identifier;
+END;
+
+EXEC SP_GetUserByIdentifier @Identifier = 'user@gmail.com'

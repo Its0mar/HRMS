@@ -25,7 +25,6 @@ C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\obj\Debug\net
 C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\obj\Debug\net10.0\staticwebassets.development.json
 C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\obj\Debug\net10.0\staticwebassets.build.endpoints.json
 C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\obj\Debug\net10.0\swae.build.ex.cache
-C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\obj\Debug\net10.0\HRMS.Api.csproj.Up2Date
 C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\obj\Debug\net10.0\HRMS.Api.dll
 C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\obj\Debug\net10.0\refint\HRMS.Api.dll
@@ -77,3 +76,5 @@ C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\bin\Debug\net
 C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\bin\Debug\net10.0\FluentValidation.DependencyInjectionExtensions.dll
 C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\bin\Debug\net10.0\BCrypt-Net-Next.dll
 C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\bin\Debug\net10.0\ErrorOr.dll
+C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

@@ -1,416 +1,119 @@
-﻿using HRMS.Application.Authentication.Dtos;
-using HRMS.Application.Authentication.Interfaces;
+using System.Data;
+using HRMS.Application.Abstractions.Persistence;
 using HRMS.Domain.Entities;
 using HRMS.Infrastructure.Persistence;
 using Microsoft.Data.SqlClient;
-using System.Data;
 
-namespace HRMS.Infrastructure.Repositories
+namespace HRMS.Infrastructure.Repositories;
+
+internal sealed class RegistrationRepository : IOrganizationRegistrationRepository
 {
-    internal sealed class RegistrationRepository : IRegistrationRepository
+    private readonly IDbConnectionFactory _connectionFactory;
+
+    public RegistrationRepository(IDbConnectionFactory connectionFactory) =>
+        _connectionFactory = connectionFactory;
+
+    public Task<bool> OrganizationCodeExistsAsync(string code, CancellationToken cancellationToken) =>
+        ExistsAsync("dbo.Organization_CodeExists", "@Code", SqlDbType.VarChar, 10, code, cancellationToken);
+
+    public Task<bool> OrganizationEmailExistsAsync(string email, CancellationToken cancellationToken) =>
+        ExistsAsync("dbo.Organization_EmailExists", "@Email", SqlDbType.VarChar, 40, email, cancellationToken);
+
+    public Task<bool> UserEmailExistsAsync(string email, CancellationToken cancellationToken) =>
+        ExistsAsync("dbo.User_EmailExists", "@Email", SqlDbType.VarChar, 40, email, cancellationToken);
+
+    public Task<bool> UsernameExistsAsync(string username, CancellationToken cancellationToken) =>
+        ExistsAsync("dbo.User_UsernameExists", "@Username", SqlDbType.VarChar, 20, username, cancellationToken);
+
+    public async Task<OrganizationRegistrationResult> RegisterAsync(
+        Organization organization,
+        OwnerRegistrationData owner,
+        CancellationToken cancellationToken)
     {
-        private readonly IDbConnectionFactory _connectionFactory;
+        await using var connection = _connectionFactory.CreateConnection();
+        await connection.OpenAsync(cancellationToken);
+        await using var transaction = (SqlTransaction)await connection.BeginTransactionAsync(cancellationToken);
 
-        public RegistrationRepository(
-            IDbConnectionFactory connectionFactory)
+        try
         {
-            _connectionFactory = connectionFactory;
+            var organizationId = await CreateOrganizationAsync(connection, transaction, organization, cancellationToken);
+            var ownerUserId = await CreateUserAsync(connection, transaction, organizationId, owner, cancellationToken);
+            var roleId = await CreateRoleAsync(connection, transaction, organizationId, "OrganizationOwner", cancellationToken);
+            await AssignRoleAsync(connection, transaction, ownerUserId, roleId, cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+            return new OrganizationRegistrationResult(organizationId, ownerUserId);
         }
-
-        public Task<bool> OrganizationCodeExistsAsync(
-            string code,
-            CancellationToken cancellationToken)
+        catch
         {
-            return ExistsAsync(
-                procedure: "dbo.Organization_CodeExists",
-                parameter: new SqlParameter(
-                    "@Code",
-                    SqlDbType.VarChar,
-                    10)
-                {
-                    Value = code
-                },
-                cancellationToken);
-        }
-
-        public Task<bool> OrganizationEmailExistsAsync(
-            string email,
-            CancellationToken cancellationToken)
-        {
-            return ExistsAsync(
-                procedure: "dbo.Organization_EmailExists",
-                parameter: new SqlParameter(
-                    "@Email",
-                    SqlDbType.VarChar,
-                    40)
-                {
-                    Value = email
-                },
-                cancellationToken);
-        }
-
-        public Task<bool> UserEmailExistsAsync(
-            string email,
-            CancellationToken cancellationToken)
-        {
-            return ExistsAsync(
-                procedure: "dbo.User_EmailExists",
-                parameter: new SqlParameter(
-                    "@Email",
-                    SqlDbType.VarChar,
-                    40)
-                {
-                    Value = email
-                },
-                cancellationToken);
-        }
-
-        public Task<bool> UsernameExistsAsync(
-            string username,
-            CancellationToken cancellationToken)
-        {
-            return ExistsAsync(
-                procedure: "dbo.User_UsernameExists",
-                parameter: new SqlParameter(
-                    "@Username",
-                    SqlDbType.VarChar,
-                    20)
-                {
-                    Value = username
-                },
-                cancellationToken);
-        }
-
-        public async Task<RegisterResponse> RegisterAsync(
-            Organization organization,
-            Func<int, User> createOwner,
-            CancellationToken cancellationToken)
-        {
-            await using var connection =
-                _connectionFactory.CreateConnection();
-
-            await connection.OpenAsync(cancellationToken);
-
-            await using var transaction =
-                (SqlTransaction)await connection.BeginTransactionAsync(
-                    cancellationToken);
-
-            try
-            {
-                var organizationId =
-                    await CreateOrganizationAsync(
-                        connection,
-                        transaction,
-                        organization,
-                        cancellationToken);
-
-                var owner = createOwner(organizationId);
-
-                var userId =
-                    await CreateUserAsync(
-                        connection,
-                        transaction,
-                        owner,
-                        cancellationToken);
-
-                var ownerRoleId =
-                    await CreateRoleAsync(
-                        connection,
-                        transaction,
-                        organizationId,
-                        roleName: "OrganizationOwner",
-                        cancellationToken);
-
-                await AssignRoleAsync(
-                    connection,
-                    transaction,
-                    userId,
-                    ownerRoleId,
-                    cancellationToken);
-
-                await transaction.CommitAsync(cancellationToken);
-
-                return new RegisterResponse(
-                    OrganizationId: organizationId,
-                    UserId: userId);
-            }
-            catch
-            {
-                await transaction.RollbackAsync(
-                    CancellationToken.None);
-
-                throw;
-            }
-        }
-
-        private async Task<bool> ExistsAsync(
-            string procedure,
-            SqlParameter parameter,
-            CancellationToken cancellationToken)
-        {
-            await using var connection =
-                _connectionFactory.CreateConnection();
-
-            await connection.OpenAsync(cancellationToken);
-
-            await using var command =
-                CreateCommand(
-                    connection,
-                    transaction: null,
-                    procedure);
-
-            command.Parameters.Add(parameter);
-
-            var result =
-                await command.ExecuteScalarAsync(
-                    cancellationToken);
-
-            return result is not null &&
-                   result != DBNull.Value &&
-                   Convert.ToBoolean(result);
-        }
-
-        private static async Task<int> CreateOrganizationAsync(
-            SqlConnection connection,
-            SqlTransaction transaction,
-            Organization organization,
-            CancellationToken cancellationToken)
-        {
-            await using var command =
-                CreateCommand(
-                    connection,
-                    transaction,
-                    "dbo.Organization_Create");
-
-            command.Parameters.Add(
-                new SqlParameter("@Name", SqlDbType.VarChar, 30)
-                {
-                    Value = organization.Name
-                });
-
-            command.Parameters.Add(
-                new SqlParameter("@Code", SqlDbType.VarChar, 10)
-                {
-                    Value = organization.Code
-                });
-
-            command.Parameters.Add(
-                new SqlParameter("@Email", SqlDbType.VarChar, 40)
-                {
-                    Value = organization.Email
-                });
-
-            command.Parameters.Add(
-                CreateNullableVarcharParameter(
-                    "@Address",
-                    100,
-                    organization.Address));
-
-            command.Parameters.Add(
-                CreateNullableVarcharParameter(
-                    "@Website",
-                    100,
-                    organization.Website));
-
-            command.Parameters.Add(
-                CreateNullableVarcharParameter(
-                    "@LogoUrl",
-                    100,
-                    organization.LogoUrl));
-
-            command.Parameters.Add(
-                new SqlParameter("@IsActive", SqlDbType.Bit)
-                {
-                    Value = organization.IsActive
-                });
-
-            command.Parameters.Add(
-                new SqlParameter("@IsDeleted", SqlDbType.Bit)
-                {
-                    Value = organization.IsDeleted
-                });
-
-            command.Parameters.Add(
-                new SqlParameter("@CreatedAt", SqlDbType.DateTime2)
-                {
-                    Value = organization.CreatedAt
-                });
-
-            var result =
-                await command.ExecuteScalarAsync(
-                    cancellationToken);
-
-            return Convert.ToInt32(result);
-        }
-
-        private static async Task<int> CreateUserAsync(
-            SqlConnection connection,
-            SqlTransaction transaction,
-            User user,
-            CancellationToken cancellationToken)
-        {
-            await using var command =
-                CreateCommand(
-                    connection,
-                    transaction,
-                    "dbo.User_Create");
-
-            command.Parameters.Add(
-                new SqlParameter("@OrganizationId", SqlDbType.Int)
-                {
-                    Value = user.OrganizationId
-                });
-
-            command.Parameters.Add(
-                new SqlParameter("@Username", SqlDbType.VarChar, 20)
-                {
-                    Value = user.Username
-                });
-
-            command.Parameters.Add(
-                new SqlParameter("@Email", SqlDbType.VarChar, 40)
-                {
-                    Value = user.Email
-                });
-
-            command.Parameters.Add(
-                new SqlParameter("@PasswordHash", SqlDbType.VarChar, -1)
-                {
-                    Value = user.PasswordHash
-                });
-
-            command.Parameters.Add(
-                new SqlParameter("@FirstName", SqlDbType.VarChar, 20)
-                {
-                    Value = user.FirstName
-                });
-
-            command.Parameters.Add(
-                new SqlParameter("@LastName", SqlDbType.VarChar, 20)
-                {
-                    Value = user.LastName
-                });
-
-            command.Parameters.Add(
-                new SqlParameter("@IsActive", SqlDbType.Bit)
-                {
-                    Value = user.IsActive
-                });
-
-            command.Parameters.Add(
-                new SqlParameter("@IsDeleted", SqlDbType.Bit)
-                {
-                    Value = user.IsDeleted
-                });
-
-            command.Parameters.Add(
-                new SqlParameter("@CreatedAt", SqlDbType.DateTime2)
-                {
-                    Value = user.CreatedAt
-                });
-
-            var result =
-                await command.ExecuteScalarAsync(
-                    cancellationToken);
-
-            return Convert.ToInt32(result);
-        }
-
-        private static async Task<int> CreateRoleAsync(
-            SqlConnection connection,
-            SqlTransaction transaction,
-            int organizationId,
-            string roleName,
-            CancellationToken cancellationToken)
-        {
-            await using var command =
-                CreateCommand(
-                    connection,
-                    transaction,
-                    "dbo.Role_Create");
-
-            command.Parameters.Add(
-                new SqlParameter("@OrganizationId", SqlDbType.Int)
-                {
-                    Value = organizationId
-                });
-
-            command.Parameters.Add(
-                new SqlParameter("@Name", SqlDbType.VarChar, 30)
-                {
-                    Value = roleName
-                });
-
-            var result =
-                await command.ExecuteScalarAsync(
-                    cancellationToken);
-
-            return Convert.ToInt32(result);
-        }
-
-        private static async Task AssignRoleAsync(
-            SqlConnection connection,
-            SqlTransaction transaction,
-            int userId,
-            int roleId,
-            CancellationToken cancellationToken)
-        {
-            await using var command =
-                CreateCommand(
-                    connection,
-                    transaction,
-                    "dbo.UserRole_Create");
-
-            command.Parameters.Add(
-                new SqlParameter("@UserId", SqlDbType.Int)
-                {
-                    Value = userId
-                });
-
-            command.Parameters.Add(
-                new SqlParameter("@RoleId", SqlDbType.Int)
-                {
-                    Value = roleId
-                });
-
-            command.Parameters.Add(
-                new SqlParameter("@CreatedAt", SqlDbType.DateTime2)
-                {
-                    Value = DateTime.UtcNow
-                });
-
-            await command.ExecuteNonQueryAsync(
-                cancellationToken);
-        }
-
-        private static SqlCommand CreateCommand(
-            SqlConnection connection,
-            SqlTransaction? transaction,
-            string procedure)
-        {
-            var command = connection.CreateCommand();
-
-            command.CommandText = procedure;
-            command.CommandType = CommandType.StoredProcedure;
-            command.Transaction = transaction;
-
-            return command;
-        }
-
-        private static SqlParameter CreateNullableVarcharParameter(
-            string name,
-            int size,
-            string? value)
-        {
-            return new SqlParameter(
-                name,
-                SqlDbType.VarChar,
-                size)
-            {
-                Value = string.IsNullOrWhiteSpace(value)
-                    ? DBNull.Value
-                    : value
-            };
+            await transaction.RollbackAsync(CancellationToken.None);
+            throw;
         }
     }
+
+    private async Task<bool> ExistsAsync(string procedure, string name, SqlDbType type, int size, string value, CancellationToken cancellationToken)
+    {
+        await using var connection = _connectionFactory.CreateConnection();
+        await connection.OpenAsync(cancellationToken);
+        await using var command = CreateCommand(connection, null, procedure);
+        command.Parameters.Add(new SqlParameter(name, type, size) { Value = value });
+        var result = await command.ExecuteScalarAsync(cancellationToken);
+        return result is not null && result != DBNull.Value && Convert.ToBoolean(result);
+    }
+
+    private static async Task<int> CreateOrganizationAsync(SqlConnection connection, SqlTransaction transaction, Organization organization, CancellationToken cancellationToken)
+    {
+        await using var command = CreateCommand(connection, transaction, "dbo.Organization_Create");
+        command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar, 30) { Value = organization.Name });
+        command.Parameters.Add(new SqlParameter("@Code", SqlDbType.VarChar, 10) { Value = organization.Code });
+        command.Parameters.Add(new SqlParameter("@Email", SqlDbType.VarChar, 40) { Value = organization.Email });
+        command.Parameters.Add(NullableVarchar("@Address", 100, organization.Address));
+        command.Parameters.Add(NullableVarchar("@Website", 100, organization.Website));
+        command.Parameters.Add(NullableVarchar("@LogoUrl", 100, organization.LogoUrl));
+        command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit) { Value = organization.IsActive });
+        command.Parameters.Add(new SqlParameter("@IsDeleted", SqlDbType.Bit) { Value = organization.IsDeleted });
+        command.Parameters.Add(new SqlParameter("@CreatedAt", SqlDbType.DateTime2) { Value = organization.CreatedAt });
+        return Convert.ToInt32(await command.ExecuteScalarAsync(cancellationToken));
+    }
+
+    private static async Task<int> CreateUserAsync(SqlConnection connection, SqlTransaction transaction, int organizationId, OwnerRegistrationData owner, CancellationToken cancellationToken)
+    {
+        await using var command = CreateCommand(connection, transaction, "dbo.User_Create");
+        command.Parameters.Add(new SqlParameter("@OrganizationId", SqlDbType.Int) { Value = organizationId });
+        command.Parameters.Add(new SqlParameter("@Username", SqlDbType.VarChar, 20) { Value = owner.Username });
+        command.Parameters.Add(new SqlParameter("@Email", SqlDbType.VarChar, 40) { Value = owner.Email });
+        command.Parameters.Add(new SqlParameter("@PasswordHash", SqlDbType.VarChar, -1) { Value = owner.PasswordHash });
+        command.Parameters.Add(new SqlParameter("@FirstName", SqlDbType.VarChar, 20) { Value = owner.FirstName });
+        command.Parameters.Add(new SqlParameter("@LastName", SqlDbType.VarChar, 20) { Value = owner.LastName });
+        command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit) { Value = true });
+        command.Parameters.Add(new SqlParameter("@IsDeleted", SqlDbType.Bit) { Value = false });
+        command.Parameters.Add(new SqlParameter("@CreatedAt", SqlDbType.DateTime2) { Value = DateTime.UtcNow });
+        return Convert.ToInt32(await command.ExecuteScalarAsync(cancellationToken));
+    }
+
+    private static async Task<int> CreateRoleAsync(SqlConnection connection, SqlTransaction transaction, int organizationId, string roleName, CancellationToken cancellationToken)
+    {
+        await using var command = CreateCommand(connection, transaction, "dbo.Role_Create");
+        command.Parameters.Add(new SqlParameter("@OrganizationId", SqlDbType.Int) { Value = organizationId });
+        command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar, 30) { Value = roleName });
+        return Convert.ToInt32(await command.ExecuteScalarAsync(cancellationToken));
+    }
+
+    private static async Task AssignRoleAsync(SqlConnection connection, SqlTransaction transaction, int userId, int roleId, CancellationToken cancellationToken)
+    {
+        await using var command = CreateCommand(connection, transaction, "dbo.UserRole_Create");
+        command.Parameters.Add(new SqlParameter("@UserId", SqlDbType.Int) { Value = userId });
+        command.Parameters.Add(new SqlParameter("@RoleId", SqlDbType.Int) { Value = roleId });
+        command.Parameters.Add(new SqlParameter("@CreatedAt", SqlDbType.DateTime2) { Value = DateTime.UtcNow });
+        await command.ExecuteNonQueryAsync(cancellationToken);
+    }
+
+    private static SqlCommand CreateCommand(SqlConnection connection, SqlTransaction? transaction, string procedure) => new(procedure, connection, transaction)
+    {
+        CommandType = CommandType.StoredProcedure
+    };
+
+    private static SqlParameter NullableVarchar(string name, int size, string? value) => new(name, SqlDbType.VarChar, size)
+    {
+        Value = string.IsNullOrWhiteSpace(value) ? DBNull.Value : value
+    };
 }

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Microsoft.Data.SqlClient" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
@@ -16,10 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\HRMS.Application\HRMS.Application.csproj" />
     <ProjectReference Include="..\HRMS.Domain\HRMS.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Mappers\" />
   </ItemGroup>
 
 </Project>

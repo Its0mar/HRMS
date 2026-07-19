@@ -63,6 +63,7 @@
           "BCrypt.Net-Next": "4.2.0",
           "ErrorOr": "2.1.1",
           "FluentValidation.DependencyInjectionExtensions": "12.1.1",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "10.0.10",
           "Microsoft.AspNetCore.OpenApi": "10.0.9",
           "Microsoft.Data.SqlClient": "7.0.2",
           "Microsoft.Extensions.Configuration.Abstractions": "10.0.9",
