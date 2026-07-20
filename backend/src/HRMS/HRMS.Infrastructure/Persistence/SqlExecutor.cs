@@ -66,6 +66,34 @@ namespace HRMS.Infrastructure.Persistence
 
         }
 
+        public async Task<bool> ExecuteScalarAsync(
+            string procedure,
+            CancellationToken ct,
+            params SqlParameter[] parameters)
+        {
+            await using var conn = _connectionFactory.CreateConnection();
+            await conn.OpenAsync(ct);
+
+            await using var command = CreateCommand(conn, procedure, parameters);
+
+            var result = await command.ExecuteScalarAsync(ct);
+            return result is not null && result != DBNull.Value && Convert.ToBoolean(result);
+        }
+
+        public async Task<int> CreateWithScalarAsync(
+            string procedure,
+            CancellationToken ct,
+            params SqlParameter[] parameters)
+        {
+            await using var conn = _connectionFactory.CreateConnection();
+            await conn.OpenAsync(ct);
+
+            await using var command = CreateCommand(conn, procedure, parameters);
+
+            var result = await command.ExecuteScalarAsync(ct);
+            return Convert.ToInt32(result);
+        }
+
         private static SqlCommand CreateCommand(SqlConnection conn,
                                                 string procedure,
                                                 SqlParameter[] parameters)

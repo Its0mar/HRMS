@@ -3,7 +3,10 @@ using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Authentication.Login;
 using HRMS.Application.Features.Authentication.RegisterOrganization;
 using HRMS.Application.Features.Departments.CreateDepartment;
+using HRMS.Application.Features.Departments.GetDepartments;
 using HRMS.Application.Features.Departments.UpdateDepartment;
+using HRMS.Application.Features.Positions.CreatePosition;
+using HRMS.Application.Features.Positions.GetPositions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HRMS.Application;
@@ -35,6 +38,18 @@ public static class DependencyInjection
         services.AddScoped<
             ICommandHandler<UpdateDepartmentCommand, bool>,
             UpdateDepartmentCommandHandler>();
+
+        services.AddScoped<
+            ICommandHandler<CreatePositionCommand, int>,
+            CreatePositionCommandHandler>();
+
+        services.AddScoped<
+            IQueryHandler<GetPositionsQuery, List<GetPositionResponse>>,
+            GetPositionsQueryHandler>();
+
+        services.AddScoped<
+            IQueryHandler<GetDepartmentsQuery, List<GetDepartmentResponse>>,
+            GetDepartmentsQueryHandler>();
 
         return services;
     }

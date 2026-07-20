@@ -1,10 +1,10 @@
 CREATE TABLE Departments(
 	Id INT IDENTITY(1,1) PRIMARY KEY,
-	Name varchar(30) UNIQUE,
-	Code varchar(6) UNIQUE,
+	Name varchar(30),
+	Code varchar(6),
 	Description varchar(300),
 	OrganizationId INT, 
-	--todo : ManagerEmployeeId 
+	ManagerEmployeeId INT,
 	IsActive BIT default(1),
 	IsDeleted BIT DEFAULT(0),
 	CreatedAt DATETIME2 DEFAULT(GETDATE()),
@@ -16,20 +16,52 @@ CREATE TABLE Departments(
 		REFERENCES Organizations(Id)
 		ON DELETE CASCADE
 );
-
+ALTER TABLE Departments
+ADD CONSTRAINT fk_Manager_Dep
+		FOREIGN KEY (ManagerEmployeeId)
+		REFERENCES Users(Id)
+		
 
 
 CREATE OR ALTER PROCEDURE SP_CreateDepartment
 @Name varchar(30),
 @Code varchar(6),
 @Description varchar(300) = NULL,
+@ManagerEmployeeId INT = NULL,
 @OrganizationId INT
 AS
 BEGIN
-	INSERT INTO Departments (Name, Code, Description, OrganizationId)
-	VALUES (@Name, @Code, @Description, @OrganizationId);
+	INSERT INTO Departments (Name, Code, Description, ManagerEmployeeId, OrganizationId)
+	VALUES (@Name, @Code, @Description,@ManagerEmployeeId, @OrganizationId);
 	
 	SELECT SCOPE_IDENTITY();
+END;
+
+CREATE OR ALTER PROCEDURE dbo.Departments_Update
+@Id INT,
+@Name varchar(30) = NULL,
+@Description varchar(300) = NULL,
+@ManagerEmployeeId INT = NULL,
+@OrganizationId INT
+AS
+BEGIN
+	UPDATE Departments
+    SET Name = @Name,
+    Description = @Description,
+    ManagerEmployeeId = @ManagerEmployeeId
+    WHERE Id = @Id and OrganizationId = @OrganizationId;
+	
+END;
+
+
+CREATE OR ALTER PROCEDURE dbo.Departments_GetById
+@Id INT,
+@OrganizationId INT
+AS
+BEGIN
+	SELECT * FROM Departments
+    WHERE Id = @Id and OrganizationId = @OrganizationId;
+	
 END;
 
 
@@ -82,3 +114,6 @@ END;
 SELECT * FROM USERS;
 SELECT * FROM Organizations
 SELECT * FROM Departments
+
+
+EXEC Departments_GetById @Id = 2,@OrganizationId = 21;

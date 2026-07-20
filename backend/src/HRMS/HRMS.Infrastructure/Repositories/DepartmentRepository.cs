@@ -85,4 +85,15 @@ internal sealed class DepartmentRepository : IDepartmentRepository
 
         return department;
     }
+
+    public async Task<List<Department>> GetDepartmentsAsync(int organizationId, CancellationToken cancellationToken)
+    {
+        var departments = await _sqlExecutor.QueryAsync(
+            "Departments_GetAll",
+            DepartmentMapper.Map,
+            cancellationToken,
+            new SqlParameter("@OrganizationId", organizationId));
+
+        return departments ?? new List<Department>();
+    }
 }

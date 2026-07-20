@@ -33,6 +33,22 @@
   },
   {
     "ContainingType": "HRMS.Api.Controllers.DepartmentController",
+    "Method": "GetAsync",
+    "RelativePath": "api/Department",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "query",
+        "Type": "HRMS.Application.Features.Departments.GetDepartments.GetDepartmentsQuery",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HRMS.Api.Controllers.DepartmentController",
     "Method": "CreateAsync",
     "RelativePath": "api/Department/create",
     "HttpMethod": "POST",
@@ -58,6 +74,38 @@
       {
         "Name": "command",
         "Type": "HRMS.Application.Features.Departments.UpdateDepartment.UpdateDepartmentCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HRMS.Api.Controllers.PositionsController",
+    "Method": "CreateAsync",
+    "RelativePath": "api/Positions",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "HRMS.Application.Features.Positions.CreatePosition.CreatePositionCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HRMS.Api.Controllers.PositionsController",
+    "Method": "GetAsync",
+    "RelativePath": "api/Positions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "query",
+        "Type": "HRMS.Application.Features.Positions.GetPositions.GetPositionsQuery",
         "IsRequired": true
       }
     ],
