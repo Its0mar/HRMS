@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace HRMS.Application.Abstractions.Authentication
+﻿namespace HRMS.Application.Abstractions.Authentication
 {
     public interface ICurrentUser
     {

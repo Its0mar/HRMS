@@ -18,5 +18,10 @@ namespace HRMS.Application.Features.Departments
             Error.Failure(
                 code: "Department.CreationFailed",
                 description: "The department could not be created.");
+
+        public static Error NotFound =>
+           Error.NotFound(
+               code: "Department.NotFound",
+               description: "The department with this id is not found.");
     }
 }

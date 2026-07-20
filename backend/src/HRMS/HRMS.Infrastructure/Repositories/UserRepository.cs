@@ -18,4 +18,13 @@ internal sealed class UserRepository : IUserRepository
             UserMapper.Map,
             cancellationToken,
             new SqlParameter("@Identifier", identifier));
+
+    public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    {
+        return await _executor.QueryFirstOrDefaultAsync(
+            "dbo.Users.GetById",
+            UserMapper.Map,
+            cancellationToken,
+            new SqlParameter("@Id", id));
+    }
 }

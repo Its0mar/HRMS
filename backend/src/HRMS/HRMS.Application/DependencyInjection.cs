@@ -3,6 +3,7 @@ using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Authentication.Login;
 using HRMS.Application.Features.Authentication.RegisterOrganization;
 using HRMS.Application.Features.Departments.CreateDepartment;
+using HRMS.Application.Features.Departments.UpdateDepartment;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HRMS.Application;
@@ -30,6 +31,10 @@ public static class DependencyInjection
                 CreateDepartmentCommand,
                 CreateDepartmentResponse>,
             CreateDepartmentCommandHandler>();
+
+        services.AddScoped<
+            ICommandHandler<UpdateDepartmentCommand, bool>,
+            UpdateDepartmentCommandHandler>();
 
         return services;
     }

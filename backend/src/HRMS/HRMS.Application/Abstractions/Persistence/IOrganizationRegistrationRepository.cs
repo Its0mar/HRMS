@@ -1,4 +1,3 @@
-using HRMS.Application.Features.Authentication.RegisterOrganization;
 using HRMS.Domain.Entities;
 
 namespace HRMS.Application.Abstractions.Persistence;

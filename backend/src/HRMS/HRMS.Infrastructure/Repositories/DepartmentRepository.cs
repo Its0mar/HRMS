@@ -1,6 +1,7 @@
 using System.Data;
 using HRMS.Application.Abstractions.Persistence;
 using HRMS.Domain.Entities;
+using HRMS.Infrastructure.Mappers;
 using HRMS.Infrastructure.Persistence;
 using Microsoft.Data.SqlClient;
 
@@ -9,9 +10,15 @@ namespace HRMS.Infrastructure.Repositories;
 internal sealed class DepartmentRepository : IDepartmentRepository
 {
     private readonly IDbConnectionFactory _connectionFactory;
+    private readonly ISqlExecutor _sqlExecutor;
 
-    public DepartmentRepository(IDbConnectionFactory connectionFactory) =>
+    public DepartmentRepository(IDbConnectionFactory connectionFactory, ISqlExecutor sqlExecutor)
+    {
         _connectionFactory = connectionFactory;
+        _sqlExecutor = sqlExecutor;
+    }
+        
+
 
     public async Task<int> CreateAsync(Department department, CancellationToken cancellationToken)
     {
@@ -21,6 +28,7 @@ internal sealed class DepartmentRepository : IDepartmentRepository
 
         command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar, 30) { Value = department.Name });
         command.Parameters.Add(new SqlParameter("@Code", SqlDbType.VarChar, 6) { Value = department.Code });
+        command.Parameters.Add(new SqlParameter("@ManagerEmployeeId", SqlDbType.Int) { Value = department.ManagerEmployeeId });
         command.Parameters.Add(new SqlParameter("@Description", SqlDbType.VarChar, 300)
         {
             Value = string.IsNullOrWhiteSpace(department.Description) ? DBNull.Value : department.Description
@@ -52,4 +60,29 @@ internal sealed class DepartmentRepository : IDepartmentRepository
     {
         CommandType = CommandType.StoredProcedure
     };
+
+    public async Task<bool> UpdateDepartmentAsync(int departmentId, Department department, CancellationToken cancellationToken)
+    {
+        var intResult =  await _sqlExecutor.ExecuteAsync("dbo.Departments_Update",
+            cancellationToken,
+            new SqlParameter("@Id", department.Id),
+            new SqlParameter("@Name", department.Name),
+            new SqlParameter("@Description", department.Description),
+            new SqlParameter("@ManagerEmployeeId", department.ManagerEmployeeId),
+            new SqlParameter("@OrganizationId", department.OrganizationId));
+
+        return intResult > 0;
+    }
+
+    public async Task<Department?> GettByIdAsync(int id, int organizationId, CancellationToken ct)
+    {
+        var department = await _sqlExecutor.QueryFirstOrDefaultAsync(
+            "dbo.Departments_GetById",
+            DepartmentMapper.Map,
+            ct,
+            new SqlParameter("@Id", id),
+            new SqlParameter("@OrganizationId", organizationId));
+
+        return department;
+    }
 }

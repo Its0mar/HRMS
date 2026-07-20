@@ -19,5 +19,24 @@ namespace HRMS.Domain.Entities
             ManagerEmployeeId = managerEmployeeId;
             OrganizationId = organizationId;
         }
+
+        public static Department Restore(int id, string name, string code, int organizationId, bool isDeleted, bool isActive, DateTime createdAt, string? description, int? managerEmployeeId, DateTime? UpdatedAt)
+        {
+            return new Department(name, code, organizationId, description, managerEmployeeId)
+            {
+                Id = id,
+                IsDeleted = isDeleted,
+                IsActive = isActive,
+                CreatedAt = createdAt,
+                UpdatedAt = UpdatedAt
+            };
+        }
+
+        public void Update(string? name, string? decription, int? managerEmployeeId)
+        {
+            Name = name ?? Name;
+            Description = decription ?? Description;
+            ManagerEmployeeId = managerEmployeeId ?? ManagerEmployeeId;
+        }
     }
 }

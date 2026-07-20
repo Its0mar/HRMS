@@ -15,3 +15,4 @@ C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Infrastructure\ob
 C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Infrastructure\obj\Debug\net10.0\refint\HRMS.Infrastructure.dll
 C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Infrastructure\obj\Debug\net10.0\HRMS.Infrastructure.pdb
 C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Infrastructure\obj\Debug\net10.0\ref\HRMS.Infrastructure.dll
+C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Infrastructure\obj\Debug\net10.0\HRMS.Infrastructure.sourcelink.json

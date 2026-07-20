@@ -1,135 +1,19 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{14E0AB02-E10C-8BAA-A03F-BDD02BA64DA3}|HRMS.Api\\HRMS.Api.csproj|c:\\users\\omar\\desktop\\hrmanagementsystem\\backend\\src\\hrms\\hrms.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{14E0AB02-E10C-8BAA-A03F-BDD02BA64DA3}|HRMS.Api\\HRMS.Api.csproj|solutionrelative:hrms.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1AD85B50-11F8-6FD7-4155-20ADC386B249}|HRMS.Domain\\HRMS.Domain.csproj|c:\\users\\omar\\desktop\\hrmanagementsystem\\backend\\src\\hrms\\hrms.domain\\entities\\department.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1AD85B50-11F8-6FD7-4155-20ADC386B249}|HRMS.Domain\\HRMS.Domain.csproj|solutionrelative:hrms.domain\\entities\\department.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0F380414-7E88-8063-76C8-ED73F822396D}|HRMS.Infrastructure\\HRMS.Infrastructure.csproj|c:\\users\\omar\\desktop\\hrmanagementsystem\\backend\\src\\hrms\\hrms.infrastructure\\security\\jwtaccesstokengenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0F380414-7E88-8063-76C8-ED73F822396D}|HRMS.Infrastructure\\HRMS.Infrastructure.csproj|solutionrelative:hrms.infrastructure\\security\\jwtaccesstokengenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{179B0AAF-729E-97CD-BF62-67927D46F78C}|HRMS.Application\\HRMS.Application.csproj|c:\\users\\omar\\desktop\\hrmanagementsystem\\backend\\src\\hrms\\hrms.application\\abstractions\\authentication\\iaccesstokengenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{179B0AAF-729E-97CD-BF62-67927D46F78C}|HRMS.Application\\HRMS.Application.csproj|solutionrelative:hrms.application\\abstractions\\authentication\\iaccesstokengenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{14E0AB02-E10C-8BAA-A03F-BDD02BA64DA3}|HRMS.Api\\HRMS.Api.csproj|c:\\users\\omar\\desktop\\hrmanagementsystem\\backend\\src\\hrms\\hrms.api\\controllers\\departmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{14E0AB02-E10C-8BAA-A03F-BDD02BA64DA3}|HRMS.Api\\HRMS.Api.csproj|solutionrelative:hrms.api\\controllers\\departmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{14E0AB02-E10C-8BAA-A03F-BDD02BA64DA3}|HRMS.Api\\HRMS.Api.csproj|c:\\users\\omar\\desktop\\hrmanagementsystem\\backend\\src\\hrms\\hrms.api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{14E0AB02-E10C-8BAA-A03F-BDD02BA64DA3}|HRMS.Api\\HRMS.Api.csproj|solutionrelative:hrms.api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{14E0AB02-E10C-8BAA-A03F-BDD02BA64DA3}|HRMS.Api\\HRMS.Api.csproj|c:\\users\\omar\\desktop\\hrmanagementsystem\\backend\\src\\hrms\\hrms.api\\controllers\\apicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{14E0AB02-E10C-8BAA-A03F-BDD02BA64DA3}|HRMS.Api\\HRMS.Api.csproj|solutionrelative:hrms.api\\controllers\\apicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 330,
-          "SelectedChildIndex": 1,
+          "DockedWidth": 63,
+          "SelectedChildIndex": -1,
           "Children": [
             {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Department.cs",
-              "DocumentMoniker": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Domain\\Entities\\Department.cs",
-              "RelativeDocumentMoniker": "HRMS.Domain\\Entities\\Department.cs",
-              "ToolTip": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Domain\\Entities\\Department.cs",
-              "RelativeToolTip": "HRMS.Domain\\Entities\\Department.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-19T10:44:43.868Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Api\\Program.cs",
-              "RelativeDocumentMoniker": "HRMS.Api\\Program.cs",
-              "ToolTip": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Api\\Program.cs",
-              "RelativeToolTip": "HRMS.Api\\Program.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAABgAAAAXAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-19T10:43:52.578Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "JwtAccessTokenGenerator.cs",
-              "DocumentMoniker": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Infrastructure\\Security\\JwtAccessTokenGenerator.cs",
-              "RelativeDocumentMoniker": "HRMS.Infrastructure\\Security\\JwtAccessTokenGenerator.cs",
-              "ToolTip": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Infrastructure\\Security\\JwtAccessTokenGenerator.cs",
-              "RelativeToolTip": "HRMS.Infrastructure\\Security\\JwtAccessTokenGenerator.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-19T10:43:30.59Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "IAccessTokenGenerator.cs",
-              "DocumentMoniker": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Application\\Abstractions\\Authentication\\IAccessTokenGenerator.cs",
-              "RelativeDocumentMoniker": "HRMS.Application\\Abstractions\\Authentication\\IAccessTokenGenerator.cs",
-              "ToolTip": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Application\\Abstractions\\Authentication\\IAccessTokenGenerator.cs",
-              "RelativeToolTip": "HRMS.Application\\Abstractions\\Authentication\\IAccessTokenGenerator.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-19T10:43:09.786Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "DepartmentController.cs",
-              "DocumentMoniker": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Api\\Controllers\\DepartmentController.cs",
-              "RelativeDocumentMoniker": "HRMS.Api\\Controllers\\DepartmentController.cs",
-              "ToolTip": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Api\\Controllers\\DepartmentController.cs",
-              "RelativeToolTip": "HRMS.Api\\Controllers\\DepartmentController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAATAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-19T09:32:27.875Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "AuthController.cs",
-              "DocumentMoniker": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Api\\Controllers\\AuthController.cs",
-              "RelativeDocumentMoniker": "HRMS.Api\\Controllers\\AuthController.cs",
-              "ToolTip": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Api\\Controllers\\AuthController.cs",
-              "RelativeToolTip": "HRMS.Api\\Controllers\\AuthController.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAACcAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-19T09:29:01.338Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "ApiController.cs",
-              "DocumentMoniker": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Api\\Controllers\\ApiController.cs",
-              "RelativeDocumentMoniker": "HRMS.Api\\Controllers\\ApiController.cs",
-              "ToolTip": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Api\\Controllers\\ApiController.cs",
-              "RelativeToolTip": "HRMS.Api\\Controllers\\ApiController.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAuwAsAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-19T09:23:12.819Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
             }
           ]
         }

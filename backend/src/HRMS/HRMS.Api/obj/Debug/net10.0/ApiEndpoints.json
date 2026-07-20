@@ -46,5 +46,21 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HRMS.Api.Controllers.DepartmentController",
+    "Method": "UpdateAsync",
+    "RelativePath": "api/Department/update",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "HRMS.Application.Features.Departments.UpdateDepartment.UpdateDepartmentCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]
