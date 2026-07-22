@@ -22,7 +22,7 @@ internal sealed class UserRepository : IUserRepository
     public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         return await _executor.QueryFirstOrDefaultAsync(
-            "dbo.Users.GetById",
+            "dbo.Users_GetById",
             UserMapper.Map,
             cancellationToken,
             new SqlParameter("@Id", id));

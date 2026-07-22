@@ -17,7 +17,7 @@ namespace HRMS.Infrastructure.Repositories
 
         public async Task<int> CreateAsync(Position position, CancellationToken cancellationToken)
         {
-            return await _sqlExecutor.CreateWithScalarAsync(
+            return await _sqlExecutor.CreateWithScalarIntAsync(
                 "Positions_Create",
                 cancellationToken,
                 new SqlParameter("@Title", position.Title),
@@ -33,7 +33,7 @@ namespace HRMS.Infrastructure.Repositories
 
         public async Task<bool> TitleExistsAsync(int organizationId, string title, CancellationToken cancellationToken)
         {
-            return await _sqlExecutor.ExecuteScalarAsync(
+            return await _sqlExecutor.ExecuteScalarBoolAsync(
                 "Positions_TitleExist",
                 cancellationToken,
                 new SqlParameter("@OrganizationId", organizationId),

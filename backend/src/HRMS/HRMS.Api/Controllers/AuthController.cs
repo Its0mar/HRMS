@@ -1,6 +1,8 @@
+using ErrorOr;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Authentication.Login;
+using HRMS.Application.Features.Authentication.RefreshToken;
 using HRMS.Application.Features.Authentication.RegisterOrganization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,6 +39,19 @@ public sealed class AuthController : ApiController
 
         return result.Match<IActionResult>(
             Ok,
+            Problem);
+    }
+
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh(
+        RefreshTokenCommand command,
+        [FromServices] ICommandHandler<RefreshTokenCommand, RefreshTokenResponse> handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.HandleAsync(command, cancellationToken);
+
+        return result.Match<IActionResult>(
+            response => Ok(result.Value),
             Problem);
     }
 }

@@ -2,5 +2,6 @@
 {
     public record LoginResponse(
         AuthenticatedUserResponse User,
-        string Token);
+        string AccessToken,
+        string RefreshToken);
 }

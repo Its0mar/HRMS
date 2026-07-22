@@ -1,7 +1,4 @@
-﻿
-using HRMS.Domain.Entities.Common;
-
-namespace HRMS.Domain.Entities
+﻿namespace HRMS.Domain.Entities
 {
     public class RefreshToken
     {

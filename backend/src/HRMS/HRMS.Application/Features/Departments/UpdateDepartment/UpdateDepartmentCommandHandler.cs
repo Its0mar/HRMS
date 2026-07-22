@@ -1,9 +1,7 @@
 ﻿using ErrorOr;
-using FluentValidation;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
-using System.Net.Mail;
 
 namespace HRMS.Application.Features.Departments.UpdateDepartment
 {
