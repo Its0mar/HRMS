@@ -2,12 +2,12 @@
 
 namespace HRMS.Domain.Entities.Employees
 {
-    public class EmploymentInformation
+    public sealed class EmploymentInformation
     {
         public int DepartmentId { get; private set; }
         public int PositionId { get; private set; }
-        public int? ManagerId { get; private set; }
-        public DateOnly HireDte { get; private set;  }
+        public int? ManagerEmployeeId { get; private set; }
+        public DateOnly HireDate { get; private set;  }
         public EmploymentType EmploymentType { get; private set;  }
         public EmploymentStatus EmploymentStatus { get; private set; }
         public string WorkEmail { get; private set; }
@@ -15,22 +15,32 @@ namespace HRMS.Domain.Entities.Employees
 
         public EmploymentInformation(
             int departmentId,
-            int positionID,
-            int? managerID,
-            DateOnly hireDte,
+            int positionId,
+            int? managerEmployeeId,
+            DateOnly hireDate,
             EmploymentType employmentType,
             EmploymentStatus employmentStatus,
             string workEmail,
             string? workPhone)
         {
             DepartmentId = departmentId;
-            PositionId = positionID;
-            ManagerId = managerID;
-            HireDte = hireDte;
+            PositionId = positionId;
+            ManagerEmployeeId = managerEmployeeId;
+            HireDate = hireDate;
             EmploymentType = employmentType;
             EmploymentStatus = employmentStatus;
             WorkEmail = workEmail;
             WorkPhone = workPhone;
+        }
+
+        public void ChangeAssignment(
+            int departmentId,
+            int positionId,
+            int? managerId)
+        {
+            DepartmentId = departmentId;
+            PositionId = positionId;
+            ManagerEmployeeId = managerId;
         }
     }
 }

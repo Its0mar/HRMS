@@ -2,7 +2,7 @@
 
 namespace HRMS.Domain.Entities.Employees
 {
-    public class Employee : BaseEntity
+    public sealed class Employee : BaseEntity
     {
         public string EmployeeNumber { get; private set; }
         public int OrganizationId { get; private set; }
@@ -15,10 +15,30 @@ namespace HRMS.Domain.Entities.Employees
             PersonalInformation personalInformation,
             EmploymentInformation employmentInformation)
         {
+            if (string.IsNullOrWhiteSpace(employeeNumber))
+                throw new ArgumentException("Employee number is required.");
+
+            if (organizationId <= 0)
+                throw new ArgumentOutOfRangeException(nameof(organizationId));
+
+            ArgumentNullException.ThrowIfNull(personalInformation);
+            ArgumentNullException.ThrowIfNull(employmentInformation);
+
+
             EmployeeNumber = employeeNumber;
             OrganizationId = organizationId;
             PersonalInformation = personalInformation;
             EmploymentInformation = employmentInformation;
+        }
+
+        public void UpdatePersonalInformation(PersonalInformation information)
+        {
+            PersonalInformation = information;
+        }
+
+        public void UpdateEmploymentInformation(EmploymentInformation information)
+        {
+            EmploymentInformation = information;
         }
     }
 }

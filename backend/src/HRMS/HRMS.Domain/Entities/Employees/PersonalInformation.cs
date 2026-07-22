@@ -2,7 +2,7 @@
 
 namespace HRMS.Domain.Entities.Employees
 {
-    public class PersonalInformation
+    public sealed class PersonalInformation
     {
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
