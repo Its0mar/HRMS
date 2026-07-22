@@ -14,7 +14,7 @@ internal sealed class JwtAccessTokenGenerator : IAccessTokenGenerator
 
     public JwtAccessTokenGenerator(IConfiguration configuration) => _configuration = configuration;
 
-    public string Generate(User user)
+    public string Generate(User user, IReadOnlyCollection<string> permissions)
     {
         var keyValue = _configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT signing key is not configured.");
         var expiryValue = _configuration["Jwt:ExpireMinutes"] ?? throw new InvalidOperationException("JWT expiry is not configured.");
@@ -33,7 +33,7 @@ internal sealed class JwtAccessTokenGenerator : IAccessTokenGenerator
 
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var claims = new[]
+        var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.Value.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
@@ -41,6 +41,8 @@ internal sealed class JwtAccessTokenGenerator : IAccessTokenGenerator
             new Claim("organization_id", user.OrganizationId.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
+
+        claims.AddRange(permissions.Select(permission => new Claim("permission", permission)));
 
         var token = new JwtSecurityToken(
             issuer: _configuration["Jwt:Issuer"],

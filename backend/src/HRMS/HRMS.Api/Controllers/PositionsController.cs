@@ -1,6 +1,7 @@
 ﻿using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Positions.CreatePosition;
 using HRMS.Application.Features.Positions.GetPositions;
+using HRMS.Domain.Entities.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +12,7 @@ namespace HRMS.Api.Controllers
     public class PositionsController : ApiController
     {
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = Permissions.Positions.Create)]
         public async Task<IActionResult> CreateAsync(
             CreatePositionCommand command,
             [FromServices] ICommandDispatcher dispatcher,
@@ -25,7 +26,7 @@ namespace HRMS.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = Permissions.Positions.View)]
         public async Task<IActionResult> GetAsync(
             GetPositionsQuery query,
             [FromServices] IQueryHandler<GetPositionsQuery, List<GetPositionResponse>> handler,

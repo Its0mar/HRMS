@@ -27,4 +27,19 @@ internal sealed class UserRepository : IUserRepository
             cancellationToken,
             new SqlParameter("@Id", id));
     }
+
+    public async Task<IReadOnlyList<string>> GetUserPermissions(int userId,  CancellationToken cancellationToken)
+    {
+        return await _executor.QueryAsync(
+            "Permissions_GetForUser",
+            map,
+            cancellationToken,
+            new SqlParameter("@UserId", userId)
+            );
+    }
+
+    private string map(SqlDataReader reader)
+    {
+        return reader.GetString(reader.GetOrdinal("Code"));
+    }
 }

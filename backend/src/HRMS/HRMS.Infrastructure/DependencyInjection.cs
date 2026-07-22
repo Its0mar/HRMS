@@ -1,6 +1,6 @@
-using System.Text;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Persistence;
+using HRMS.Domain.Entities.Common;
 using HRMS.Infrastructure.Persistence;
 using HRMS.Infrastructure.Repositories;
 using HRMS.Infrastructure.Security;
@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace HRMS.Infrastructure;
 
@@ -34,7 +35,22 @@ public static class DependencyInjection
                 ClockSkew = TimeSpan.FromMinutes(1)
             });
 
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            foreach (var permission in Permissions.All)
+            {
+                options.AddPolicy(
+                    permission,
+                    policy =>
+                    {
+                        policy.RequireAuthenticatedUser();
+                        policy.RequireClaim(
+                            "permission",
+                            permission);
+                    });
+            }
+        });
+
         services.AddHttpContextAccessor();
         services.AddSingleton<IDbConnectionFactory>(new DbConnectionFactory(connectionString));
         services.AddScoped<ISqlExecutor, SqlExecutor>();

@@ -4,5 +4,5 @@ namespace HRMS.Application.Abstractions.Authentication;
 
 public interface IAccessTokenGenerator
 {
-    string Generate(User user);
+    string Generate(User user, IReadOnlyCollection<string> permissions);
 }

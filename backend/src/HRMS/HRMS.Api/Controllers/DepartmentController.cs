@@ -2,6 +2,7 @@
 using HRMS.Application.Features.Departments.CreateDepartment;
 using HRMS.Application.Features.Departments.GetDepartments;
 using HRMS.Application.Features.Departments.UpdateDepartment;
+using HRMS.Domain.Entities.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +13,7 @@ namespace HRMS.Api.Controllers
     [ApiController]
     public class DepartmentController : ApiController
     {
-        [Authorize]
+        [Authorize(Policy = Permissions.Departments.Create)]
         [HttpPost("create")]
         public async Task<IActionResult> CreateAsync(
             CreateDepartmentCommand command,
@@ -22,12 +23,12 @@ namespace HRMS.Api.Controllers
             var result = await dispatcher.SendAsync(command, ct);
 
             return result.Match<IActionResult>(
-                response => StatusCode(StatusCodes.Status201Created, result),
+                response => StatusCode(StatusCodes.Status201Created, result.Value),
                 Problem
              );
         }
 
-        [Authorize]
+        [Authorize(Policy = Permissions.Departments.Update)]
         [HttpPost("update")]
         public async Task<IActionResult> UpdateAsync(
             UpdateDepartmentCommand command,
@@ -43,7 +44,7 @@ namespace HRMS.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = Permissions.Departments.View)]
         public async Task<IActionResult> GetAsync(
             GetDepartmentsQuery query,
             [FromServices] IQueryHandler<GetDepartmentsQuery, List<GetDepartmentResponse>> handler,

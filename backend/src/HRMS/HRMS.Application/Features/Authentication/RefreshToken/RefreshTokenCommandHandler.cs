@@ -42,10 +42,13 @@ namespace HRMS.Application.Features.Authentication.RefreshToken
             {
                 return Error.NotFound("User if not found");
             }
-            
+
+            var userId = user.Id ?? throw new ArgumentNullException("userId can`t be null");
+
             var newRefreshToken = _refreshTokenGenerator.Generate();
             await _refreshTokenRepository.UpdateUserRefreshTokenAsync(refreshToken.UserId, newRefreshToken, DateTime.UtcNow.AddDays(7), DateTime.UtcNow, cancellationToken);
-            var accessToken = _accessTokenGenerator.Generate(user);
+            var userPermissions = await _userRepository.GetUserPermissions(userId, cancellationToken);
+            var accessToken = _accessTokenGenerator.Generate(user, userPermissions);
 
             return new RefreshTokenResponse(accessToken, newRefreshToken);
                 

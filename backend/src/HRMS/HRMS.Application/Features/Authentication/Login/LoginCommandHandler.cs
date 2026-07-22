@@ -4,7 +4,6 @@ using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
 
-
 namespace HRMS.Application.Features.Authentication.Login
 {
     internal sealed class LoginCommandHandler
@@ -76,11 +75,13 @@ namespace HRMS.Application.Features.Authentication.Login
             var refreshToken = _refreshTokenGenerator.Generate();
             await _refreshTokenRepository.RemoveForUserAsync(userId, cancellationToken);
             await _refreshTokenRepository.CreateRefreshTokenAsync(userId, refreshToken, DateTime.UtcNow.AddDays(7), DateTime.UtcNow, cancellationToken);
-            
+            var userPermissions = await _userRepository.GetUserPermissions(userId, cancellationToken);
+
+
 
             return new LoginResponse(
                 AuthenticatedUserResponse.From(user),
-                _tokenGenerator.Generate(user),
+                _tokenGenerator.Generate(user, userPermissions),
                 refreshToken);
         }
     }
