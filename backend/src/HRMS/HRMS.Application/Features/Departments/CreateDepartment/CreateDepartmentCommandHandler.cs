@@ -14,35 +14,19 @@ namespace HRMS.Application.Features.Departments.CreateDepartment
     {
         private readonly IDepartmentRepository _departments;
         private readonly ICurrentUser _currentUser;
-        private readonly IValidator<CreateDepartmentCommand> _validator;
 
         public CreateDepartmentCommandHandler(
             IDepartmentRepository departments,
-            ICurrentUser currentUser,
-            IValidator<CreateDepartmentCommand> validator)
+            ICurrentUser currentUser)
         {
             _departments = departments;
             _currentUser = currentUser;
-            _validator = validator;
         }
 
         public async Task<ErrorOr<CreateDepartmentResponse>> HandleAsync(
             CreateDepartmentCommand command,
             CancellationToken cancellationToken)
         {
-            var validation = await _validator.ValidateAsync(
-                command,
-                cancellationToken);
-
-            if (!validation.IsValid)
-            {
-                return validation.Errors
-                    .Select(failure => Error.Validation(
-                        code: $"CreateDepartment.{failure.PropertyName}",
-                        description: failure.ErrorMessage))
-                    .ToList();
-            }
-
             var organizationId = _currentUser.OrganizationId;
             var name = command.Name.Trim();
             var code = command.Code.Trim().ToUpperInvariant();

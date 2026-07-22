@@ -13,33 +13,19 @@ namespace HRMS.Application.Features.Departments.UpdateDepartment
         private readonly IDepartmentRepository _departmentRepository;
         private readonly IUserRepository _userRepository;
         private readonly ICurrentUser _currentUser;
-        private readonly IValidator<UpdateDepartmentCommand> _validator;
 
         public UpdateDepartmentCommandHandler(
             IDepartmentRepository departmentRepository,
             IUserRepository userRepository,
-            ICurrentUser currentUser,
-            IValidator<UpdateDepartmentCommand> validator)
+            ICurrentUser currentUser)
         {
             _departmentRepository = departmentRepository;
             _userRepository = userRepository;
             _currentUser  = currentUser;
-            _validator = validator;
         }
 
         public async Task<ErrorOr<bool>> HandleAsync(UpdateDepartmentCommand command, CancellationToken cancellationToken)
         {
-            var validation = await _validator.ValidateAsync(command, cancellationToken);
-
-            if (!validation.IsValid)
-            {
-                return validation.Errors
-                    .Select(failure => Error.Validation(
-                        code: $"UpdateDepartment.{failure.PropertyName}",
-                        description: failure.ErrorMessage))
-                    .ToList();
-            }
-
             var department = await _departmentRepository.GettByIdAsync(command.Id, _currentUser.OrganizationId, cancellationToken);
             if (department is null || department.IsDeleted || !department.IsActive)
             {

@@ -64,7 +64,14 @@ BEGIN
 	
 END;
 
+CREATE OR ALTER PROCEDURE Departments_GetAll
+@OrganizationId INT
 
+AS
+BEGIN
+	SELECT * FROM Departments 
+	WHERE OrganizationId = @OrganizationId
+END;
 
 CREATE OR ALTER PROCEDURE dbo.Departments_NameExist
 	@Name varchar(30),

@@ -13,10 +13,10 @@ public sealed class AuthController : ApiController
     [HttpPost("organizations")]
     public async Task<IActionResult> RegisterOrganization(
         RegisterOrganizationCommand command,
-        [FromServices] ICommandHandler<RegisterOrganizationCommand, RegisterOrganizationResponse> handler,
+        [FromServices] ICommandDispatcher dispatcher,
         CancellationToken cancellationToken)
     {
-        var result = await handler.HandleAsync(
+        var result = await dispatcher.SendAsync(
             command,
             cancellationToken);
 
@@ -28,11 +28,10 @@ public sealed class AuthController : ApiController
     [HttpPost("login")]
     public async Task<IActionResult> Login(
         LoginCommand command,
-        [FromServices]
-        ICommandHandler<LoginCommand, LoginResponse> handler,
+        [FromServices] ICommandDispatcher dispatcher,
         CancellationToken cancellationToken)
     {
-        var result = await handler.HandleAsync(
+        var result = await dispatcher.SendAsync(
             command,
             cancellationToken);
 

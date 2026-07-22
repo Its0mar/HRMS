@@ -1,5 +1,4 @@
-﻿using ErrorOr;
-using HRMS.Application.Abstractions.Messaging;
+﻿using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Positions.CreatePosition;
 using HRMS.Application.Features.Positions.GetPositions;
 using Microsoft.AspNetCore.Authorization;
@@ -15,10 +14,10 @@ namespace HRMS.Api.Controllers
         [Authorize]
         public async Task<IActionResult> CreateAsync(
             CreatePositionCommand command,
-            [FromServices] ICommandHandler<CreatePositionCommand, int> handler,
+            [FromServices] ICommandDispatcher dispatcher,
             CancellationToken cancellationToken)
         {
-            var result = await handler.HandleAsync(command, cancellationToken);
+            var result = await dispatcher.SendAsync(command, cancellationToken);
 
             return result.Match(
                 ok => StatusCode(StatusCodes.Status201Created, new { id = result.Value }),

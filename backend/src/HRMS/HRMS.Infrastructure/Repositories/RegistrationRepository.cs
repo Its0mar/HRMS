@@ -38,8 +38,8 @@ internal sealed class RegistrationRepository : IOrganizationRegistrationReposito
         {
             var organizationId = await CreateOrganizationAsync(connection, transaction, organization, cancellationToken);
             var ownerUserId = await CreateUserAsync(connection, transaction, organizationId, owner, cancellationToken);
-            var roleId = await CreateRoleAsync(connection, transaction, organizationId, "OrganizationOwner", cancellationToken);
-            await AssignRoleAsync(connection, transaction, ownerUserId, roleId, cancellationToken);
+            //var roleId = await CreateRoleAsync(connection, transaction, organizationId, "OrganizationOwner", cancellationToken);
+            await AssignRoleAsync(connection, transaction, ownerUserId, 10, cancellationToken);
             await transaction.CommitAsync(cancellationToken);
             return new OrganizationRegistrationResult(organizationId, ownerUserId);
         }

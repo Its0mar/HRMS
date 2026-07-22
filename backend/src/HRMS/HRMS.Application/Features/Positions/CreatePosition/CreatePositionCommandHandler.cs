@@ -12,38 +12,24 @@ namespace HRMS.Application.Features.Positions.CreatePosition
     {
         private readonly IPositionsRepository _positionsRepository;
         private readonly ICurrentUser _currentUser;
-        private readonly IValidator<CreatePositionCommand> _validator;
 
         public CreatePositionCommandHandler(
             IPositionsRepository positionsRepository,
-            ICurrentUser currentUser,
-            IValidator<CreatePositionCommand> validator)
+            ICurrentUser currentUser)
         {
             _positionsRepository = positionsRepository;
             _currentUser = currentUser;
-            _validator = validator;
         }
 
         public async Task<ErrorOr<int>> HandleAsync(CreatePositionCommand command, CancellationToken cancellationToken)
         {
-            var validation = await _validator.ValidateAsync(command, cancellationToken);
-
-            if (!validation.IsValid)
-            {
-                return validation.Errors
-                    .Select(failure => Error.Validation(
-                        code: $"UpdateDepartment.{failure.PropertyName}",
-                        description: failure.ErrorMessage))
-                    .ToList();
-            }
-
             string title = command.Title.Trim();
             var description = command.Description is null ? null : command.Description.Trim();
 
             var titleExist =  await _positionsRepository.TitleExistsAsync(_currentUser.OrganizationId, command.Title, cancellationToken);
             if (titleExist)
             {
-                return Error.Conflict("a position with this title already exist");
+                return PositionsErrors.TitleExists;
             }
 
             var position = new Position(title, description, _currentUser.OrganizationId);

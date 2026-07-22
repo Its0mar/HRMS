@@ -14,35 +14,19 @@ namespace HRMS.Application.Features.Authentication.RegisterOrganization
     {
         private readonly IOrganizationRegistrationRepository _repository;
         private readonly IPasswordHasher _passwordHasher;
-        private readonly IValidator<RegisterOrganizationCommand> _validator;
 
         public RegisterOrganizationCommandHandler(
             IOrganizationRegistrationRepository repository,
-            IPasswordHasher passwordHasher,
-            IValidator<RegisterOrganizationCommand> validator)
+            IPasswordHasher passwordHasher)
         {
             _repository = repository;
             _passwordHasher = passwordHasher;
-            _validator = validator;
         }
 
         public async Task<ErrorOr<RegisterOrganizationResponse>> HandleAsync(
             RegisterOrganizationCommand command,
             CancellationToken cancellationToken)
         {
-            var validation = await _validator.ValidateAsync(
-                command,
-                cancellationToken);
-
-            if (!validation.IsValid)
-            {
-                return validation.Errors
-                    .Select(failure => Error.Validation(
-                        code: $"RegisterOrganization.{failure.PropertyName}",
-                        description: failure.ErrorMessage))
-                    .ToList();
-            }
-
             var organizationCode = command.OrganizationCode.Trim().ToUpperInvariant();
             var organizationEmail = command.OrganizationEmail.Trim().ToLowerInvariant();
             var ownerEmail = command.OwnerEmail.Trim().ToLowerInvariant();

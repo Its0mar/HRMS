@@ -77,5 +77,5 @@ C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\bin\Debug\net
 C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\bin\Debug\net10.0\BCrypt-Net-Next.dll
 C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\bin\Debug\net10.0\ErrorOr.dll
 C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
-C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\obj\Debug\net10.0\HRMS.Api.sourcelink.json
+C:\Users\Omar\Desktop\HRManagementSystem\backend\src\HRMS\HRMS.Api\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

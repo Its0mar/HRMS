@@ -3,16 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{14E0AB02-E10C-8BAA-A03F-BDD02BA64DA3}|HRMS.Api\\HRMS.Api.csproj|c:\\users\\omar\\desktop\\hrmanagementsystem\\backend\\src\\hrms\\hrms.api\\controllers\\departmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{14E0AB02-E10C-8BAA-A03F-BDD02BA64DA3}|HRMS.Api\\HRMS.Api.csproj|solutionrelative:hrms.api\\controllers\\departmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0F380414-7E88-8063-76C8-ED73F822396D}|HRMS.Infrastructure\\HRMS.Infrastructure.csproj|c:\\users\\omar\\desktop\\hrmanagementsystem\\backend\\src\\hrms\\hrms.infrastructure\\repositories\\departmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0F380414-7E88-8063-76C8-ED73F822396D}|HRMS.Infrastructure\\HRMS.Infrastructure.csproj|solutionrelative:hrms.infrastructure\\repositories\\departmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{14E0AB02-E10C-8BAA-A03F-BDD02BA64DA3}|HRMS.Api\\HRMS.Api.csproj|c:\\users\\omar\\desktop\\hrmanagementsystem\\backend\\src\\hrms\\hrms.api\\controllers\\positionscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{14E0AB02-E10C-8BAA-A03F-BDD02BA64DA3}|HRMS.Api\\HRMS.Api.csproj|solutionrelative:hrms.api\\controllers\\positionscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{179B0AAF-729E-97CD-BF62-67927D46F78C}|HRMS.Application\\HRMS.Application.csproj|c:\\users\\omar\\desktop\\hrmanagementsystem\\backend\\src\\hrms\\hrms.application\\features\\departments\\updatedepartment\\updatedepartmentcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{179B0AAF-729E-97CD-BF62-67927D46F78C}|HRMS.Application\\HRMS.Application.csproj|solutionrelative:hrms.application\\features\\departments\\updatedepartment\\updatedepartmentcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,45 +14,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 337,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "DepartmentRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Infrastructure\\Repositories\\DepartmentRepository.cs",
-              "RelativeDocumentMoniker": "HRMS.Infrastructure\\Repositories\\DepartmentRepository.cs",
-              "ToolTip": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Infrastructure\\Repositories\\DepartmentRepository.cs",
-              "RelativeToolTip": "HRMS.Infrastructure\\Repositories\\DepartmentRepository.cs",
-              "ViewState": "AgIAADsAAAAAAAAAAAAswFsAAAAfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-20T10:54:33.827Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "PositionsController.cs",
-              "DocumentMoniker": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Api\\Controllers\\PositionsController.cs",
-              "RelativeDocumentMoniker": "HRMS.Api\\Controllers\\PositionsController.cs",
-              "ToolTip": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Api\\Controllers\\PositionsController.cs",
-              "RelativeToolTip": "HRMS.Api\\Controllers\\PositionsController.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAQwBsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-20T10:52:56.135Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "DepartmentController.cs",
-              "DocumentMoniker": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Api\\Controllers\\DepartmentController.cs",
-              "RelativeDocumentMoniker": "HRMS.Api\\Controllers\\DepartmentController.cs",
-              "ToolTip": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Api\\Controllers\\DepartmentController.cs",
-              "RelativeToolTip": "HRMS.Api\\Controllers\\DepartmentController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAbAAAAAAAAAA==",
+              "Title": "UpdateDepartmentCommandHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Application\\Features\\Departments\\UpdateDepartment\\UpdateDepartmentCommandHandler.cs",
+              "RelativeDocumentMoniker": "HRMS.Application\\Features\\Departments\\UpdateDepartment\\UpdateDepartmentCommandHandler.cs",
+              "ToolTip": "C:\\Users\\Omar\\Desktop\\HRManagementSystem\\backend\\src\\HRMS\\HRMS.Application\\Features\\Departments\\UpdateDepartment\\UpdateDepartmentCommandHandler.cs",
+              "RelativeToolTip": "HRMS.Application\\Features\\Departments\\UpdateDepartment\\UpdateDepartmentCommandHandler.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAACAAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-20T10:52:55.263Z",
+              "WhenOpened": "2026-07-22T02:35:50.645Z",
               "EditorCaption": ""
             }
           ]

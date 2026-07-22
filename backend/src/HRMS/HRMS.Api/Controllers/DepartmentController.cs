@@ -16,10 +16,10 @@ namespace HRMS.Api.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateAsync(
             CreateDepartmentCommand command,
-            [FromServices] ICommandHandler<CreateDepartmentCommand, CreateDepartmentResponse> handler,
+            [FromServices] ICommandDispatcher dispatcher,
             CancellationToken ct)
         {
-            var result = await handler.HandleAsync(command, ct);
+            var result = await dispatcher.SendAsync(command, ct);
 
             return result.Match<IActionResult>(
                 response => StatusCode(StatusCodes.Status201Created, result),
@@ -31,10 +31,10 @@ namespace HRMS.Api.Controllers
         [HttpPost("update")]
         public async Task<IActionResult> UpdateAsync(
             UpdateDepartmentCommand command,
-            [FromServices] ICommandHandler<UpdateDepartmentCommand, bool> handler,
+            [FromServices] ICommandDispatcher dispatcher,
             CancellationToken ct)
         {
-            var result = await handler.HandleAsync(command, ct);
+            var result = await dispatcher.SendAsync(command, ct);
 
             return result.Match<IActionResult>(
                 response => StatusCode(StatusCodes.Status200OK),
