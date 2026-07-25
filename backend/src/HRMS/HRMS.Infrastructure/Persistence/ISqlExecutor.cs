@@ -27,7 +27,7 @@ namespace HRMS.Infrastructure.Persistence
             CancellationToken ct,
             params SqlParameter[] parameters);
 
-        public Task<int> CreateWithScalarIntAsync(
+        public Task<int> ExecuteWithScalarIntAsync(
             string procedure,
             CancellationToken ct,
             params SqlParameter[] parameters);

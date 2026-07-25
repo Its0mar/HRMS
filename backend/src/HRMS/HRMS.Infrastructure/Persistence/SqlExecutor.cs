@@ -80,7 +80,7 @@ namespace HRMS.Infrastructure.Persistence
             return result is not null && result != DBNull.Value && Convert.ToBoolean(result);
         }
 
-        public async Task<int> CreateWithScalarIntAsync(
+        public async Task<int> ExecuteWithScalarIntAsync(
             string procedure,
             CancellationToken ct,
             params SqlParameter[] parameters)

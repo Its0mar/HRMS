@@ -6,6 +6,7 @@ using HRMS.Application.Features.Authentication.RegisterOrganization;
 using HRMS.Application.Features.Departments.CreateDepartment;
 using HRMS.Application.Features.Departments.GetDepartments;
 using HRMS.Application.Features.Departments.UpdateDepartment;
+using HRMS.Application.Features.Employees.CreateEmployee;
 using HRMS.Application.Features.Positions.CreatePosition;
 using HRMS.Application.Features.Positions.GetPositions;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,6 +58,10 @@ public static class DependencyInjection
         services.AddScoped<
             ICommandHandler<RefreshTokenCommand, RefreshTokenResponse>,
             RefreshTokenCommandHandler>();
+
+        services.AddScoped<
+            ICommandHandler<CreateEmployeeCommand, CreateEmployeeResponse>,
+            CreateEmployeeHandler>();
 
         return services;
     }

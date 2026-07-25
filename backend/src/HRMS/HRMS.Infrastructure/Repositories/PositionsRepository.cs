@@ -17,7 +17,7 @@ namespace HRMS.Infrastructure.Repositories
 
         public async Task<int> CreateAsync(Position position, CancellationToken cancellationToken)
         {
-            return await _sqlExecutor.CreateWithScalarIntAsync(
+            return await _sqlExecutor.ExecuteWithScalarIntAsync(
                 "Positions_Create",
                 cancellationToken,
                 new SqlParameter("@Title", position.Title),
