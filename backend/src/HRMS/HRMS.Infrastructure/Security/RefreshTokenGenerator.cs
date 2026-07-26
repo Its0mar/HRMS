@@ -1,5 +1,6 @@
 ﻿using HRMS.Application.Abstractions.Authentication;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace HRMS.Infrastructure.Security
 {
@@ -7,12 +8,14 @@ namespace HRMS.Infrastructure.Security
     {
         public string Generate()
         {
-            var randomNumber = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomNumber);
-                return Convert.ToBase64String(randomNumber);
-            }
+            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+        }
+
+        public string Hash(string rawToken)
+        {
+            var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(rawToken));
+
+            return Convert.ToHexString(bytes);
         }
     }
 }

@@ -4,10 +4,27 @@ namespace HRMS.Application.Abstractions.Persistence
 {
     public interface IRefreshTokenRepository
     {
-        public Task RemoveForUserAsync(int userId, CancellationToken cancellationToken);
-        public Task UpdateUserRefreshTokenAsync(int userId, string refreshToken, DateTime expiresAt, DateTime createdAt, CancellationToken cancellationToken);
-        public Task CreateRefreshTokenAsync(int userId, string refreshToken, DateTime expiresAt, DateTime createdAt, CancellationToken cancellationToken);
-        public Task<RefreshToken?> GetRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken);
+        Task<RefreshToken?> GetByHashAsync(string tokenHash, CancellationToken cancellationToken);
+
+        Task CreateOrReplaceAsync(
+            int userId,
+            string tokenHash,
+            DateTime expiresAt,
+            DateTime createdAt,
+            CancellationToken cancellationToken);
+
+        Task<bool> RotateAsync(
+            int userId,
+            string currentTokenHash,
+            string newTokenHash,
+            DateTime expiresAt,
+            DateTime createdAt,
+            CancellationToken cancellationToken);
+
+        Task<bool> RevokeAsync(
+            string tokenHash,
+            DateTime revokedAt,
+            CancellationToken cancellationToken);
 
 
     }

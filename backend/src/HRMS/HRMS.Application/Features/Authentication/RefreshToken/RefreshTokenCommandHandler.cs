@@ -28,30 +28,48 @@ namespace HRMS.Application.Features.Authentication.RefreshToken
 
         public async Task<ErrorOr<RefreshTokenResponse>> HandleAsync(RefreshTokenCommand command, CancellationToken cancellationToken)
         {
-            var refreshToken = await _refreshTokenRepository.GetRefreshTokenAsync(
-                command.refreshToken,
+            var currentTokenHash = _refreshTokenGenerator.Hash(command.refreshToken);
+            var currentToken = await _refreshTokenRepository.GetByHashAsync(currentTokenHash, cancellationToken);
+
+            if (currentToken is null || !currentToken.IsValid)
+            {
+                return AuthenticationErrors.InvalidRefreshToken;
+            }
+
+            var user = await _userRepository.GetByIdAsync(currentToken.UserId, cancellationToken);
+
+            if (user is null || user.IsDeleted || !user.IsActive)
+            {
+                return AuthenticationErrors.InvalidRefreshToken;
+            }
+
+            var newRawToken = _refreshTokenGenerator.Generate();
+            var newTokenHash = _refreshTokenGenerator.Hash(newRawToken);
+
+            var expiresAt = DateTime.UtcNow.AddDays(7);
+            var createdAt = DateTime.UtcNow;
+
+            var rotated = await _refreshTokenRepository.RotateAsync(
+                user.Id!.Value,
+                currentTokenHash,
+                newTokenHash,
+                expiresAt,
+                createdAt,
                 cancellationToken);
 
-            if (refreshToken is null || !refreshToken.IsValid)
+            if (!rotated)
             {
-                return Error.Failure("invalid refreh token");
+                return AuthenticationErrors.InvalidRefreshToken;
             }
 
-            var user = await _userRepository.GetByIdAsync(refreshToken.UserId, cancellationToken);
-            if (user is null)
-            {
-                return Error.NotFound("User if not found");
-            }
+            var permissions = await _userRepository.GetUserPermissions(user.Id.Value, cancellationToken);
 
-            var userId = user.Id ?? throw new ArgumentNullException("userId can`t be null");
+            var accessToken = _accessTokenGenerator.Generate(user, permissions);
 
-            var newRefreshToken = _refreshTokenGenerator.Generate();
-            await _refreshTokenRepository.UpdateUserRefreshTokenAsync(refreshToken.UserId, newRefreshToken, DateTime.UtcNow.AddDays(7), DateTime.UtcNow, cancellationToken);
-            var userPermissions = await _userRepository.GetUserPermissions(userId, cancellationToken);
-            var accessToken = _accessTokenGenerator.Generate(user, userPermissions);
-
-            return new RefreshTokenResponse(accessToken, newRefreshToken);
-                
+            return new RefreshTokenResponse(
+                AccessToken: accessToken,
+                RefreshToken: newRawToken,
+                RefreshTokenExpiresAt: expiresAt);
         }
     }
 }

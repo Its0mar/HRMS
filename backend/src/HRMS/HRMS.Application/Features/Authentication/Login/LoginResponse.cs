@@ -3,5 +3,6 @@
     public record LoginResponse(
         AuthenticatedUserResponse User,
         string AccessToken,
-        string RefreshToken);
+        string RefreshToken,
+        DateTime RefreshTokenExpiresAt);
 }

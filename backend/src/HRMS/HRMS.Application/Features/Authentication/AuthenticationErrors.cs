@@ -28,5 +28,10 @@ namespace HRMS.Application.Features.Authentication
             Error.Conflict(
                 code: "User.UsernameExists",
                 description: "This username is already in use.");
+
+        public static Error InvalidRefreshToken =>
+            Error.Unauthorized(
+                code: "Authentication.InvalidRefreshToken",
+                description: "The refresh token is invalid or expired.");
     }
 }

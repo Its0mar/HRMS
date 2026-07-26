@@ -12,7 +12,7 @@ namespace HRMS.Application.Features.Authentication.Login
         private readonly IUserRepository _userRepository;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly IPasswordHasher _passwordHasher;
-        private readonly IAccessTokenGenerator _tokenGenerator;
+        private readonly IAccessTokenGenerator _accessTokenGenerator;
         private readonly IRefreshTokenGenerator _refreshTokenGenerator;
         private readonly IValidator<LoginCommand> _validator;
 
@@ -27,7 +27,7 @@ namespace HRMS.Application.Features.Authentication.Login
             _userRepository = users;
             _refreshTokenRepository = refreshTokenrepository; 
             _passwordHasher = passwordHasher;
-            _tokenGenerator = tokenGenerator;
+            _accessTokenGenerator = tokenGenerator;
             _refreshTokenGenerator = refreshTokenGenerator;
             _validator = validator;
         }
@@ -36,19 +36,6 @@ namespace HRMS.Application.Features.Authentication.Login
             LoginCommand command,
             CancellationToken cancellationToken)
         {
-            var validation = await _validator.ValidateAsync(
-                command,
-                cancellationToken);
-
-            if (!validation.IsValid)
-            {
-                return validation.Errors
-                    .Select(failure => Error.Validation(
-                        code: $"Login.{failure.PropertyName}",
-                        description: failure.ErrorMessage))
-                    .ToList();
-            }
-
             var identifier = command.Identifier.Trim();
 
             if (identifier.Contains('@'))
@@ -70,19 +57,28 @@ namespace HRMS.Application.Features.Authentication.Login
                 return AuthenticationErrors.InvalidCredentials;
             }
 
-            var userId = user.Id ?? throw new ArgumentNullException("userId can`t be null");
+            if (user.Id is not int userId)
+            {
+                return Error.Unexpected(
+                    code: "Authentication.UserIdMissing",
+                    description: "The authenticated user has no ID.");
+            }
+
+            var permissions = await _userRepository.GetUserPermissions(userId, cancellationToken);
+            var accessToken = _accessTokenGenerator.Generate(user, permissions);
+            var rawRefreshToken = _refreshTokenGenerator.Generate();
+            var refreshTokenHash = _refreshTokenGenerator.Hash(rawRefreshToken);
+
+            var createdAt = DateTime.UtcNow;
+            var expiresAt = createdAt.AddDays(7);
+
+            await _refreshTokenRepository.CreateOrReplaceAsync(userId, refreshTokenHash, expiresAt, createdAt, cancellationToken);
             
-            var refreshToken = _refreshTokenGenerator.Generate();
-            await _refreshTokenRepository.RemoveForUserAsync(userId, cancellationToken);
-            await _refreshTokenRepository.CreateRefreshTokenAsync(userId, refreshToken, DateTime.UtcNow.AddDays(7), DateTime.UtcNow, cancellationToken);
-            var userPermissions = await _userRepository.GetUserPermissions(userId, cancellationToken);
-
-
-
             return new LoginResponse(
-                AuthenticatedUserResponse.From(user),
-                _tokenGenerator.Generate(user, userPermissions),
-                refreshToken);
+            User: AuthenticatedUserResponse.From(user),
+                AccessToken: accessToken,
+                RefreshToken: rawRefreshToken,
+                RefreshTokenExpiresAt: expiresAt);
         }
     }
 }

@@ -1,6 +1,7 @@
 using ErrorOr;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
+using HRMS.Application.Abstractions.Persistence;
 using HRMS.Application.Features.Authentication.Login;
 using HRMS.Application.Features.Authentication.RefreshToken;
 using HRMS.Application.Features.Authentication.RegisterOrganization;
@@ -38,20 +39,83 @@ public sealed class AuthController : ApiController
             cancellationToken);
 
         return result.Match<IActionResult>(
-            Ok,
+            response =>
+            {
+                SetRefreshTokenCookie(
+                    response.RefreshToken,
+                    response.RefreshTokenExpiresAt);
+
+                return Ok(new
+                {
+                    response.User,
+                    response.AccessToken
+                });
+            },
             Problem);
     }
 
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh(
-        RefreshTokenCommand command,
-        [FromServices] ICommandHandler<RefreshTokenCommand, RefreshTokenResponse> handler,
+        [FromServices] ICommandDispatcher dispatcher,
         CancellationToken cancellationToken)
     {
-        var result = await handler.HandleAsync(command, cancellationToken);
+        if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
+        {
+            return Unauthorized();
+        }
+
+        var result = await dispatcher.SendAsync(new RefreshTokenCommand(refreshToken), cancellationToken);
 
         return result.Match<IActionResult>(
-            response => Ok(result.Value),
+            response =>
+            {
+                SetRefreshTokenCookie(response.RefreshToken, response.RefreshTokenExpiresAt);
+                return Ok(new
+                {
+                    response.AccessToken
+                });
+            },
             Problem);
+    }
+
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout(
+        [FromServices] IRefreshTokenRepository repository,
+        [FromServices] IRefreshTokenGenerator generator,
+        CancellationToken cancellationToken)
+    {
+        if (Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
+        {
+            await repository.RevokeAsync(
+                generator.Hash(refreshToken),
+                DateTime.UtcNow,
+                cancellationToken);
+        }
+
+        Response.Cookies.Delete("refrehToken", new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            Path = "/api"
+        });
+
+        return NoContent();
+    }
+
+
+    private void SetRefreshTokenCookie(string token, DateTime expiresAt)
+    {
+        Response.Cookies.Append(
+            "refreshToken",
+            token,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = expiresAt,
+                Path = "/api"
+            });
     }
 }
