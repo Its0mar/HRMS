@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using ErrorOr;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
@@ -9,8 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HRMS.Api.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[ApiVersion(1)]
 public sealed class AuthController : ApiController
 {
     [HttpPost("organizations")]

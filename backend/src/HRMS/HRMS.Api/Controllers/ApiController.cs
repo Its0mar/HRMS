@@ -1,10 +1,11 @@
-﻿using ErrorOr;
-using Microsoft.AspNetCore.Http;
+﻿using Asp.Versioning;
+using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HRMS.Api.Controllers
 {
     [ApiController]
+    [Route("api/v{v:apiVersion}/[controller]")]
     public abstract class ApiController : ControllerBase
     {
         protected IActionResult Problem(List<Error> errors)

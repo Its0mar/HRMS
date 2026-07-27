@@ -26,11 +26,6 @@ namespace HRMS.Infrastructure.Repositories
                 );
         }
 
-        public Task<Department?> GettByIdAsync(int id, int organizationId, CancellationToken ct)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<bool> TitleExistsAsync(int organizationId, string title, CancellationToken cancellationToken)
         {
             return await _sqlExecutor.ExecuteScalarBoolAsync(

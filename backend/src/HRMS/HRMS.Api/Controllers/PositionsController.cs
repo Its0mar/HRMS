@@ -1,4 +1,5 @@
-﻿using HRMS.Application.Abstractions.Messaging;
+﻿using Asp.Versioning;
+using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Positions.CreatePosition;
 using HRMS.Application.Features.Positions.GetPositions;
 using HRMS.Domain.Entities.Common;
@@ -7,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HRMS.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [ApiVersion(1)]
     public class PositionsController : ApiController
     {
         [HttpPost]
