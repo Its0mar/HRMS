@@ -12,10 +12,12 @@ namespace HRMS.Application.Features.Authentication.Login
         {
             RuleFor(x => x.Identifier)
                 .NotEmpty()
+                .MinimumLength(3)
                 .MaximumLength(40);
 
             RuleFor(x => x.Password)
                 .NotEmpty()
+                .MinimumLength(8)
                 .MaximumLength(100);
         }
     }

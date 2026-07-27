@@ -44,7 +44,7 @@ namespace HRMS.Application.Features.Employees.CreateEmployee
                 command.WorkPhone);
 
             var employee = new Employee(
-                "emp-1",
+                command.EmployeeNumber,
                 _currentUser.OrganizationId,
                 personalInformation,
                 employmentInformation);

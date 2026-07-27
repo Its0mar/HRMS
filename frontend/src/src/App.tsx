@@ -1,13 +1,12 @@
-import { OrganizationRegisterForm } from "./features/Auth/components/OrganizationRegisterForm"
+import { LoginForm } from "./features/Auth/components/LoginForm"
+// import { OrganizationRegisterForm } from "./features/Auth/components/OrganizationRegisterForm"
 
 function App() {
-
-
   return (
-    <>
-     {/* <OrganizationRegister/> */}
-     <OrganizationRegisterForm />
-    </>
+    <div className="min-h-screen bg-gray-900 text-white">
+      {/* <OrganizationRegister/> */}
+      <LoginForm />
+    </div>
   )
 }
 
