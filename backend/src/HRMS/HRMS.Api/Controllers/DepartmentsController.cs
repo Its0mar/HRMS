@@ -7,11 +7,12 @@ using HRMS.Domain.Entities.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace HRMS.Api.Controllers
 {   
     [ApiController]
     [ApiVersion(1)]
-    public class DepartmentController : ApiController
+    public class DepartmentsController : ApiController
     {
         [Authorize(Policy = Permissions.Departments.Create)]
         [HttpPost("create")]
@@ -46,10 +47,10 @@ namespace HRMS.Api.Controllers
         [HttpGet]
         [Authorize(Policy = Permissions.Departments.View)]
         public async Task<IActionResult> GetAsync(
-            GetDepartmentsQuery query,
             [FromServices] IQueryHandler<GetDepartmentsQuery, List<GetDepartmentResponse>> handler,
             CancellationToken cancellationToken)
         {
+            var query = new GetDepartmentsQuery();
             var result = await handler.HandleAsync(query, cancellationToken);
 
             return result.Match(

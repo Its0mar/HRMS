@@ -97,7 +97,7 @@ public sealed class AuthController : ApiController
         {
             HttpOnly = true,
             Secure = true,
-            SameSite = SameSiteMode.Strict,
+            SameSite = SameSiteMode.None,
             Path = "/api"
         });
 
@@ -114,7 +114,7 @@ public sealed class AuthController : ApiController
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Expires = expiresAt,
                 Path = "/api"
             });

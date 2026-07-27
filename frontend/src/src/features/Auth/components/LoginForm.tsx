@@ -2,6 +2,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
+import { apiClient } from "../../../lib/apiClient";
+import { API_ROUTES } from "../../../lib/apiRoutes";
 
 const LoginFormValues = z.object({
     "identifier" : z.string().min(3).max(30),
@@ -24,9 +26,23 @@ export function LoginForm() {
 
     const { register } = form;
     
-    const handleSubmit = (data : LoginFormValues) => {
-            console.log(data);
-            setIsLoading(true);
+    const handleSubmit = async (data : LoginFormValues) => {
+            try {
+                const response = await apiClient.post(API_ROUTES.AUTH.LOGIN, data);
+                if (response.status === 200) {
+                    const token = response.data.accessToken ?? response.data.token;
+                    if (token) {
+                        localStorage.setItem("token", token);
+                        window.location.href = "/departments";
+                    }
+                }
+                setIsLoading(true);
+            } catch (error) {
+                console.log(error);
+            }
+            finally {
+                setIsLoading(false);
+            }
         }
 
     return (
@@ -80,7 +96,7 @@ export function LoginForm() {
 
                 <p className="mt-10 text-center text-sm/6 text-gray-500 dark:text-gray-400">
                     Not a member?
-                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 ml-1">Create account</a>
+                    <a href="register" className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 ml-1">Create account</a>
                 </p>
             </div>
 
