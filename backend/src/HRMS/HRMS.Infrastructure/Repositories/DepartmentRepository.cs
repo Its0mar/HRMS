@@ -1,5 +1,6 @@
 using System.Data;
 using HRMS.Application.Abstractions.Persistence;
+using HRMS.Application.Features.Departments.GetDepartments;
 using HRMS.Domain.Entities;
 using HRMS.Infrastructure.Mappers;
 using HRMS.Infrastructure.Persistence;
@@ -86,14 +87,26 @@ internal sealed class DepartmentRepository : IDepartmentRepository
         return department;
     }
 
-    public async Task<List<Department>> GetDepartmentsAsync(int organizationId, CancellationToken cancellationToken)
+    public async Task<List<DepartmentListItem>> GetDepartmentsAsync(int organizationId, CancellationToken cancellationToken)
     {
         var departments = await _sqlExecutor.QueryAsync(
             "Departments_GetAll",
-            DepartmentMapper.Map,
+            map,
             cancellationToken,
             new SqlParameter("@OrganizationId", organizationId));
 
-        return departments ?? new List<Department>();
+        return departments ?? new List<DepartmentListItem>();
+    }
+
+    private DepartmentListItem map(SqlDataReader reader)
+    {
+        return new DepartmentListItem(
+                reader.GetInt32(reader.GetOrdinal("Id")),
+                reader.GetString(reader.GetOrdinal("Name")),
+                reader.GetString(reader.GetOrdinal("Code")),
+                reader.GetString(reader.GetOrdinal("Description")),
+                reader.GetString(reader.GetOrdinal("ManagerName")),
+                reader.GetInt32(reader.GetOrdinal("ManagerEmployeeId"))
+                );
     }
 }

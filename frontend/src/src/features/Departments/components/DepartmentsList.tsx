@@ -14,20 +14,37 @@ import {
     ThemeIcon,
     Title
 } from "@mantine/core";
-import { IconBuildingCommunity, IconRefresh } from "@tabler/icons-react";
+import {
+    IconBuildingCommunity,
+    IconRefresh,
+    IconUser
+} from "@tabler/icons-react";
 
 import { apiClient } from "../../../lib/apiClient";
 import { API_ROUTES } from "../../../lib/apiRoutes";
+import { useDisclosure } from "@mantine/hooks";
+import { UpdateDepartmentModal } from "./UpdateDepartmentModal";
 
 interface Department {
     id: number;
     name: string;
+    code: string;
+    description: string | null;
+    managerName: string | null;
+    managerEmployeeId: number | null;
 }
 
 export function DepartmentsList() {
     const [departments, setDepartments] = useState<Department[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
+    const [updateOpened, updateModal] = useDisclosure(false);
+
+    const handleEdit = (department: Department) => {
+    setSelectedDepartment(department);
+    updateModal.open();
+    };
 
     const fetchDepartments = async () => {
         setIsLoading(true);
@@ -74,9 +91,21 @@ export function DepartmentsList() {
                         </Text>
                     </div>
 
-                    <Badge size="lg" variant="light" color="indigo">
-                        {departments.length} total
-                    </Badge>
+                    <div className="flex gap-2">
+                        <Badge size="lg" variant="light" color="blue">
+                            <Button
+                                size="xs"
+                                variant="light"
+                                
+                            >
+                                Create new
+                            </Button>
+                        </Badge>
+
+                        <Badge size="lg" variant="light" color="indigo">
+                            {departments.length} total
+                        </Badge>
+                    </div>
                 </Group>
 
                 {error && (
@@ -96,8 +125,8 @@ export function DepartmentsList() {
                     </Alert>
                 )}
 
-                <Card padding={0} radius="lg" shadow="lg" withBorder className="!bg-gray-500">
-                    <Table.ScrollContainer minWidth={500}>
+                <Card padding={0} radius="lg" shadow="lg" withBorder>
+                    <Table.ScrollContainer minWidth={850}>
                         <Table
                             verticalSpacing="md"
                             horizontalSpacing="xl"
@@ -105,8 +134,11 @@ export function DepartmentsList() {
                         >
                             <Table.Thead bg="gray.1">
                                 <Table.Tr>
-                                    <Table.Th w={100}>ID</Table.Th>
-                                    <Table.Th>Department name</Table.Th>
+                                    <Table.Th w={80}>No.</Table.Th>
+                                    <Table.Th>Name</Table.Th>
+                                    <Table.Th>Description</Table.Th>
+                                    <Table.Th>Manager</Table.Th>
+                                    <Table.Th>Edit</Table.Th>
                                 </Table.Tr>
                             </Table.Thead>
 
@@ -120,15 +152,21 @@ export function DepartmentsList() {
                                             <Table.Td>
                                                 <Skeleton height={18} width="45%" />
                                             </Table.Td>
+                                            <Table.Td>
+                                                <Skeleton height={18} width="70%" />
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Skeleton height={18} width="55%" />
+                                            </Table.Td>
                                         </Table.Tr>
                                     ))}
 
                                 {!isLoading &&
-                                    departments.map((department) => (
+                                    departments.map((department, index) => (
                                         <Table.Tr key={department.id}>
                                             <Table.Td>
                                                 <Text size="sm" c="dimmed">
-                                                    #{department.id}
+                                                    {index + 1}
                                                 </Text>
                                             </Table.Td>
                                             <Table.Td>
@@ -141,8 +179,67 @@ export function DepartmentsList() {
                                                     >
                                                         <IconBuildingCommunity size={13} />
                                                     </ThemeIcon>
-                                                    <Text fw={500}>{department.name}</Text>
+                                                    <div>
+                                                        <Text fw={600}>
+                                                            {department.name}
+                                                        </Text>
+                                                        <Badge
+                                                            size="xs"
+                                                            variant="light"
+                                                            color="indigo"
+                                                        >
+                                                            {department.code}
+                                                        </Badge>
+                                                    </div>
                                                 </Group>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Text
+                                                    size="sm"
+                                                    c={department.description?.trim()
+                                                        ? undefined
+                                                        : "dimmed"}
+                                                    lineClamp={2}
+                                                >
+                                                    {department.description?.trim() ||
+                                                        "No description"}
+                                                </Text>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                {department.managerEmployeeId &&
+                                                department.managerEmployeeId > 0 &&
+                                                department.managerName?.trim() ? (
+                                                    <Group gap="xs" wrap="nowrap">
+                                                        <ThemeIcon
+                                                            size="sm"
+                                                            radius="xl"
+                                                            variant="light"
+                                                            color="teal"
+                                                        >
+                                                            <IconUser size={13} />
+                                                        </ThemeIcon>
+                                                        <Text size="sm" fw={500}>
+                                                            {department.managerName}
+                                                        </Text>
+                                                    </Group>
+                                                ) : (
+                                                    <Badge
+                                                        color="gray"
+                                                        variant="light"
+                                                        fw={500}
+                                                    >
+                                                        Unassigned
+                                                    </Badge>
+                                                )}
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Button
+                                                    size="xs"
+                                                    variant="light"
+                                                    onClick={() => handleEdit(department)}
+                                                >
+                                                    Edit
+                                                </Button>
                                             </Table.Td>
                                         </Table.Tr>
                                     ))}
@@ -168,6 +265,15 @@ export function DepartmentsList() {
                             </Center>
                         )}
                     </Table.ScrollContainer>
+                    <UpdateDepartmentModal
+                        department={selectedDepartment}
+                        opened={updateOpened}
+                        onClose={() => {
+                            updateModal.close();
+                            setSelectedDepartment(null);
+                        }}
+                        onUpdated={fetchDepartments}
+                    />
                 </Card>
             </Stack>
         </main>

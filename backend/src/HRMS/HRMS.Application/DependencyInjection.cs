@@ -52,7 +52,7 @@ public static class DependencyInjection
             GetPositionsQueryHandler>();
 
         services.AddScoped<
-            IQueryHandler<GetDepartmentsQuery, List<GetDepartmentResponse>>,
+            IQueryHandler<GetDepartmentsQuery, List<DepartmentListItem>>,
             GetDepartmentsQueryHandler>();
 
         services.AddScoped<

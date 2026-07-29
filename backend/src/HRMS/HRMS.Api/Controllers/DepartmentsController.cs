@@ -30,7 +30,8 @@ namespace HRMS.Api.Controllers
         }
 
         [Authorize(Policy = Permissions.Departments.Update)]
-        [HttpPost("update")]
+        [HttpPut("update")]
+        //todo : update/{id}
         public async Task<IActionResult> UpdateAsync(
             UpdateDepartmentCommand command,
             [FromServices] ICommandDispatcher dispatcher,
@@ -47,7 +48,7 @@ namespace HRMS.Api.Controllers
         [HttpGet]
         [Authorize(Policy = Permissions.Departments.View)]
         public async Task<IActionResult> GetAsync(
-            [FromServices] IQueryHandler<GetDepartmentsQuery, List<GetDepartmentResponse>> handler,
+            [FromServices] IQueryHandler<GetDepartmentsQuery, List<DepartmentListItem>> handler,
             CancellationToken cancellationToken)
         {
             var query = new GetDepartmentsQuery();

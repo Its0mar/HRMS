@@ -5,6 +5,8 @@ export const API_ROUTES = {
         REFRESH : "/Auth/refresh",
     },
     DEPARTMENTS : {
-        "GET_ALL" : "/Departments"
+        "GET_ALL" : "/Departments",
+        "UPDATE" : "/Departments/update",
+        "CREATE" : "/Departments/create"
     }
 }
