@@ -1,105 +1,133 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Card, Title, Text, TextInput, Button, Stack, PasswordInput, Notification, Anchor  } from "@mantine/core";
+import { useForm } from '@mantine/form';
+import { zod4Resolver } from "mantine-form-zod-resolver";
 import z from "zod";
 import { apiClient } from "../../../lib/apiClient";
 import { API_ROUTES } from "../../../lib/apiRoutes";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { XIcon } from '@phosphor-icons/react';
+import { useAuthStore } from "../../../store/useAuthStore";
 
-const LoginFormValues = z.object({
+
+const schema = z.object({
     "identifier" : z.string().min(3).max(30),
     "password" : z.string().min(8).max(30)
 });
 
-export type LoginFormValues = z.infer<typeof LoginFormValues>;
+export type LoginFormValues = z.infer<typeof schema>;
 
 export function LoginForm() {
 
-    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
-    const form = useForm<LoginFormValues>({
-        resolver : zodResolver(LoginFormValues),
-        defaultValues : {
+    const [isLoading, setIsLoading] = useState(false);
+    const [globalError, setGlobalError] = useState<string | null>(null);
+    const setSession = useAuthStore((state) => state.setSession);
+    const xIcon = <XIcon size={20} />;
+
+    const form = useForm({
+        validate : zod4Resolver(schema),
+        initialValues : {
             "identifier" : "",
             "password" : ""
-        }
+            },
     });
 
-    const { register } = form;
-    
-    const handleSubmit = async (data : LoginFormValues) => {
-            try {
-                const response = await apiClient.post(API_ROUTES.AUTH.LOGIN, data);
-                if (response.status === 200) {
-                    const token = response.data.accessToken ?? response.data.token;
-                    if (token) {
-                        localStorage.setItem("token", token);
-                        window.location.href = "/departments";
-                    }
-                }
-                setIsLoading(true);
-            } catch (error) {
-                console.log(error);
+    const handleSubmit = async (values: LoginFormValues) => {
+        setIsLoading(true);
+        setGlobalError(null);
+
+        try {
+            const response = await apiClient.post(
+                API_ROUTES.AUTH.LOGIN,
+                values
+            );
+
+            const {user, accessToken} = response.data;
+
+            if (!user || !accessToken) {
+            setGlobalError("The server returned an invalid login response.");
+            return;
             }
-            finally {
-                setIsLoading(false);
+
+            setSession(user, accessToken);
+            navigate("/departments", { replace: true });
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                const message =
+                    error.response?.data?.errors?.[0]?.description;
+
+                setGlobalError(message ?? "Unable to sign in.");
+            } else {
+                setGlobalError("An unexpected error occurred.");
             }
+        } finally {
+            setIsLoading(false);
         }
+    };
 
     return (
-        <div className="flex min-h-screen w-full flex-col justify-center overflow-auto px-6 py-12 lg:px-8">
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900 dark:text-white">Login to your account</h2>
-            </div>
-            
-            {/* {globalError && (
-                <p style={{ color: "#d32f2f", padding: "10px", backgroundColor: "#ffebee", borderRadius: "4px", marginBottom: "15px" }}>
-                    {globalError}
-                </p>
-            )} */}
+        <div className="flex min-h-screen items-center justify-center px-4">
+            <Card
+                w="100%"
+                maw={420}
+                padding="xl"
+                radius="lg"
+                shadow="xl"
+                bg="gray.0"
+            >
+                <Stack gap="lg">
+                    <div className="text-center">
+                        <Title order={2}>Welcome back</Title>
 
-            <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form className="w-full space-y-6" onSubmit={form.handleSubmit(handleSubmit)}>
-                    <div>
-                        <label className="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Idntifier</label>
-                        <div className="mt-2">
-                            <input 
-                            className= "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
-                            type="text" 
-                            {...register("identifier")} 
-                            placeholder="Enter Idntifier" 
-                            disabled={isLoading}
-                        />
-                        </div>
+                        <Text c="dimmed" size="sm" mt={4}>
+                            Sign in to continue to HRMS
+                        </Text>
                     </div>
 
-                     <div>
-                        <label className="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Password</label>
-                        <div className="mt-2">
-                            <input 
-                            className= "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
-                            type="password" 
-                            {...register("password")} 
-                            placeholder="Enter Password" 
-                            disabled={isLoading}
-                        />
-                        </div>
-                    </div>
+                     {globalError && (
+                        <Notification onClose={() => setGlobalError(null)} icon={xIcon} color="red" title="Login failed">
+                            {globalError}
+                        </Notification>
+                    )}
 
-                    <button 
-                        className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"
-                        type="submit" 
-                        disabled={isLoading}>
-                        {isLoading ? "Login..." : "Login"}
-                    </button>
+                    <form onSubmit={form.onSubmit(handleSubmit)}>
+                        <Stack gap="md">
+                            <TextInput
+                                withAsterisk
+                                label="Identifier"
+                                placeholder="Email or username"
+                                key={form.key("identifier")}
+                                {...form.getInputProps("identifier")}
+                            />
 
-                </form>
+                            <PasswordInput
+                                withAsterisk
+                                label="Password"
+                                placeholder="Enter your password"
+                                key={form.key("password")}
+                                {...form.getInputProps("password")}
+                            />
 
-                <p className="mt-10 text-center text-sm/6 text-gray-500 dark:text-gray-400">
-                    Not a member?
-                    <a href="register" className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 ml-1">Create account</a>
-                </p>
-            </div>
-
+                            <Button type="submit" fullWidth mt="sm" disabled={isLoading} >
+                                {isLoading ? "Signning in" : "Sign in"}
+                            </Button>
+                        </Stack>
+                    </form>
+                    <Text className="!items-center !justify-center">
+                        Dont have an account?{" "}
+                        <Anchor
+                            component="button"
+                            type="button"
+                            onClick={() => navigate("/register", { replace: true })}
+                        >
+                            Sign up
+                        </Anchor>
+                    </Text>
+                </Stack>
+            </Card>
         </div>
-    )
+    );
 }

@@ -1,18 +1,10 @@
 import axios from "axios";
 import { API_ROUTES } from "./apiRoutes";
+import { useAuthStore } from "../store/useAuthStore";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const getStoredToken = () => localStorage.getItem("token") ?? localStorage.getItem("accessToken");
-
-const setStoredToken = (token: string) => {
-    localStorage.setItem("token", token);
-};
-
-const clearStoredToken = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("accessToken");
-};
 
 export const apiClient = axios.create({
     baseURL: API_BASE_URL,
@@ -20,9 +12,10 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
-    const token = getStoredToken();
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+    const accessToken = useAuthStore.getState().accessToken;
+
+    if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
 });
@@ -41,16 +34,16 @@ apiClient.interceptors.response.use(
             try {
                 const response = await apiClient.post(API_ROUTES.AUTH.REFRESH, {});
 
-                const newToken = response.data.accessToken ?? response.data.token;
-                if (newToken) {
-                    setStoredToken(newToken);
-                    originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                const newAccessToken = response.data.accessToken ?? response.data.token;
+                if (newAccessToken) {
+                    useAuthStore.getState().setAccessToken(newAccessToken);
+                    originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
                     window.location.reload();
                 }
 
                 return apiClient(originalRequest);
             } catch (refreshError) {
-                clearStoredToken();
+                useAuthStore.getState().clearSession();
                 window.location.href = "/login";
                 return Promise.reject(refreshError);
             }

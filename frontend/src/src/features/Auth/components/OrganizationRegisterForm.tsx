@@ -1,10 +1,15 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Card, Title, Text, TextInput, Button, Stack, PasswordInput, Notification, SimpleGrid, Divider, Anchor } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { XIcon } from "@phosphor-icons/react";
+import { zod4Resolver } from "mantine-form-zod-resolver";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import z from "zod"
+import { useNavigate } from "react-router-dom";
+import z from "zod";
+import { apiClient } from "../../../lib/apiClient";
+import { API_ROUTES } from "../../../lib/apiRoutes";
+import axios from "axios";
 
-
-const organizationRegisterFormValues = z.object({
+const schama = z.object({
     "organizationName" : z.string().min(3).max(30),
     "organizationCode" : z.string().min(3).max(10),
     "organizationEmail" : z.email("invalid email"),
@@ -15,21 +20,31 @@ const organizationRegisterFormValues = z.object({
     "ownerUsername" : z.string().min(3).max(30),
     "ownerEmail" : z.email("invalid email"),
     "password" : z.string().min(8).max(30),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
     "firstName" : z.string().min(3).max(30),
     "lastName" : z.string().min(3).max(30)
+}).refine(
+        (values) => values.password === values.confirmPassword,
+        {
+            message: "Passwords do not match",
+            path: ["confirmPassword"]
+        }
+    );
 
-});
 
-export type OrganizationRegisterFormValues = z.infer<typeof organizationRegisterFormValues>;
+export type OrganizationRegisterFormValues = z.infer<typeof schama>;
 
 
 export function OrganizationRegisterForm() {
 
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
+    const [globalError, setGlobalError] = useState<string | null>(null);
+    const xIcon = <XIcon size={20} />;
 
     const form = useForm<OrganizationRegisterFormValues>({
-        resolver : zodResolver(organizationRegisterFormValues),
-        defaultValues : {
+        validate : zod4Resolver(schama),
+        initialValues : {
             "organizationName" : "",
             "organizationCode" : "",
             "organizationEmail" : "",
@@ -39,201 +54,196 @@ export function OrganizationRegisterForm() {
             "ownerUsername" : "",
             "ownerEmail" : "",
             "password" : "",
+            "confirmPassword" : "",
             "firstName" : "",
             "lastName" : ""
         }
     })
 
-    const handleSubmit = (data : OrganizationRegisterFormValues) => {
-        console.log(data);
+    const handleSubmit = async (data: OrganizationRegisterFormValues) => {
+
+        const { confirmPassword, ...rest } = data;
         setIsLoading(true);
+        setGlobalError(null);
+
+        try {
+            await apiClient.post(
+                API_ROUTES.AUTH.REGISTER,
+                rest
+            );
+
+            navigate("/login", { replace: true });
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                const message =
+                    error.response?.data?.errors?.[0]?.description;
+
+                setGlobalError(message ?? "Unable to sign in.");
+            } else {
+                setGlobalError("An unexpected error occurred.");
+            }
+        } finally {
+            setIsLoading(false);
+        }
     }
 
-    const { register } = form;
-
     return (
-        
-       <div className= "flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900 dark:text-white">Create a new account</h2>
-            </div>
-            
-            {/* {globalError && (
-                <p style={{ color: "#d32f2f", padding: "10px", backgroundColor: "#ffebee", borderRadius: "4px", marginBottom: "15px" }}>
-                    {globalError}
-                </p>
-            )} */}
-            
-            <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form className="space-y-6" onSubmit={form.handleSubmit(handleSubmit)}>
-                {/* Organization Info */}
-                <div>
-                    <p className="block text-white text-center">Organization Info</p>
-                    <div>
-                        <label className="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Organization Name</label>
-                        <div className="mt-2">
-                            <input 
-                            className= "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
-                            type="text" 
-                            {...register("organizationName")} 
-                            placeholder="Enter Organization Name" 
-                            disabled={isLoading}
-                        />
+    <div className="flex min-h-screen items-center justify-center px-4 py-10">
+        <Card
+            w="100%"
+            maw={760}
+            padding="xl"
+            radius="lg"
+            shadow="xl"
+            bg="gray.0"
+        >
+            <Stack gap="xl">
+                <div className="text-center">
+                    <Title order={2}>Create your organization</Title>
+
+                    <Text c="dimmed" size="sm" mt={4}>
+                        Set up your organization and administrator account
+                    </Text>
+                </div>
+
+                {globalError && (
+                    <Notification
+                        icon={xIcon}
+                        color="red"
+                        title="Registration failed"
+                        withCloseButton
+                        onClose={() => setGlobalError(null)}
+                    >
+                        {globalError}
+                    </Notification>
+                )}
+
+                <form onSubmit={form.onSubmit(handleSubmit)}>
+                    <Stack gap="lg">
+                        <div>
+                            <Text fw={600} mb="sm">
+                                Organization information
+                            </Text>
+
+                            <SimpleGrid cols={{ base: 1, sm: 2 }}>
+                                <TextInput
+                                    withAsterisk
+                                    label="Organization name"
+                                    placeholder="Acme Corporation"
+                                    {...form.getInputProps("organizationName")}
+                                />
+
+                                <TextInput
+                                    withAsterisk
+                                    label="Organization code"
+                                    placeholder="ACME"
+                                    {...form.getInputProps("organizationCode")}
+                                />
+
+                                <TextInput
+                                    withAsterisk
+                                    type="email"
+                                    label="Organization email"
+                                    placeholder="contact@acme.com"
+                                    {...form.getInputProps("organizationEmail")}
+                                />
+
+                                <TextInput
+                                    withAsterisk
+                                    label="Address"
+                                    placeholder="Amman, Jordan"
+                                    {...form.getInputProps("address")}
+                                />
+
+                                <TextInput
+                                    label="Website"
+                                    placeholder="https://acme.com"
+                                    {...form.getInputProps("website")}
+                                />
+
+                                <TextInput
+                                    label="Logo URL"
+                                    placeholder="https://acme.com/logo.png"
+                                    {...form.getInputProps("logoUrl")}
+                                />
+                            </SimpleGrid>
                         </div>
-                    </div>
 
-                    <div>
-                        <label className="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Organization Code</label>
-                        <div className="mt-2">
-                            <input 
-                            className= "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
-                            type="text" 
-                            {...register("organizationCode")} 
-                            placeholder="Enter Organization Code" 
-                            disabled={isLoading}
-                        />
+                        <Divider />
+
+                        <div>
+                            <Text fw={600} mb="sm">
+                                Administrator account
+                            </Text>
+
+                            <SimpleGrid cols={{ base: 1, sm: 2 }}>
+                                <TextInput
+                                    withAsterisk
+                                    label="First name"
+                                    placeholder="Joe"
+                                    {...form.getInputProps("firstName")}
+                                />
+
+                                <TextInput
+                                    withAsterisk
+                                    label="Last name"
+                                    placeholder="Doe"
+                                    {...form.getInputProps("lastName")}
+                                />
+
+                                <TextInput
+                                    withAsterisk
+                                    label="Username"
+                                    placeholder="joe.doe"
+                                    {...form.getInputProps("ownerUsername")}
+                                />
+
+                                <TextInput
+                                    withAsterisk
+                                    type="email"
+                                    label="Email"
+                                    placeholder="joe@acme.com"
+                                    {...form.getInputProps("ownerEmail")}
+                                />
+
+                                <PasswordInput
+                                    withAsterisk
+                                    label="Password"
+                                    placeholder="At least 8 characters"
+                                    {...form.getInputProps("password")}
+                                />
+
+                                <PasswordInput
+                                    withAsterisk
+                                    label="Confirm password"
+                                    placeholder="At least 8 characters"
+                                    {...form.getInputProps("confirmPassword")}
+                                />
+                            </SimpleGrid>
                         </div>
-                    </div>
-                    
-                    <div>
-                        <label className="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Organization Email</label>
-                        <div className="mt-2">
-                            <input 
-                            className= "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
-                            type="text" 
-                            {...register("organizationEmail")} 
-                            placeholder="Enter Organization Email" 
-                            disabled={isLoading}
-                        />
-                        </div>
-                    </div>
 
-                    <div>
-                        <label className="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Organization Address</label>
-                        <div className="mt-2">
-                            <input 
-                            className= "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
-                            type="text" 
-                            {...register("address")} 
-                            placeholder="Enter Organization Address" 
-                            disabled={isLoading}
-                        />
-                        </div>
-                    </div>
-
-                    <div>
-                        <label className="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Organization Website</label>
-                        <div className="mt-2">
-                            <input 
-                            className= "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
-                            type="text" 
-                            {...register("organizationName")} 
-                            placeholder="Enter Organization Website" 
-                            disabled={isLoading}
-                        />
-                        </div>
-                    </div>
-
-                    <div>
-                        <label className="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Organization Logo</label>
-                        <div className="mt-2">
-                            <input 
-                            className= "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
-                            type="file" 
-                            {...register("organizationName")} 
-                            disabled={isLoading}
-                        />
-                        </div>
-                    </div>
-                </div>
-                
-
-                {/* owner info */}
-                <div>
-                    <p className="block text-white text-center">Owner Info</p>
-                    <div>
-                    <label className="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Owner Username</label>
-                    <div className="mt-2">
-                        <input 
-                        className= "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
-                        type="text" 
-                        {...register("ownerUsername")} 
-                        placeholder="Enter your username" 
-                        disabled={isLoading}
-                        />
-                    </div>
-                </div>
-
-                <div>
-                    <label className="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Owner Email</label>
-                    <div className="mt-2">
-                        <input 
-                        className= "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
-                        type="text" 
-                        {...register("ownerEmail")} 
-                        placeholder="Enter your email" 
-                        disabled={isLoading}
-                        />
-                    </div>
-                </div>
-
-                <div>
-                    <label className="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">First name</label>
-                    <div>
-                        <input 
-                        className= "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
-                        type="text" 
-                        {...register("firstName")} 
-                        placeholder="Enter your first name" 
-                        disabled={isLoading}
-                        />
-                    </div>
-                </div>
-
-
-                <div>
-                    <label className="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Last name</label>
-                    <div className="mt-2">
-                        <input 
-                        className= "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
-                        type="text" 
-                        {...register("lastName")} 
-                        placeholder="Enter your last name" 
-                        disabled={isLoading}
-                        />
-                    </div>
-                </div>
-                </div>
-
-                <div>
-                    <label className="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Password</label>
-                    <div className="mt-2">
-                        <input 
-                        className= "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
-                        type="password" 
-                        {...register("password")} 
-                        placeholder="Enter a password" 
-                        disabled={isLoading}
-                        />
-                    </div>
-                </div>
-
-
-                <button 
-                    className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"
-                    type="submit" 
-                    disabled={isLoading}
-                >
-                    {isLoading ? "Registering..." : "Register"}
-                </button>
-            </form>
-
-            <p className="mt-10 text-center text-sm/6 text-gray-500 dark:text-gray-400">
-                already a member?
-                <a href="login" className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 ml-1">Login</a>
-            </p>
-
-            </div>
-        </div>
-    )
-}
+                        <Button
+                            type="submit"
+                            fullWidth
+                            size="md"
+                            loading={isLoading}
+                        >
+                            Create organization
+                        </Button>
+                    </Stack>
+                    <Text className="!items-center !justify-center">
+                        Already have an account?{" "}
+                        <Anchor
+                            component="button"
+                            type="button"
+                            onClick={() => navigate("/login")}
+                        >
+                            Sign in
+                        </Anchor>
+                    </Text>
+                </form>
+            </Stack>
+        </Card>
+    </div>
+);
+};
