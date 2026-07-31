@@ -12,7 +12,7 @@ import { useAuthStore } from "../../../store/useAuthStore";
 
 
 const schema = z.object({
-    "identifier" : z.string().min(3).max(30),
+    "identifier" : z.string().min(3).max(100),
     "password" : z.string().min(8).max(30)
 });
 
@@ -111,8 +111,8 @@ export function LoginForm() {
                                 {...form.getInputProps("password")}
                             />
 
-                            <Button type="submit" fullWidth mt="sm" disabled={isLoading} >
-                                {isLoading ? "Signning in" : "Sign in"}
+                            <Button type="submit" fullWidth mt="sm" loading={isLoading}>
+                                Sign in
                             </Button>
                         </Stack>
                     </form>

@@ -1,4 +1,5 @@
 ﻿using HRMS.Application.Abstractions.Persistence;
+using HRMS.Application.Features.Employees.GetEmployeeOptions;
 using HRMS.Domain.Entities.Employees;
 using HRMS.Infrastructure.Persistence;
 using Microsoft.Data.SqlClient;
@@ -53,6 +54,24 @@ namespace HRMS.Infrastructure.Repositories
                 parms.ToArray());
         }
 
+        public async Task<List<EmployeeOptionResponse>> GetEmployeesOptionsAsync(int organizationId, CancellationToken cancellationToken)
+        {
+            return await _sqlExecutor.QueryAsync(
+                "Employees_GetOptions",
+                Map,
+                cancellationToken,
+                new SqlParameter("@OrganizationId", organizationId)
+                );
+        }
+
+        private EmployeeOptionResponse Map(SqlDataReader reader)
+        {
+            var id = reader.GetInt32(reader.GetOrdinal("Id"));
+            var empNumber = reader.GetString(reader.GetOrdinal("EmployeeNumber"));
+            var name = reader.GetString(reader.GetOrdinal("FullName"));
+
+            return new EmployeeOptionResponse(id,empNumber , name);
+        }
         private static SqlParameter NullableInt(
             string name,
             int? value)

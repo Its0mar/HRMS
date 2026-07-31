@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Features\Employees\GetEmployeesForSelection\**" />
-    <EmbeddedResource Remove="Features\Employees\GetEmployeesForSelection\**" />
-    <None Remove="Features\Employees\GetEmployeesForSelection\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="ErrorOr" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />

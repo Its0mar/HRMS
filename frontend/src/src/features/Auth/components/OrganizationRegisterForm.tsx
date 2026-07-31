@@ -9,13 +9,13 @@ import { apiClient } from "../../../lib/apiClient";
 import { API_ROUTES } from "../../../lib/apiRoutes";
 import axios from "axios";
 
-const schama = z.object({
+const schema = z.object({
     "organizationName" : z.string().min(3).max(30),
     "organizationCode" : z.string().min(3).max(10),
     "organizationEmail" : z.email("invalid email"),
     "address" : z.string().min(3).max(100),
-    "website" : z.url("invalid link"),
-    "logoUrl" : z.url("invalid link"),
+    "website" : z.union([z.url("invalid link"), z.literal("")]),
+    "logoUrl" : z.union([z.url("invalid link"), z.literal("")]),
 
     "ownerUsername" : z.string().min(3).max(30),
     "ownerEmail" : z.email("invalid email"),
@@ -32,7 +32,7 @@ const schama = z.object({
     );
 
 
-export type OrganizationRegisterFormValues = z.infer<typeof schama>;
+export type OrganizationRegisterFormValues = z.infer<typeof schema>;
 
 
 export function OrganizationRegisterForm() {
@@ -43,7 +43,7 @@ export function OrganizationRegisterForm() {
     const xIcon = <XIcon size={20} />;
 
     const form = useForm<OrganizationRegisterFormValues>({
-        validate : zod4Resolver(schama),
+        validate : zod4Resolver(schema),
         initialValues : {
             "organizationName" : "",
             "organizationCode" : "",
@@ -62,14 +62,19 @@ export function OrganizationRegisterForm() {
 
     const handleSubmit = async (data: OrganizationRegisterFormValues) => {
 
-        const { confirmPassword, ...rest } = data;
+        const request: Partial<OrganizationRegisterFormValues> = {
+            ...data,
+            website: data.website || undefined,
+            logoUrl: data.logoUrl || undefined
+        };
+        delete request.confirmPassword;
         setIsLoading(true);
         setGlobalError(null);
 
         try {
             await apiClient.post(
                 API_ROUTES.AUTH.REGISTER,
-                rest
+                request
             );
 
             navigate("/login", { replace: true });
@@ -78,7 +83,7 @@ export function OrganizationRegisterForm() {
                 const message =
                     error.response?.data?.errors?.[0]?.description;
 
-                setGlobalError(message ?? "Unable to sign in.");
+                setGlobalError(message ?? "Unable to register.");
             } else {
                 setGlobalError("An unexpected error occurred.");
             }

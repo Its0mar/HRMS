@@ -93,7 +93,7 @@ public sealed class AuthController : ApiController
                 cancellationToken);
         }
 
-        Response.Cookies.Delete("refrehToken", new CookieOptions
+        Response.Cookies.Delete("refreshToken", new CookieOptions
         {
             HttpOnly = true,
             Secure = true,

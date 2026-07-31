@@ -31,11 +31,14 @@ export const useAuthStore = create<AuthState>()(
             setAccessToken: (accessToken) =>
                 set({ accessToken }),
 
-            clearSession: () =>
+            clearSession: () => {
+                localStorage.removeItem("hrms-employee-options");
+
                 set({
                     user: null,
                     accessToken: null
-                })
+                });
+            }
         }),
         {
             name: "hrms-auth"

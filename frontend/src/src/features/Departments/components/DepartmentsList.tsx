@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { IconPlus } from "@tabler/icons-react";
+import { CreateDepartmentModal } from "./CreateDepartmentModal";
 import axios from "axios";
 import {
     Alert,
@@ -24,15 +26,7 @@ import { apiClient } from "../../../lib/apiClient";
 import { API_ROUTES } from "../../../lib/apiRoutes";
 import { useDisclosure } from "@mantine/hooks";
 import { UpdateDepartmentModal } from "./UpdateDepartmentModal";
-
-interface Department {
-    id: number;
-    name: string;
-    code: string;
-    description: string | null;
-    managerName: string | null;
-    managerEmployeeId: number | null;
-}
+import type { Department } from "../types/Department";
 
 export function DepartmentsList() {
     const [departments, setDepartments] = useState<Department[]>([]);
@@ -40,6 +34,8 @@ export function DepartmentsList() {
     const [error, setError] = useState<string | null>(null);
     const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
     const [updateOpened, updateModal] = useDisclosure(false);
+    const [createOpened, createModal] = useDisclosure(false);
+    
 
     const handleEdit = (department: Department) => {
     setSelectedDepartment(department);
@@ -91,21 +87,18 @@ export function DepartmentsList() {
                         </Text>
                     </div>
 
-                    <div className="flex gap-2">
-                        <Badge size="lg" variant="light" color="blue">
-                            <Button
-                                size="xs"
-                                variant="light"
-                                
-                            >
-                                Create new
-                            </Button>
-                        </Badge>
-
+                    <Group>
                         <Badge size="lg" variant="light" color="indigo">
                             {departments.length} total
                         </Badge>
-                    </div>
+
+                        <Button
+                            leftSection={<IconPlus size={16} />}
+                            onClick={createModal.open}
+                        >
+                            New department
+                        </Button>
+                    </Group>
                 </Group>
 
                 {error && (
@@ -157,6 +150,9 @@ export function DepartmentsList() {
                                             </Table.Td>
                                             <Table.Td>
                                                 <Skeleton height={18} width="55%" />
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Skeleton height={30} width={50} />
                                             </Table.Td>
                                         </Table.Tr>
                                     ))}
@@ -273,6 +269,12 @@ export function DepartmentsList() {
                             setSelectedDepartment(null);
                         }}
                         onUpdated={fetchDepartments}
+                    />
+
+                    <CreateDepartmentModal
+                    opened={createOpened}
+                    onClose={createModal.close}
+                    onCreated={fetchDepartments}
                     />
                 </Card>
             </Stack>

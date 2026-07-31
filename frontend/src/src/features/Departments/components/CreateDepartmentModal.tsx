@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
     Alert,
     Button,
@@ -14,101 +14,101 @@ import axios from "axios";
 import z from "zod";
 
 import { apiClient } from "../../../lib/apiClient";
-import type { Department } from "../types/Department";
 import { API_ROUTES } from "../../../lib/apiRoutes";
 import { EmployeeSelect } from "../../Employees/components/EmployeeSelect";
 
 const schema = z.object({
-    name: z.string().min(3, "Name must contain at least 3 characters"),
+    name: z
+        .string()
+        .min(3, "Name must contain at least 3 characters")
+        .max(100),
+
+    code: z
+        .string()
+        .min(2, "Code must contain at least 2 characters")
+        .max(20),
+
     description: z.string().max(300),
+
     managerId: z.string().nullable()
 });
 
-type UpdateDepartmentValues = z.infer<typeof schema>;
+type CreateDepartmentValues = z.infer<typeof schema>;
 
-interface UpdateDepartmentModalProps {
-    department: Department | null;
+interface CreateDepartmentModalProps {
     opened: boolean;
     onClose: () => void;
-    onUpdated: () => void;
+    onCreated: () => void;
 }
 
-export function UpdateDepartmentModal({
-    department,
+export function CreateDepartmentModal({
     opened,
     onClose,
-    onUpdated
-}: UpdateDepartmentModalProps) {
-    const [isUpdating, setIsUpdating] = useState(false);
+    onCreated
+}: CreateDepartmentModalProps) {
+    const [isCreating, setIsCreating] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const form = useForm<UpdateDepartmentValues>({
+    const form = useForm<CreateDepartmentValues>({
         validate: zod4Resolver(schema),
         initialValues: {
             name: "",
+            code: "",
             description: "",
             managerId: null
         }
     });
 
-    useEffect(() => {
-        if (!department) return;
-
-        form.setValues({
-            name: department.name,
-            description: department.description ?? "",
-            managerId: department.managerEmployeeId
-                ? department.managerEmployeeId.toString()
-                : null
-        });
-
-        form.clearErrors();
+    const handleClose = () => {
+        form.reset();
         setError(null);
-    }, [department, form]);
+        onClose();
+    };
 
-    const handleSubmit = async (values: UpdateDepartmentValues) => {
-        if (!department) return;
-
-        setIsUpdating(true);
+    const handleSubmit = async (
+        values: CreateDepartmentValues
+    ) => {
+        setIsCreating(true);
         setError(null);
 
         try {
-            await apiClient.put(
-                API_ROUTES.DEPARTMENTS.UPDATE,
+            await apiClient.post(
+                API_ROUTES.DEPARTMENTS.CREATE,
                 {
-                    id: department.id,
                     name: values.name.trim(),
-                    description: values.description.trim() || null,
-                    managerEmployeeId: values.managerId
+                    code: values.code.trim().toUpperCase(),
+                    description:
+                        values.description.trim() || null,
+                    managerId: values.managerId
                         ? Number(values.managerId)
                         : null
                 }
             );
 
-            onUpdated();
-            onClose();
+            onCreated();
+            handleClose();
         } catch (requestError) {
             const message = axios.isAxiosError(requestError)
                 ? requestError.response?.data?.errors?.[0]?.description
                 : null;
 
-            setError(message ?? "Could not update the department.");
+            setError(message ?? "Could not create the department.");
         } finally {
-            setIsUpdating(false);
+            setIsCreating(false);
         }
     };
 
     return (
         <Modal
             opened={opened}
-            onClose={onClose}
-            title="Update department"
+            onClose={handleClose}
+            title="Create department"
             centered
         >
             <form onSubmit={form.onSubmit(handleSubmit)}>
                 <Stack>
                     {error && (
-                        <Alert color="red" title="Update failed">
+                        <Alert color="red" title="Creation failed">
                             {error}
                         </Alert>
                     )}
@@ -117,21 +117,28 @@ export function UpdateDepartmentModal({
                         withAsterisk
                         label="Name"
                         placeholder="Human Resources"
-                        disabled={isUpdating}
+                        disabled={isCreating}
                         {...form.getInputProps("name")}
+                    />
+
+                    <TextInput
+                        withAsterisk
+                        label="Code"
+                        placeholder="HR"
+                        disabled={isCreating}
+                        {...form.getInputProps("code")}
                     />
 
                     <Textarea
                         label="Description"
                         placeholder="Department description"
                         minRows={3}
-                        disabled={isUpdating}
+                        disabled={isCreating}
                         {...form.getInputProps("description")}
                     />
 
                     <EmployeeSelect
                         label="Manager"
-                        disabled={isUpdating}
                         {...form.getInputProps("managerId")}
                     />
 
@@ -139,14 +146,14 @@ export function UpdateDepartmentModal({
                         <Button
                             type="button"
                             variant="default"
-                            onClick={onClose}
-                            disabled={isUpdating}
+                            onClick={handleClose}
+                            disabled={isCreating}
                         >
                             Cancel
                         </Button>
 
-                        <Button type="submit" loading={isUpdating}>
-                            Save changes
+                        <Button type="submit" loading={isCreating}>
+                            Create department
                         </Button>
                     </Group>
                 </Stack>
