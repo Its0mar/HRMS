@@ -11,6 +11,7 @@ export const API_ROUTES = {
         "CREATE" : "/Departments/create"
     },
     EMPLOYEES: {
-        "GET_OPTIONS" : "/Employees"
+        "GET_ALL" : "/Employees",
+        "GET_OPTIONS" : "/Employees/options"
     }
 }

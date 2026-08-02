@@ -8,6 +8,7 @@ import '@mantine/core/styles.css';
 import { HeaderMegaMenu } from "./Common/HeaderMegaMenu/HeaderMegaMenu";
 import { ProtectedRoute } from "./Components/ProtectedRoute";
 import { PublicRoute } from "./Components/PublicRoute";
+import { EmployeesList } from "./features/Employees/components/EmployeesList";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/" element={<Navigate to="/departments" replace />} />
               <Route path="/departments" element={<DepartmentsList />} />
+              <Route path="/employees" element={<EmployeesList />} />
             </Route>
 
             <Route element={<PublicRoute />}>

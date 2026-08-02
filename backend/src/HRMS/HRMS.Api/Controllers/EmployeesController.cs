@@ -2,6 +2,7 @@
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Employees.CreateEmployee;
 using HRMS.Application.Features.Employees.GetEmployeeOptions;
+using HRMS.Application.Features.Employees.GetEmployees;
 using HRMS.Domain.Entities.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,23 @@ namespace HRMS.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = Permissions.Employees.View)]
+        public async Task<IActionResult> GetAllAsync(
+            [FromServices] IQueryHandler<GetEmployeesQuery, IReadOnlyList<GetEmployeesResponse>> handler, 
+            CancellationToken cancellationToken)
+        {
+            var query = new GetEmployeesQuery();
+            var result = await handler.HandleAsync(
+                query,
+                cancellationToken
+                );
+
+            return result.Match<IActionResult>(
+                response => Ok(result.Value),
+                Problem);
+        }
+
+        [HttpGet("options")]
         [Authorize(Policy = Permissions.Employees.View)]
         public async Task<IActionResult> GetOptionsAsync(
             [FromServices] IQueryHandler<GetEmployeeOptionsQuery, IReadOnlyList<EmployeeOptionResponse>> handler,

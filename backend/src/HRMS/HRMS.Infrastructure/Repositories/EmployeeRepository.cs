@@ -1,6 +1,8 @@
 ﻿using HRMS.Application.Abstractions.Persistence;
 using HRMS.Application.Features.Employees.GetEmployeeOptions;
+using HRMS.Application.Features.Employees.GetEmployees;
 using HRMS.Domain.Entities.Employees;
+using HRMS.Infrastructure.Mappers;
 using HRMS.Infrastructure.Persistence;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -54,6 +56,15 @@ namespace HRMS.Infrastructure.Repositories
                 parms.ToArray());
         }
 
+        public async Task<List<GetEmployeesResponse>> GetEmployeesAsync(int organizationId, CancellationToken cancellationToken)
+        {
+            return await _sqlExecutor.QueryAsync(
+                "Employees_GetAll",
+                GetEmployeesResponseMapper.Map,
+                cancellationToken,
+                new SqlParameter("@OrganizationId", organizationId)
+                );
+        }
         public async Task<List<EmployeeOptionResponse>> GetEmployeesOptionsAsync(int organizationId, CancellationToken cancellationToken)
         {
             return await _sqlExecutor.QueryAsync(
