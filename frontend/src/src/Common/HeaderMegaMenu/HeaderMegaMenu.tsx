@@ -62,6 +62,10 @@ export function HeaderMegaMenu() {
               <Link to="/departments" className={classes.link}>
                 Departments
               </Link>
+              
+              <Link to="/employees" className={classes.link}>
+                Employees
+              </Link>
             </Group>
           )}
 
