@@ -37,7 +37,7 @@
             var existingDay = _days.FirstOrDefault(d => d.WorkDay == shiftDay.WorkDay);
             if (existingDay != null)
             {
-                existingDay.Update(shiftDay.IsWorkingDay, shiftDay.StartTime, shiftDay.EndTime, shiftDay.MinimumHoursPerDay, shiftDay.BreakDurationMinutes);
+                existingDay.Update(shiftDay.IsWorkingDay, shiftDay.StartTime, shiftDay.EndTime, shiftDay.MinimumMinutesPerDay, shiftDay.BreakDurationMinutes);
                 return;
             }
             

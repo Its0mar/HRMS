@@ -53,8 +53,8 @@ namespace HRMS.Infrastructure.Repositories
                     day.IsWorkingDay,
                     day.StartTime?.ToTimeSpan() ?? (object)DBNull.Value,
                     day.EndTime?.ToTimeSpan() ?? (object)DBNull.Value,
-                    day.MinimumHoursPerDay.HasValue
-                        ? (short)day.MinimumHoursPerDay.Value.TotalMinutes
+                    day.MinimumMinutesPerDay.HasValue
+                        ? day.MinimumMinutesPerDay
                         : DBNull.Value,
                     (short)day.BreakDurationMinutes
                 );
