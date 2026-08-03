@@ -2,6 +2,7 @@
 {
     public sealed class EmployeeWorkScheduleAssignment
     {
+        public int Id { get; private set; }
         public int EmployeeId { get; private set; }
         public int WorkScheduleId { get; private set; }
         public DateOnly EffectiveFrom { get; private set; }
@@ -14,6 +15,15 @@
             EffectiveFrom = effectiveFrom;
             EffectiveTo = effectiveTo;
         }
+
+        public EmployeeWorkScheduleAssignment Restore(int Id, int employeeId, int workScheduleId, DateOnly effectiveFrom, DateOnly? effectiveTo = null)
+        {
+            return new EmployeeWorkScheduleAssignment(employeeId, workScheduleId, effectiveFrom, effectiveTo)
+            {
+                Id = Id
+            };
+        }
+
 
         public void End(DateOnly effectiveTo)
         {

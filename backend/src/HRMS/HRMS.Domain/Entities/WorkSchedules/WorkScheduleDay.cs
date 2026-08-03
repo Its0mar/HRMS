@@ -11,34 +11,34 @@ namespace HRMS.Domain.Entities.WorkSchedules
         public TimeOnly? StartTime { get; private set; }
         public TimeOnly? EndTime { get; private set; }
         public TimeSpan? MinimumHoursPerDay { get; private set; }
-        public TimeSpan? BreakDuration { get; private set; }
+        public int BreakDurationMinutes { get; private set; }
 
-        public WorkScheduleDay(WorkDay workDay, bool isWorkingDay, TimeOnly? startTime, TimeOnly? endTime, TimeSpan? minimumHoursPerDay, TimeSpan? breakDuration)
+        public WorkScheduleDay(WorkDay workDay, bool isWorkingDay, TimeOnly? startTime, TimeOnly? endTime, TimeSpan? minimumHoursPerDay, int breakDurationMinutes)
         {
             WorkDay = workDay;
             IsWorkingDay = isWorkingDay;
             StartTime = startTime;
             EndTime = endTime;
             MinimumHoursPerDay = minimumHoursPerDay;
-            BreakDuration = breakDuration;
+            BreakDurationMinutes = breakDurationMinutes;
         }
 
-        public static WorkScheduleDay Restore(int Id,int workScheduleId, WorkDay workDay, bool isWorkingDay, TimeOnly? startTime, TimeOnly? endTime, TimeSpan? minimumHoursPerDay, TimeSpan? breakDuration)
+        public static WorkScheduleDay Restore(int Id,int workScheduleId, WorkDay workDay, bool isWorkingDay, TimeOnly? startTime, TimeOnly? endTime, TimeSpan? minimumHoursPerDay, int breakDurationMinutes)
         {
-            return new WorkScheduleDay(workDay, isWorkingDay, startTime, endTime, minimumHoursPerDay, breakDuration)
+            return new WorkScheduleDay(workDay, isWorkingDay, startTime, endTime, minimumHoursPerDay, breakDurationMinutes)
             {
                 Id = Id,
                 WorkScheduleId = workScheduleId
             };
         }
 
-        public void Update(bool isWorkingDay, TimeOnly? startTime, TimeOnly? endTime, TimeSpan? minimumHoursPerDay, TimeSpan? breakDuration)
+        public void Update(bool isWorkingDay, TimeOnly? startTime, TimeOnly? endTime, TimeSpan? minimumHoursPerDay, int breakDurationMinutes)
         {
             IsWorkingDay = isWorkingDay;
             StartTime = startTime;
             EndTime = endTime;
             MinimumHoursPerDay = minimumHoursPerDay;
-            BreakDuration = breakDuration;
+            BreakDurationMinutes = breakDurationMinutes;
         }
     }
 }
