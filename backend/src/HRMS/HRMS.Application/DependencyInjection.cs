@@ -12,6 +12,8 @@ using HRMS.Application.Features.Employees.GetEmployees;
 using HRMS.Application.Features.Positions.CreatePosition;
 using HRMS.Application.Features.Positions.GetPositions;
 using HRMS.Application.Features.WorkSchedules.CreateWorkSchedules;
+using HRMS.Application.Features.WorkSchedules.GetWorkSchedules;
+using HRMS.Application.Features.WorkSchedules.UpdateWorkSchedule;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HRMS.Application;
@@ -77,6 +79,14 @@ public static class DependencyInjection
         services.AddScoped<
             ICommandHandler<CreateWorkScheduleCommand, int>,
             CreateWorkScheduleHandler>();
+
+        services.AddScoped<
+            ICommandHandler<UpdateWorkScheduleCommand, bool>,
+            UpdateWorkScheduleHandler>();
+
+        services.AddScoped<
+            IQueryHandler<GetWorkSchedulesQuery, List<WorkScheduleResponse>>,
+            GetWorkSchedulesQueryHandler>();
 
         return services;
     }

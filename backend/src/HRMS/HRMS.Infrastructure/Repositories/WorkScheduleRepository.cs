@@ -1,6 +1,7 @@
 ﻿using HRMS.Application.Abstractions.Persistence;
 using HRMS.Domain.Entities;
 using HRMS.Domain.Entities.WorkSchedules;
+using HRMS.Infrastructure.Mappers;
 using HRMS.Infrastructure.Persistence;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -36,6 +37,50 @@ namespace HRMS.Infrastructure.Repositories
                 );
         }
 
+        public async Task<int> UpdateWorkScheduleAsync(WorkSchedule workSchedule, CancellationToken cancellationToken)
+        {
+            return await _sqlExecutor.ExecuteAsync(
+                "WorkSchedules_Update_Info",
+                cancellationToken,
+                new SqlParameter("@Id", workSchedule.Id),
+                new SqlParameter("@OrganizationId", workSchedule.OrganizationId),
+                new SqlParameter("@Name", workSchedule.Name),
+                new SqlParameter("@GracePeriodMinutes", workSchedule.GracePeriodMinutes),
+                new SqlParameter("@IsDefault", workSchedule.IsDefault)
+                );
+        }
+
+        public async Task<WorkSchedule?> GetWorkScheduleByIdAsync(int id, int organizationId, CancellationToken cancellationToken)
+        {
+            return await _sqlExecutor.QueryFirstOrDefaultAsync(
+                "WorkSchedules_GetById",
+                WorkScheduleMapper.Map,
+                cancellationToken,
+                new SqlParameter("@Id", id),
+                new SqlParameter("@OrganizationId", organizationId)
+                );
+        }
+
+        public async Task<IEnumerable<WorkSchedule>> GetWorkSchedulesByOrganizationIdAsync(int organizationId, CancellationToken cancellationToken)
+        {
+            return await _sqlExecutor.QueryAsync(
+                "WorkSchedules_GetByOrganizationId",
+                WorkScheduleMapper.Map,
+                cancellationToken,
+                new SqlParameter("@OrganizationId", organizationId)
+                );
+        }
+
+        public async Task<bool> NameExistAsync(string name, int organizationId, int? excludeId, CancellationToken cancellationToken)
+        {
+            return await _sqlExecutor.ExecuteScalarBoolAsync(
+                "WorkSchedules_Name_Exist",
+                cancellationToken,
+                new SqlParameter("@OrganizationId", organizationId),
+                new SqlParameter("@ExcludeId", excludeId),
+                new SqlParameter("@Name", name)
+                );
+        }
         private static SqlParameter CreateWorkScheduleDayDataTable(IEnumerable<WorkScheduleDay> days)
         {
             var daysTable = new DataTable();
@@ -72,8 +117,3 @@ namespace HRMS.Infrastructure.Repositories
         }
     }
 }
-//@OrganizationId INT,
-//@Name VARCHAR(100),
-//@GracePeriodMinutes SMALLINT,
-//@IsDefault BIT,
-//@Days dbo.WorkScheduleDayInput READONLY

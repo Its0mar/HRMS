@@ -7,7 +7,7 @@ namespace HRMS.Application.Features.WorkSchedules.CreateWorkSchedules
         bool IsWorkingDay,
         TimeOnly? StartTime,
         TimeOnly? EndTime,
-        short MinimumMinutesPerDay = 0,
+        short? MinimumMinutesPerDay,
         short BreakDurationMinutes = 0
      );
 }

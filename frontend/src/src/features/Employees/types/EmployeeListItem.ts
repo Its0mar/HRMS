@@ -3,8 +3,8 @@ export interface EmployeeListItem {
     employeeNumber: string;
     fullName: string;
     workEmail: string;
-    departmentName: string;
-    positionName: string;
+    departmentName: string | null;
+    positionName: string | null;
     employmentType: string;
     employmentStatus: string;
 }

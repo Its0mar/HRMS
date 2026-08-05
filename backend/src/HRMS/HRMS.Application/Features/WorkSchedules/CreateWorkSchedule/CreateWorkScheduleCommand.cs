@@ -2,7 +2,7 @@
 
 namespace HRMS.Application.Features.WorkSchedules.CreateWorkSchedules
 {
-    public record class CreateWorkScheduleCommand(
+    public record CreateWorkScheduleCommand(
         string Name,
         int GracePeriodMinutes,
         bool IsDefault,

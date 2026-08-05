@@ -20,6 +20,11 @@ namespace HRMS.Application.Features.WorkSchedules.CreateWorkSchedules
         
         public async Task<ErrorOr<int>> HandleAsync(CreateWorkScheduleCommand command, CancellationToken cancellationToken)
         {
+            if (await _workScheduleRepository.NameExistAsync(command.Name, _currentUser.OrganizationId, null, cancellationToken))
+            {
+                return Error.Conflict(description: "A work schedule with with name already exist in the organization");
+            }
+
             var workDays = command.WorkScheduleDay.Select(w =>
             {
                 return new WorkScheduleDay(
@@ -36,7 +41,8 @@ namespace HRMS.Application.Features.WorkSchedules.CreateWorkSchedules
                _currentUser.OrganizationId,
                command.Name,
                command.GracePeriodMinutes,
-               workDays
+               workDays,
+               command.IsDefault
             );
 
             return await _workScheduleRepository.CreateWorkScheduleAsync(workSchedule, cancellationToken);

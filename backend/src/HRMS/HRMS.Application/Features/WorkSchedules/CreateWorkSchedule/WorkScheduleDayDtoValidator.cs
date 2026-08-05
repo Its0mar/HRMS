@@ -22,13 +22,25 @@ namespace HRMS.Application.Features.WorkSchedules.CreateWorkSchedule
                     .Must(HaveValidBreakDuration).WithMessage("Break duration cannot exceed the scheduled work duration.");
 
                 RuleFor(x => x.MinimumMinutesPerDay)
-                    .GreaterThan((short)-1).WithMessage("Minimum minutes per day must be greater than -1.")
+                    .GreaterThanOrEqualTo((short)0).WithMessage("Minimum minutes per day cannot be negative.")
                     .LessThanOrEqualTo((short)1440).WithMessage("Minimum minutes per day cannot exceed 1440 minutes (24 hours).");
 
                 RuleFor(x => x.BreakDurationMinutes)
-                    .GreaterThanOrEqualTo((short)-1).WithMessage("Break duration cannot be negative.")
+                    .GreaterThanOrEqualTo((short)0).WithMessage("Break duration cannot be negative.")
                     .LessThanOrEqualTo((short)1440).WithMessage("Break duration cannot exceed 1440 minutes (24 hours).");
-            }); 
+            });
+
+            When(x => !x.IsWorkingDay, () =>
+            {
+                RuleFor(x => x.StartTime).Null();
+                RuleFor(x => x.EndTime).Null();
+
+                RuleFor(x => x.MinimumMinutesPerDay)
+                    .Equal((short)0);
+
+                RuleFor(x => x.BreakDurationMinutes)
+                    .Equal((short)0);
+            });
         }
 
         private static bool HaveValidTimeRange(WorkScheduleDayDto detail)

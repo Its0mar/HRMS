@@ -3,8 +3,9 @@ import type { EmployeeListItem } from "../types/EmployeeListItem";
 import { API_ROUTES } from "../../../lib/apiRoutes";
 import { apiClient } from "../../../lib/apiClient";
 import axios from "axios";
-import { Badge, Button, Group, Stack, ThemeIcon, Title, Text, Alert, Card, Table, Skeleton, Center } from "@mantine/core";
+import { Badge, Button, Group, Stack, ThemeIcon, Title, Text, Alert } from "@mantine/core";
 import { IconRefresh, IconUser, IconUserPlus } from "@tabler/icons-react";
+import { DataTable, type DataTableColumn } from "../../../Common/DataTable/DataTable";
 
 export function EmployeesList() {
 
@@ -12,7 +13,11 @@ export function EmployeesList() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    
+
     const fetchEmployees = async () => {
+        setIsLoading(true);
+        setError(null);
         try {
             const response = await apiClient.get<EmployeeListItem[]>(API_ROUTES.EMPLOYEES.GET_ALL);
             setEmployees(response.data);
@@ -31,13 +36,102 @@ export function EmployeesList() {
         void fetchEmployees();
     }, []);
 
+
+    const columns: DataTableColumn<EmployeeListItem>[] = [
+        {
+            key: "number",
+            header: "No.",
+            width: 70,
+            render: (_, index) => (
+                <Text size="sm" c="dimmed">
+                    {index + 1}
+                </Text>
+            )
+        },
+        {
+            key: "employee",
+            header: "Employee",
+            render: (employee) => (
+                <div>
+                    <Text fw={600}>
+                        {employee.fullName}
+                    </Text>
+
+                    <Text size="xs" c="dimmed">
+                        {employee.employeeNumber}
+                    </Text>
+
+                    <Text size="xs" c="dimmed">
+                        {employee.workEmail}
+                    </Text>
+                </div>
+            )
+        },
+        {
+            key: "department",
+            header: "Department",
+            render: (employee) => (
+                <Text size="sm">
+                    {employee.departmentName || "Unassigned"}
+                </Text>
+            )
+        },
+        {
+            key: "position",
+            header: "Position",
+            render: (employee) => (
+                <Text size="sm">
+                    {employee.positionName || "Unassigned"}
+                </Text>
+            )
+        },
+        {
+            key: "type",
+            header: "Type",
+            render: (employee) => (
+                <Badge variant="light" color="blue">
+                    {employee.employmentType}
+                </Badge>
+            )
+        },
+        {
+            key: "status",
+            header: "Status",
+            render: (employee) => (
+                <Badge
+                    variant="light"
+                    color={
+                        employee.employmentStatus === "Active"
+                            ? "green"
+                            : "gray"
+                    }
+                >
+                    {employee.employmentStatus}
+                </Badge>
+            )
+        },
+        {
+            key: "actions",
+            header: "Actions",
+            render: (employee) => (
+                <Button
+                    size="xs"
+                    variant="light"
+                    onClick={() => console.log(employee.id)}
+                >
+                    View
+                </Button>
+            )
+        }
+    ];
+
     return (
         <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
             <Stack gap="xl">
                 <Group justify="space-between" align="flex-end">
                     <div>
                         <Group gap="sm" mb={6}>
-                            <ThemeIcon size={38} radius="md" color="light">
+                            <ThemeIcon size={38} radius="md" color="indogo" variant="light">
                                 <IconUser size={22} />
                             </ThemeIcon>
 
@@ -81,151 +175,15 @@ export function EmployeesList() {
                     </Alert>
                 )}
 
-                <Card 
-                    padding={0}
-                    radius="lg"
-                    shadow="lg"
-                    withBorder
-                >
-                    <Table.ScrollContainer minWidth={1000}>
-                        <Table 
-                            verticalSpacing="md"
-                            horizontalSpacing="lg"
-                            highlightOnHover
-                        >
-
-                            <Table.Thead bg="gray.1">
-                                <Table.Tr>
-                                    <Table.Th w={70}>No.</Table.Th>
-                                    <Table.Th>Employee</Table.Th>
-                                    <Table.Th>Department</Table.Th>
-                                    <Table.Th>Position</Table.Th>
-                                    <Table.Th>Type</Table.Th>
-                                    <Table.Th>Status</Table.Th>
-                                    <Table.Th>Actions</Table.Th>
-                                </Table.Tr>
-                            </Table.Thead>
-
-                            <Table.Tbody>
-                                {isLoading &&
-                                    Array.from({ length: 5 }).map((_, rowIndex) => (
-                                        <Table.Tr key={rowIndex}>
-                                            {Array.from({ length: 7 }).map(
-                                                (_, cellIndex) => (
-                                                    <Table.Td key={cellIndex}>
-                                                        <Skeleton height={18} />
-                                                    </Table.Td>
-                                                )
-                                            )}
-                                        </Table.Tr>
-                                    ))}
-
-                                {!isLoading && 
-                                    employees.map((employee, index) => (
-                                        <Table.Tr key={employee.id}>
-                                            <Table.Td>
-                                                <Text size="sm" c="dimmed">
-                                                    {index + 1}
-                                                </Text>
-                                            </Table.Td>
-
-                                            <Table.Td>
-                                                <Group gap="sm" wrap="nowrap">
-                                                    <ThemeIcon
-                                                        size="lg"
-                                                        radius="xl"
-                                                        color="indigo"
-                                                        variant="light"
-                                                    >
-                                                        <IconUser size={17} />
-                                                    </ThemeIcon>
-
-                                                    <div>
-                                                        <Text fw={600}>
-                                                            {employee.fullName}
-                                                        </Text>
-
-                                                        <Text size="xs" c="dimmed">
-                                                            {employee.employeeNumber}
-                                                        </Text>
-
-                                                        <Text size="xs" c="dimmed">
-                                                            {employee.workEmail}
-                                                        </Text>
-                                                    </div>
-                                                </Group>
-                                            </Table.Td>
-
-                                            <Table.Td>
-                                                <Text size="sm">
-                                                    {employee.departmentName || "Unassigned"}
-                                                </Text>
-                                            </Table.Td>
-
-                                            <Table.Td>
-                                                <Text size="sm">
-                                                    {employee.positionName || "Unassigned"}
-                                                </Text>
-                                            </Table.Td>
-
-                                            <Table.Td>
-                                                <Badge variant="light" color="blue">
-                                                    {employee.employmentType}
-                                                </Badge>
-                                            </Table.Td>
-
-                                            <Table.Td>
-                                                <Badge
-                                                    variant="light"
-                                                    color={
-                                                        employee.employmentStatus === "Active"
-                                                            ? "green"
-                                                            : "gray"
-                                                    }
-                                                >
-                                                    {employee.employmentStatus}
-                                                </Badge>
-                                            </Table.Td>
-
-                                            <Table.Td>
-                                                <Button size="xs" variant="light">
-                                                    View
-                                                </Button>
-                                            </Table.Td>
-
-                                        </Table.Tr>
-                                    ))
-                                }
-                            </Table.Tbody>
-                        </Table>
-
-                        {!isLoading && !error && employees.length === 0 && (
-                            <Center py={60}>
-                                <Stack align="center" gap="xs">
-                                    <ThemeIcon
-                                        size={52}
-                                        radius="xl"
-                                        variant="light"
-                                        color="gray"
-                                    >
-                                        <IconUser size={26} />
-                                    </ThemeIcon>
-
-                                    <Text fw={600}>
-                                        No employees yet
-                                    </Text>
-
-                                    <Text size="sm" c="dimmed">
-                                        Employees will appear here once created.
-                                    </Text>
-                                </Stack>
-                            </Center>
-                        )}
-                    </Table.ScrollContainer>
-                        
-
-                </Card>
-
+                <DataTable
+    data={employees}
+    columns={columns}
+    getRowKey={(employee) => employee.id}
+    isLoading={isLoading}
+    minWidth={1000}
+    emptyTitle="No employees yet"
+    emptyDescription="Employees will appear here once created."
+/>
 
             </Stack>
         </main>
