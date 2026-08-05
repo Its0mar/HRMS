@@ -1,6 +1,5 @@
 ﻿using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.WorkSchedules.Common;
-using HRMS.Domain.Entities.WorkSchedules.Enums;
 
 namespace HRMS.Application.Features.WorkSchedules.UpdateWorkSchedule
 {

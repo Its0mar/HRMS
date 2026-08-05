@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using HRMS.Application.Abstractions.Messaging;
+using HRMS.Application.Features.Roles.CreateRole;
 using HRMS.Application.Features.Roles.GetRoles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,23 @@ namespace HRMS.Api.Controllers
 
             return result.Match<IActionResult>(
                 Ok,
+                Problem);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Create(
+            CreateRoleCommand command,
+            [FromServices] ICommandDispatcher dispatcher,
+            CancellationToken cancellationToken)
+        {
+            var result = await dispatcher.SendAsync(
+                command,
+                cancellationToken
+                );
+
+            return result.Match<IActionResult>(
+                result =>Ok(result),
                 Problem);
         }
     }
