@@ -39,22 +39,26 @@ namespace HRMS.Infrastructure.Repositories
 
         public async Task<int> UpdateWorkScheduleAsync(WorkSchedule workSchedule, CancellationToken cancellationToken)
         {
-            return await _sqlExecutor.ExecuteAsync(
-                "WorkSchedules_Update_Info",
+
+            var daysParameter = CreateWorkScheduleDayDataTable(workSchedule.Days);
+
+            return await _sqlExecutor.ExecuteWithScalarIntAsync(
+                "WorkSchedules_Update",
                 cancellationToken,
                 new SqlParameter("@Id", workSchedule.Id),
                 new SqlParameter("@OrganizationId", workSchedule.OrganizationId),
                 new SqlParameter("@Name", workSchedule.Name),
                 new SqlParameter("@GracePeriodMinutes", workSchedule.GracePeriodMinutes),
-                new SqlParameter("@IsDefault", workSchedule.IsDefault)
+                new SqlParameter("@IsDefault", workSchedule.IsDefault),
+                daysParameter
                 );
         }
 
         public async Task<WorkSchedule?> GetWorkScheduleByIdAsync(int id, int organizationId, CancellationToken cancellationToken)
         {
-            return await _sqlExecutor.QueryFirstOrDefaultAsync(
+            return await _sqlExecutor.QueryMultipleAsync(
                 "WorkSchedules_GetById",
-                WorkScheduleMapper.Map,
+                WorkScheduleMapper.MapWithDaysAsync,
                 cancellationToken,
                 new SqlParameter("@Id", id),
                 new SqlParameter("@OrganizationId", organizationId)

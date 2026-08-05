@@ -30,7 +30,8 @@ namespace HRMS.Application.Features.WorkSchedules.GetWorkSchedules
                 workSchedule.Id ?? -1,
                 workSchedule.Name,
                 workSchedule.GracePeriodMinutes,
-                workSchedule.IsDefault
+                workSchedule.IsDefault,
+                workSchedule.IsActive
             );
         }
     }

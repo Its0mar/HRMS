@@ -13,5 +13,14 @@ export const API_ROUTES = {
     EMPLOYEES: {
         "GET_ALL" : "/Employees",
         "GET_OPTIONS" : "/Employees/options"
+    },
+    WORK_SCHEDULES : {
+        "GET_ALL" : "/WorkSchedules",
+        "CREATE" : "/WorkSchedules",
+        GET_BY_ID:(scheduleId: number) => "/WorkSchedules/" + scheduleId,
+        UPDATE:  "/WorkSchedules"
+    },
+    ROLES : {
+        "GET_ALL" : "/Roles"
     }
 }

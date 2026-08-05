@@ -2,14 +2,13 @@
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.WorkSchedules.CreateWorkSchedules;
 using HRMS.Application.Features.WorkSchedules.GetWorkSchedules;
+using HRMS.Application.Features.WorkSchedules.GetWorkScheduleWithDays;
 using HRMS.Application.Features.WorkSchedules.UpdateWorkSchedule;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HRMS.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     [ApiVersion(1)]
     public class WorkSchedulesController : ApiController
@@ -55,5 +54,22 @@ namespace HRMS.Api.Controllers
                 errors => Problem(errors)
             );
         }
+
+
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<IActionResult> GetAsync(
+            [FromRoute] int id,
+            [FromServices] IQueryHandler<GetWorkScheduleWithDaysQuery, WorkScheduleWithDaysResponse> handler,
+            CancellationToken cancellationToken)
+        {
+            var result = await handler.HandleAsync(new GetWorkScheduleWithDaysQuery(id), cancellationToken);
+
+            return result.Match(
+                Ok,
+                errors => Problem(errors)
+            );
+        }
+
     }
 }

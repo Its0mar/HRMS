@@ -114,13 +114,23 @@ export function EmployeesList() {
             key: "actions",
             header: "Actions",
             render: (employee) => (
-                <Button
+                <Group>
+                    <Button 
                     size="xs"
                     variant="light"
                     onClick={() => console.log(employee.id)}
                 >
                     View
                 </Button>
+
+                <Button
+                    size="xs"
+                    variant="light"
+                    onClick={() => console.log(employee.id)}
+                >
+                    Edit Access
+                </Button>
+                </Group>
             )
         }
     ];
@@ -176,14 +186,14 @@ export function EmployeesList() {
                 )}
 
                 <DataTable
-    data={employees}
-    columns={columns}
-    getRowKey={(employee) => employee.id}
-    isLoading={isLoading}
-    minWidth={1000}
-    emptyTitle="No employees yet"
-    emptyDescription="Employees will appear here once created."
-/>
+                    data={employees}
+                    columns={columns}
+                    getRowKey={(employee) => employee.id}
+                    isLoading={isLoading}
+                    minWidth={1000}
+                    emptyTitle="No employees yet"
+                    emptyDescription="Employees will appear here once created."
+                />
 
             </Stack>
         </main>

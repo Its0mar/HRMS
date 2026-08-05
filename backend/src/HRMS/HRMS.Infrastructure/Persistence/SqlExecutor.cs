@@ -108,5 +108,25 @@ namespace HRMS.Infrastructure.Persistence
 
             return cmd;
         }
+
+        public async Task<T?> QueryMultipleAsync<T>(
+            string procedure,
+            Func<SqlDataReader, CancellationToken, Task<T?>> mapper,
+            CancellationToken cancellationToken,
+            params SqlParameter[] parameters)
+        {
+            await using var connection = _connectionFactory.CreateConnection();
+            await connection.OpenAsync(cancellationToken);
+
+            await using var command = CreateCommand(
+                connection,
+                procedure,
+                parameters);
+
+            await using var reader =
+                await command.ExecuteReaderAsync(cancellationToken);
+
+            return await mapper(reader, cancellationToken);
+        }
     }
 }

@@ -31,7 +31,6 @@ namespace HRMS.Api.Controllers
 
         [Authorize(Policy = Permissions.Departments.Update)]
         [HttpPut("update")]
-        //todo : update/{id}
         public async Task<IActionResult> UpdateAsync(
             UpdateDepartmentCommand command,
             [FromServices] ICommandDispatcher dispatcher,

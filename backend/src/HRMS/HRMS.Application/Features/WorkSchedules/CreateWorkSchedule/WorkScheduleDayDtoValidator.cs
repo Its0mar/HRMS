@@ -36,7 +36,7 @@ namespace HRMS.Application.Features.WorkSchedules.CreateWorkSchedule
                 RuleFor(x => x.EndTime).Null();
 
                 RuleFor(x => x.MinimumMinutesPerDay)
-                    .Equal((short)0);
+                    .Null();
 
                 RuleFor(x => x.BreakDurationMinutes)
                     .Equal((short)0);

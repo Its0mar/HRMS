@@ -2,6 +2,8 @@
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
+using HRMS.Application.Features.WorkSchedules.Common;
+using HRMS.Domain.Entities.WorkSchedules;
 
 namespace HRMS.Application.Features.WorkSchedules.UpdateWorkSchedule
 {
@@ -30,7 +32,8 @@ namespace HRMS.Application.Features.WorkSchedules.UpdateWorkSchedule
                 return Error.NotFound(description: "Work schedule not found.");
             }
 
-            workSchedule.UpdateWorkSchedule(command.Name, command.GracePeriodMinutes, command.IsDefault);
+            var workScheduleDays = command.WorkScheduleDays.Select(day => day.ToWorkScheduleDay()).ToList();
+            workSchedule.UpdateWorkSchedule(command.Name, command.GracePeriodMinutes, command.IsDefault, workScheduleDays);
 
             var result = await _workScheduleRepository.UpdateWorkScheduleAsync(workSchedule, cancellationToken);
             
@@ -38,8 +41,8 @@ namespace HRMS.Application.Features.WorkSchedules.UpdateWorkSchedule
             {
                 return true;
             }
-            return Error.Failure(description: "Failed to update work schedule.");
 
+            return Error.Failure(description: "Failed to update work schedule.");
 
         }
     }

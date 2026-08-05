@@ -4,5 +4,6 @@
         int Id,
         string Name,
         int GracePeriodMinutes,
-        bool IsDefault);
+        bool IsDefault,
+        bool IsActive);
 }

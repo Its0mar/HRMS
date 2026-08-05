@@ -11,8 +11,10 @@ using HRMS.Application.Features.Employees.GetEmployeeOptions;
 using HRMS.Application.Features.Employees.GetEmployees;
 using HRMS.Application.Features.Positions.CreatePosition;
 using HRMS.Application.Features.Positions.GetPositions;
+using HRMS.Application.Features.Roles.GetRoles;
 using HRMS.Application.Features.WorkSchedules.CreateWorkSchedules;
 using HRMS.Application.Features.WorkSchedules.GetWorkSchedules;
+using HRMS.Application.Features.WorkSchedules.GetWorkScheduleWithDays;
 using HRMS.Application.Features.WorkSchedules.UpdateWorkSchedule;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -87,6 +89,14 @@ public static class DependencyInjection
         services.AddScoped<
             IQueryHandler<GetWorkSchedulesQuery, List<WorkScheduleResponse>>,
             GetWorkSchedulesQueryHandler>();
+
+        services.AddScoped<
+            IQueryHandler<GetWorkScheduleWithDaysQuery, WorkScheduleWithDaysResponse>,
+            GetWorkScheduleWithDaysHandler>();
+
+        services.AddScoped<
+            IQueryHandler<GetRolesQuery, IReadOnlyList<GetRoleResponse>>,
+            GetRolesHandler>();
 
         return services;
     }

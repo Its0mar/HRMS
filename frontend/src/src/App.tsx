@@ -9,6 +9,8 @@ import { HeaderMegaMenu } from "./Common/HeaderMegaMenu/HeaderMegaMenu";
 import { ProtectedRoute } from "./Components/ProtectedRoute";
 import { PublicRoute } from "./Components/PublicRoute";
 import { EmployeesList } from "./features/Employees/components/EmployeesList";
+import { WorkSchedules } from "./features/WorkSchedules/components/WorkSchedules";
+import { RolesList } from "./features/Roles/components/RolesList";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
               <Route path="/" element={<Navigate to="/departments" replace />} />
               <Route path="/departments" element={<DepartmentsList />} />
               <Route path="/employees" element={<EmployeesList />} />
+              <Route path="/work-schedules" element={<WorkSchedules />} />
+              <Route path="/roles" element={<RolesList/>} />
             </Route>
 
             <Route element={<PublicRoute />}>

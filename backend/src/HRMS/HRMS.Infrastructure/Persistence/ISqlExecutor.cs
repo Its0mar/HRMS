@@ -31,5 +31,11 @@ namespace HRMS.Infrastructure.Persistence
             string procedure,
             CancellationToken ct,
             params SqlParameter[] parameters);
+
+        Task<T?> QueryMultipleAsync<T>(
+            string procedure,
+            Func<SqlDataReader, CancellationToken, Task<T?>> mapper,
+            CancellationToken cancellationToken,
+            params SqlParameter[] parameters);
     }
 }

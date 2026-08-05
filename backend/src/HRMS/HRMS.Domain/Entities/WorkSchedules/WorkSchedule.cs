@@ -44,11 +44,13 @@
             _days.Add(shiftDay);
         }
 
-        public void UpdateWorkSchedule(string name, int gracePeriodMinutes, bool isDefault)
+        public void UpdateWorkSchedule(string name, int gracePeriodMinutes, bool isDefault, List<WorkScheduleDay> workScheduleDays)
         {
             Name = name;
             GracePeriodMinutes = gracePeriodMinutes;
             IsDefault = isDefault;
+
+            workScheduleDays.ForEach(AddOrUpdateWorkScheduleDay);
         }
 
         public void SetActiveStatus(bool isActive)

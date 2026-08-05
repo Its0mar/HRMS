@@ -59,6 +59,10 @@ export function HeaderMegaMenu() {
 
           {isAuthenticated && (
             <Group h="100%" gap={0} visibleFrom="sm">
+              <Link to="/roles" className={classes.link}>
+                Roles
+              </Link>
+
               <Link to="/departments" className={classes.link}>
                 Departments
               </Link>
@@ -66,6 +70,11 @@ export function HeaderMegaMenu() {
               <Link to="/employees" className={classes.link}>
                 Employees
               </Link>
+
+            <Link to="/work-schedules" className={classes.link}>
+                Work Schedules
+              </Link>
+
             </Group>
           )}
 
