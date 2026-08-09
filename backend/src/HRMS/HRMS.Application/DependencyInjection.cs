@@ -9,6 +9,7 @@ using HRMS.Application.Features.Departments.UpdateDepartment;
 using HRMS.Application.Features.Employees.CreateEmployee;
 using HRMS.Application.Features.Employees.GetEmployeeOptions;
 using HRMS.Application.Features.Employees.GetEmployees;
+using HRMS.Application.Features.Permissions.GetPermissionOptions;
 using HRMS.Application.Features.Positions.CreatePosition;
 using HRMS.Application.Features.Positions.GetPositions;
 using HRMS.Application.Features.Roles.CreateRole;
@@ -102,6 +103,11 @@ public static class DependencyInjection
         services.AddScoped<
             ICommandHandler<CreateRoleCommand, bool>,
             CreateRoleHandler>();
+
+        services.AddScoped<
+            IQueryHandler<GetPermissionOptionsQuery, IReadOnlyList<PermissionOptionResponse>>,
+            GetPermissionOptionsHandler>();
+
 
         return services;
     }

@@ -6,6 +6,8 @@ import { apiClient } from "../../../lib/apiClient";
 import { API_ROUTES } from "../../../lib/apiRoutes";
 import axios from "axios";
 import { IconRefresh, IconSettings, IconSettingsPlus } from "@tabler/icons-react";
+import { useDisclosure } from "@mantine/hooks";
+import { CreateRoleModal } from "./CreateRoleModal";
 
 
 export function RolesList() {
@@ -13,6 +15,7 @@ export function RolesList() {
     const [roles, setRoles] = useState<RolesListItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [createOpened, createModal] = useDisclosure(false);
 
     const fetchRoles = async () => {
         setIsLoading(true);
@@ -59,6 +62,36 @@ export function RolesList() {
             "key": "actions",
             "header": "Actions",
             "render": () => <Button>Edit</Button>
+        },
+        {
+            key: "permissions",
+            header: "Permissions",
+            render: (role) => {
+                const visiblePermissions = role.permissions.slice(0, 3);
+                const remaining = role.permissions.length - visiblePermissions.length;
+
+                return (
+                    <Group gap={6}>
+                        {visiblePermissions.map((permission) => (
+                            <Badge key={permission} variant="light">
+                                {permission}
+                            </Badge>
+                        ))}
+
+                        {remaining > 0 && (
+                            <Badge color="gray" variant="light">
+                                +{remaining} more
+                            </Badge>
+                        )}
+
+                        {role.permissions.length === 0 && (
+                            <Text size="sm" c="dimmed">
+                                No permissions
+                            </Text>
+                        )}
+                    </Group>
+                );
+            },
         }
     ]
 
@@ -69,7 +102,7 @@ export function RolesList() {
                 <Group justify="space-between" align="flex-end">
                     <div>
                         <Group gap="sm" mb={6}>
-                            <ThemeIcon size={38} radius="md" color="indogo" variant="light">
+                            <ThemeIcon size={38} radius="md" color="indigo" variant="light">
                                 <IconSettings size={22} />
                             </ThemeIcon>
 
@@ -87,7 +120,8 @@ export function RolesList() {
                                 {roles.length} total
                             </Badge>
 
-                            <Button leftSection={<IconSettingsPlus size={16} />}>
+                            <Button leftSection={<IconSettingsPlus size={16} />}
+                                    onClick={() => createModal.open()}>
                                 New Role
                             </Button>
                         </Group>
@@ -121,6 +155,14 @@ export function RolesList() {
                     minWidth={1000}
                     emptyTitle="No roles yet"
                     emptyDescription="roles will appear here once created."
+                />
+
+                <CreateRoleModal
+                    opened={createOpened}
+                    onClose={createModal.close}
+                    onCreated={() => {
+                        void fetchRoles();
+                    }}
                 />
 
             </Stack>

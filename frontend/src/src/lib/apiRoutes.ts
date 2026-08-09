@@ -21,6 +21,14 @@ export const API_ROUTES = {
         UPDATE:  "/WorkSchedules"
     },
     ROLES : {
-        "GET_ALL" : "/Roles"
+          GET_ALL: "/Roles",
+        GET_PERMISSIONS: "/Roles/permissions",
+        CREATE: "/Roles",
+
+        GET_BY_ID: (roleId: number) =>
+            `/Roles/${roleId}`,
+
+        UPDATE: (roleId: number) =>
+            `/Roles/${roleId}`,
     }
 }

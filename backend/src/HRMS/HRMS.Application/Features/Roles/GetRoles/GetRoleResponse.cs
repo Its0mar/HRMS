@@ -2,5 +2,6 @@
 {
     public record GetRoleResponse(
         int Id,
-        string Name);
+        string Name,
+        IReadOnlyList<string> Permissions);
 }

@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using HRMS.Application.Abstractions.Messaging;
+using HRMS.Application.Features.Permissions.GetPermissionOptions;
 using HRMS.Application.Features.Roles.CreateRole;
 using HRMS.Application.Features.Roles.GetRoles;
 using Microsoft.AspNetCore.Authorization;
@@ -40,6 +41,22 @@ namespace HRMS.Api.Controllers
 
             return result.Match<IActionResult>(
                 result =>Ok(result),
+                Problem);
+        }
+
+        [HttpGet("permissions")]
+        [Authorize]
+        public async Task<IActionResult> GetPermissionOptions(
+            [FromServices]
+            IQueryHandler<GetPermissionOptionsQuery,IReadOnlyList<PermissionOptionResponse>> handler,
+            CancellationToken cancellationToken)
+        {
+            var result = await handler.HandleAsync(
+                new GetPermissionOptionsQuery(),
+                cancellationToken);
+
+            return result.Match<IActionResult>(
+                Ok,
                 Problem);
         }
     }

@@ -19,8 +19,13 @@ namespace HRMS.Application.Features.Roles.GetRoles
 
         public async Task<ErrorOr<IReadOnlyList<GetRoleResponse>>> HandleAsync(GetRolesQuery query, CancellationToken cancellationToken)
         {
-            var roles = await _rolesRepository.GetAllAsync(_currentUser.OrganizationId, cancellationToken);
-            var rolesResponse = roles.Select(role => new GetRoleResponse(role.Id ?? 0, role.Name)).ToList();
+            var roles = await _rolesRepository.GetAllWithPermsAsync(_currentUser.OrganizationId, cancellationToken);
+
+            var rolesResponse = roles.Select(role => new GetRoleResponse(
+                role.Id!.Value,
+                role.Name,
+                role.Permissions
+                .Select(permission => permission.Code).ToList())).ToList();
 
             return rolesResponse;
         }

@@ -3,6 +3,7 @@ using HRMS.Application.Abstractions.Persistence;
 using HRMS.Domain.Entities.Common;
 using HRMS.Domain.Entities.Roles;
 using HRMS.Infrastructure.Mappers;
+using HRMS.Infrastructure.Mappers.Roles;
 using HRMS.Infrastructure.Persistence;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -45,13 +46,45 @@ namespace HRMS.Infrastructure.Repositories
                 );
         }
 
-        public async Task<IReadOnlyList<Role>> GetAllAsync(int organizationId, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<Role>> GetAllWithPermsAsync(int organizationId, CancellationToken cancellationToken)
         {
-            return await _sqlExecutor.QueryAsync(
-                "Roles_GetAll",
-                RolesMapper.Map,
+            var rows = await _sqlExecutor.QueryAsync(
+                "Roles_GetByOrganization",
+                RolePermissionRowMapper.MapRolePermissionRow,
                 cancellationToken,
-                new SqlParameter("@OrganizationId", organizationId));
+                new SqlParameter(
+                    "@OrganizationId",
+                    SqlDbType.Int)
+                {
+                    Value = organizationId
+                });
+
+                        var roles = rows
+                            .GroupBy(row => new
+                            {
+                                row.RoleId,
+                                row.RoleName
+                            })
+                            .Select(group =>
+                            {
+                                var permissions = group
+                                    .Where(row =>
+                                        row.PermissionId.HasValue &&
+                                        row.PermissionCode is not null)
+                                    .Select(row => new Permission(
+                                        row.PermissionId!.Value,
+                                        row.PermissionCode!))
+                                    .ToList();
+
+                                return Role.Restore(
+                                    group.Key.RoleId,
+                                    group.Key.RoleName,
+                                    organizationId,
+                                    permissions);
+                            })
+                            .ToList();
+
+            return roles;
         }
     }
 }
