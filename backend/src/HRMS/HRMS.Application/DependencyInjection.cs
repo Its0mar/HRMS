@@ -13,6 +13,7 @@ using HRMS.Application.Features.Permissions.GetPermissionOptions;
 using HRMS.Application.Features.Positions.CreatePosition;
 using HRMS.Application.Features.Positions.GetPositions;
 using HRMS.Application.Features.Roles.CreateRole;
+using HRMS.Application.Features.Roles.GetRoleDetails;
 using HRMS.Application.Features.Roles.GetRoles;
 using HRMS.Application.Features.WorkSchedules.CreateWorkSchedules;
 using HRMS.Application.Features.WorkSchedules.GetWorkSchedules;
@@ -107,6 +108,10 @@ public static class DependencyInjection
         services.AddScoped<
             IQueryHandler<GetPermissionOptionsQuery, IReadOnlyList<PermissionOptionResponse>>,
             GetPermissionOptionsHandler>();
+
+        services.AddScoped<
+            IQueryHandler<GetRoleByIdQuery, GetRoleDetailsResponse>,
+            GetRoleByIdHandler>();
 
 
         return services;

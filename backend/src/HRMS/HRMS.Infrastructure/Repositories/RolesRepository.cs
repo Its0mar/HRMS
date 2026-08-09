@@ -86,5 +86,38 @@ namespace HRMS.Infrastructure.Repositories
 
             return roles;
         }
+
+        public async Task<Role?> GetByIdAsync(int id, int organizationId, CancellationToken cancellationToken)
+        {
+            var rows = await _sqlExecutor.QueryAsync(
+                "dbo.Roles_GetById",
+                RolePermissionRowMapper.MapRolePermissionRow,
+                cancellationToken,
+                new SqlParameter("@Id", id),
+                new SqlParameter("@OrganizationId", organizationId));
+
+            if (rows.Count == 0)
+            {
+                return null;
+            }
+
+            var firstRow = rows[0];
+
+            var permissions = rows
+                .Where(row =>
+                    row.PermissionId.HasValue &&
+                    row.PermissionCode is not null)
+                .Select(row => new Permission(
+                    row.PermissionId!.Value,
+                    row.PermissionCode!))
+                .DistinctBy(permission => permission.Id)
+                .ToList();
+
+            return Role.Restore(
+                firstRow.RoleId,
+                firstRow.RoleName,
+                organizationId,
+                permissions);
+        }
     }
 }
