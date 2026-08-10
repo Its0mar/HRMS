@@ -6,12 +6,21 @@ import axios from "axios";
 import { Badge, Button, Group, Stack, ThemeIcon, Title, Text, Alert } from "@mantine/core";
 import { IconRefresh, IconUser, IconUserPlus } from "@tabler/icons-react";
 import { DataTable, type DataTableColumn } from "../../../Common/DataTable/DataTable";
+import { useDisclosure } from "@mantine/hooks";
+import { CreateAccessModal } from "./CreateAccessModal";
 
 export function EmployeesList() {
 
     const [employees, setEmployees] = useState<EmployeeListItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [accessOpened, accessModal] = useDisclosure(false);
+
+    const [selectedEmployee, setSelectedEmployee] =
+        useState<{
+            id: number;
+            name: string;
+        } | null>(null);
 
     
 
@@ -36,6 +45,23 @@ export function EmployeesList() {
         void fetchEmployees();
     }, []);
 
+
+    const handleCreateAccess = (
+        employeeId: number,
+        employeeName: string,
+    ) => {
+        setSelectedEmployee({
+            id: employeeId,
+            name: employeeName,
+        });
+
+        accessModal.open();
+    };
+
+    const handleAccessClose = () => {
+        accessModal.close();
+        setSelectedEmployee(null);
+    };
 
     const columns: DataTableColumn<EmployeeListItem>[] = [
         {
@@ -126,7 +152,12 @@ export function EmployeesList() {
                 <Button
                     size="xs"
                     variant="light"
-                    onClick={() => console.log(employee.id)}
+                    onClick={() =>
+                        handleCreateAccess(
+                            employee.id,
+                            employee.fullName,
+                        )
+                    }
                 >
                     Edit Access
                 </Button>
@@ -193,6 +224,16 @@ export function EmployeesList() {
                     minWidth={1000}
                     emptyTitle="No employees yet"
                     emptyDescription="Employees will appear here once created."
+                />
+
+                <CreateAccessModal
+                    opened={accessOpened}
+                    employeeId={selectedEmployee?.id ?? null}
+                    employeeName={selectedEmployee?.name ?? null}
+                    onClose={handleAccessClose}
+                    onCreated={() => {
+                        void fetchEmployees();
+                    }}
                 />
 
             </Stack>

@@ -4,6 +4,7 @@ export const API_ROUTES = {
         REGISTER : "/Auth/organizations",
         REFRESH : "/Auth/refresh",
         LOGOUT : "/Auth/logout",
+        REGISTER_EMPLOYEE : "/Auth/employees"
     },
     DEPARTMENTS : {
         "GET_ALL" : "/Departments",
@@ -22,6 +23,7 @@ export const API_ROUTES = {
     },
     ROLES : {
           GET_ALL: "/Roles",
+          GET_OPTIONS: "/Roles/options",
         GET_PERMISSIONS: "/Roles/permissions",
         CREATE: "/Roles",
 

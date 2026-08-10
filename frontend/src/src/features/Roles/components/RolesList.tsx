@@ -8,6 +8,7 @@ import axios from "axios";
 import { IconRefresh, IconSettings, IconSettingsPlus } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { CreateRoleModal } from "./CreateRoleModal";
+import { UpdateRoleModal } from "./UpdateRoleModal";
 
 
 export function RolesList() {
@@ -16,7 +17,9 @@ export function RolesList() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [createOpened, createModal] = useDisclosure(false);
-
+    const [selectedRoleId, setSelectedRoleId] = useState<number | null>(null);
+    const [updateOpened, updateModal] = useDisclosure(false);
+    
     const fetchRoles = async () => {
         setIsLoading(true);
         setError(null);
@@ -39,6 +42,15 @@ export function RolesList() {
         void fetchRoles();
     }, []);
 
+    const handleEdit = (roleId: number) => {
+        setSelectedRoleId(roleId);
+        updateModal.open();
+    };
+
+    const handleUpdateClose = () => {
+        updateModal.close();
+        setSelectedRoleId(null);
+    };
 
     const columns: DataTableColumn<RolesListItem>[] = [
         {
@@ -59,10 +71,19 @@ export function RolesList() {
         },
 
         {
-            "key": "actions",
-            "header": "Actions",
-            "render": () => <Button>Edit</Button>
+            key: "actions",
+            header: "Actions",
+            render: (role) => (
+                <Button
+                    size="xs"
+                    variant="light"
+                    onClick={() => handleEdit(role.id)}
+                >
+                    Edit
+                </Button>
+            ),
         },
+
         {
             key: "permissions",
             header: "Permissions",
@@ -161,6 +182,15 @@ export function RolesList() {
                     opened={createOpened}
                     onClose={createModal.close}
                     onCreated={() => {
+                        void fetchRoles();
+                    }}
+                />
+
+                <UpdateRoleModal
+                    opened={updateOpened}
+                    roleId={selectedRoleId}
+                    onClose={handleUpdateClose}
+                    onUpdated={() => {
                         void fetchRoles();
                     }}
                 />

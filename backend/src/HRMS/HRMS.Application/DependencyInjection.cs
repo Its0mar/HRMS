@@ -16,6 +16,7 @@ using HRMS.Application.Features.Positions.GetPositions;
 using HRMS.Application.Features.Roles.CreateRole;
 using HRMS.Application.Features.Roles.GetRoleDetails;
 using HRMS.Application.Features.Roles.GetRoles;
+using HRMS.Application.Features.Roles.GetRolesOptions;
 using HRMS.Application.Features.Roles.UpdateRole;
 using HRMS.Application.Features.WorkSchedules.CreateWorkSchedules;
 using HRMS.Application.Features.WorkSchedules.GetWorkSchedules;
@@ -121,6 +122,10 @@ public static class DependencyInjection
         services.AddScoped<
             ICommandHandler<RegisterEmployeeCommand, int>,
             RegisterEmployeeHandler>();
+
+        services.AddScoped<
+            IQueryHandler<GetRolesOptionsQuery, IReadOnlyList<GetRolesOptionsResponse>>,
+            GetRolesOptionsHandler>();
 
         return services;
     }

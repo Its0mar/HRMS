@@ -1,10 +1,12 @@
 ﻿using Asp.Versioning;
 using HRMS.Api.Contracts.Roles;
+using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Permissions.GetPermissionOptions;
 using HRMS.Application.Features.Roles.CreateRole;
 using HRMS.Application.Features.Roles.GetRoleDetails;
 using HRMS.Application.Features.Roles.GetRoles;
+using HRMS.Application.Features.Roles.GetRolesOptions;
 using HRMS.Application.Features.Roles.UpdateRole;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +18,13 @@ namespace HRMS.Api.Controllers
     [ApiVersion(1)]
     public class RolesController : ApiController
     {
+        private ICurrentUser _currentUser;
+
+        public RolesController(ICurrentUser currentUser)
+        {
+            _currentUser = currentUser;
+        }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetAll(
@@ -47,6 +56,22 @@ namespace HRMS.Api.Controllers
                 Problem);
         }
 
+        [HttpGet("options")]
+        [Authorize]
+        public async Task<IActionResult> GetRolesOptions(
+            [FromServices] IQueryHandler<GetRolesOptionsQuery, IReadOnlyList<GetRolesOptionsResponse>> handler,
+            CancellationToken cancellationToken)
+        {
+            var result = await handler.HandleAsync(
+                new GetRolesOptionsQuery(_currentUser.OrganizationId),
+                cancellationToken);
+
+            return result.Match<IActionResult>(
+                Ok,
+                Problem);
+
+        }
+
         [HttpGet("permissions")]
         [Authorize]
         public async Task<IActionResult> GetPermissionOptions(
@@ -62,6 +87,7 @@ namespace HRMS.Api.Controllers
                 Ok,
                 Problem);
         }
+
 
         [HttpGet("{id:int}")]
         [Authorize]
