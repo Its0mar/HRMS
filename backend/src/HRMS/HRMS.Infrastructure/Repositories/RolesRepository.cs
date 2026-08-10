@@ -1,8 +1,5 @@
-﻿
-using HRMS.Application.Abstractions.Persistence;
-using HRMS.Domain.Entities.Common;
+﻿using HRMS.Application.Abstractions.Persistence;
 using HRMS.Domain.Entities.Roles;
-using HRMS.Infrastructure.Mappers;
 using HRMS.Infrastructure.Mappers.Roles;
 using HRMS.Infrastructure.Persistence;
 using Microsoft.Data.SqlClient;
@@ -21,21 +18,7 @@ namespace HRMS.Infrastructure.Repositories
 
         public async Task<int> CreateWithPermissionsAsync(Role role, IEnumerable<int> permissionIds, CancellationToken cancellationToken)
         {
-            var permissionTable = new DataTable();
-            permissionTable.Columns.Add("Id", typeof(int));
-
-            foreach (var permissionId in permissionIds.Distinct())
-            {
-                permissionTable.Rows.Add(permissionId);
-            }
-
-            var permissionParameter = new SqlParameter(
-                "@PermissionIds",
-                SqlDbType.Structured)
-            {
-                TypeName = "dbo.IntIdList",
-                Value = permissionTable
-            };
+            var permissionParameter = CreatePermissionIdsParameter(permissionIds);
 
             return await _sqlExecutor.ExecuteWithScalarIntAsync(
                 "Role_Create",
@@ -118,6 +101,46 @@ namespace HRMS.Infrastructure.Repositories
                 firstRow.RoleName,
                 organizationId,
                 permissions);
+        }
+
+        public async Task<int> UpdateWithPermissionsAsync(Role role, IEnumerable<int> permissionIds, CancellationToken cancellationToken)
+        {
+            if (!role.Id.HasValue)
+            {
+                throw new InvalidOperationException("A role must have an ID before it can be updated.");
+            }
+
+            var permissionParameter =
+                CreatePermissionIdsParameter(permissionIds);
+
+            return await _sqlExecutor.ExecuteWithScalarIntAsync(
+                "dbo.Role_Update",
+                cancellationToken,
+                new SqlParameter("@Id", role.Id.Value),
+                new SqlParameter("@OrganizationId", role.OrganizationId),
+                new SqlParameter("@Name", role.Name),
+                permissionParameter);
+        }
+
+
+        private static SqlParameter CreatePermissionIdsParameter(IEnumerable<int> permissionIds)
+        {
+            var permissionTable = new DataTable();
+
+            permissionTable.Columns.Add("Id", typeof(int));
+
+            foreach (var permissionId in permissionIds.Distinct())
+            {
+                permissionTable.Rows.Add(permissionId);
+            }
+
+            return new SqlParameter(
+                "@PermissionIds",
+                SqlDbType.Structured)
+            {
+                TypeName = "dbo.IntIdList",
+                Value = permissionTable
+            };
         }
     }
 }

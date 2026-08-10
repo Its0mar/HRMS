@@ -1,9 +1,11 @@
 ﻿using Asp.Versioning;
+using HRMS.Api.Contracts.Roles;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Permissions.GetPermissionOptions;
 using HRMS.Application.Features.Roles.CreateRole;
 using HRMS.Application.Features.Roles.GetRoleDetails;
 using HRMS.Application.Features.Roles.GetRoles;
+using HRMS.Application.Features.Roles.UpdateRole;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -74,6 +76,28 @@ namespace HRMS.Api.Controllers
 
             return result.Match<IActionResult>(
                 Ok,
+                Problem);
+        }
+
+        [HttpPut("{id:int}")]
+        [Authorize]
+        public async Task<IActionResult> Update(
+            int id,
+            UpdateRoleRequest request,
+            [FromServices] ICommandDispatcher dispatcher,
+            CancellationToken cancellationToken)
+        {
+            var command = new UpdateRoleCommand(
+                id,
+                request.Name,
+                request.PermissionIds);
+
+            var result = await dispatcher.SendAsync(
+                command,
+                cancellationToken);
+
+            return result.Match<IActionResult>(
+                _ => NoContent(),
                 Problem);
         }
     }

@@ -10,6 +10,7 @@ namespace HRMS.Domain.Entities
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
         public int OrganizationId { get; private set; }
+        public int? EmployeeId { get; private set; } = null;
 
         public User(
             string username,
@@ -17,7 +18,8 @@ namespace HRMS.Domain.Entities
             string passwordHash,
             string firstName,
             string lastName,
-            int organizationId)
+            int organizationId,
+            int? employeeId = null)
         {
             Username = username;
             Email = email;
@@ -25,6 +27,7 @@ namespace HRMS.Domain.Entities
             FirstName = firstName;
             LastName = lastName;
             OrganizationId = organizationId;
+            EmployeeId = employeeId;
         }
 
 
@@ -39,7 +42,8 @@ namespace HRMS.Domain.Entities
             bool isActive,
             bool isDeleted,
             DateTime createdAt,
-            DateTime? updatedAt)
+            DateTime? updatedAt,
+            int? employeeId = null)
         {
             var user = new User(
                 username,
@@ -47,7 +51,8 @@ namespace HRMS.Domain.Entities
                 passwordHash,
                 firstName,
                 lastName,
-                organizationId)
+                organizationId,
+                employeeId)
             {
                 Id = id,
                 IsActive = isActive

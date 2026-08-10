@@ -1,5 +1,4 @@
 using ErrorOr;
-using FluentValidation;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
@@ -12,11 +11,11 @@ namespace HRMS.Application.Features.Authentication.RegisterOrganization
         RegisterOrganizationCommand,
         RegisterOrganizationResponse>
     {
-        private readonly IOrganizationRegistrationRepository _repository;
+        private readonly IRegistrationRepository _repository;
         private readonly IPasswordHasher _passwordHasher;
 
         public RegisterOrganizationCommandHandler(
-            IOrganizationRegistrationRepository repository,
+            IRegistrationRepository repository,
             IPasswordHasher passwordHasher)
         {
             _repository = repository;
@@ -52,16 +51,26 @@ namespace HRMS.Application.Features.Authentication.RegisterOrganization
                 website: NormalizeOptional(command.Website),
                 logoUrl: NormalizeOptional(command.LogoUrl));
 
-            var owner = new OwnerRegistrationData(
-                Username: ownerUsername,
-                Email: ownerEmail,
-                PasswordHash: _passwordHasher.Hash(command.Password),
-                FirstName: command.FirstName.Trim(),
-                LastName: command.LastName.Trim());
+            var passwordHash =  _passwordHasher.Hash(command.Password);
 
-            var result = await _repository.RegisterAsync(
+            var user = new User(
+                ownerUsername,
+                ownerEmail,
+                passwordHash,
+                command.FirstName.Trim(),
+                command.LastName.Trim(),
+                -1); 
+
+            //var owner = new OwnerRegistrationData(
+            //    Username: ownerUsername,
+            //    Email: ownerEmail,
+            //    PasswordHash: _passwordHasher.Hash(command.Password),
+            //    FirstName: command.FirstName.Trim(),
+            //    LastName: command.LastName.Trim());
+
+            var result = await _repository.RegisterOrganizationWithUserAsync(
                 organization,
-                owner,
+                user,
                 cancellationToken);
 
             return new RegisterOrganizationResponse(

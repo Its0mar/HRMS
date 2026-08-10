@@ -17,6 +17,11 @@ namespace HRMS.Domain.Entities.Roles
             if (permissions is not null) _permissions.AddRange(permissions);
         }
 
+        public void UpdateName(string name)
+        {
+            Name = name;
+        }
+
         public static Role Restore(int id, string name,  int organizationId, List<Permission> permissions)
         {
             return new Role(name, organizationId, permissions)

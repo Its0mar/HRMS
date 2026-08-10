@@ -1,4 +1,5 @@
 ﻿using HRMS.Application.Abstractions.Persistence;
+using HRMS.Application.Abstractions.Persistence.Models;
 using HRMS.Application.Features.Employees.GetEmployeeOptions;
 using HRMS.Application.Features.Employees.GetEmployees;
 using HRMS.Domain.Entities.Employees;
@@ -69,13 +70,23 @@ namespace HRMS.Infrastructure.Repositories
         {
             return await _sqlExecutor.QueryAsync(
                 "Employees_GetOptions",
-                Map,
+                MapToEmployeeOptionResponse,
                 cancellationToken,
                 new SqlParameter("@OrganizationId", organizationId)
                 );
         }
 
-        private EmployeeOptionResponse Map(SqlDataReader reader)
+        public async Task<EmployeeInfoForUserRegister?> GetEmployeeInfoForUserRegisterationAsync(int employeeId, int organizationId, CancellationToken cancellationToken)
+        {
+            return await _sqlExecutor.QueryFirstOrDefaultAsync(
+                "Employees_GetForUserRegister",
+                MapToEmployeeInfoForUserRegister,
+                cancellationToken,
+                new SqlParameter("@EmployeeId", employeeId),
+                new SqlParameter("@OrganizationId", organizationId)
+                );
+        }
+        private EmployeeOptionResponse MapToEmployeeOptionResponse(SqlDataReader reader)
         {
             var id = reader.GetInt32(reader.GetOrdinal("Id"));
             var empNumber = reader.GetString(reader.GetOrdinal("EmployeeNumber"));
@@ -83,6 +94,17 @@ namespace HRMS.Infrastructure.Repositories
 
             return new EmployeeOptionResponse(id,empNumber , name);
         }
+
+        private EmployeeInfoForUserRegister MapToEmployeeInfoForUserRegister(SqlDataReader reader)
+        {
+            var email = reader.GetString(reader.GetOrdinal("Email"));
+            var firstName = reader.GetString(reader.GetOrdinal("FirstName"));
+            var lastName = reader.GetString(reader.GetOrdinal("LastName"));
+
+            return new EmployeeInfoForUserRegister(firstName, lastName, email);
+        }
+
+
         private static SqlParameter NullableInt(
             string name,
             int? value)

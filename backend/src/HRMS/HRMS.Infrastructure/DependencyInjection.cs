@@ -54,7 +54,7 @@ public static class DependencyInjection
         services.AddHttpContextAccessor();
         services.AddSingleton<IDbConnectionFactory>(new DbConnectionFactory(connectionString));
         services.AddScoped<ISqlExecutor, SqlExecutor>();
-        services.AddScoped<IOrganizationRegistrationRepository, RegistrationRepository>();
+        services.AddScoped<IRegistrationRepository, RegistrationRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPositionsRepository, PositionsRepository>();
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();

@@ -2,6 +2,7 @@ using FluentValidation;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Authentication.Login;
 using HRMS.Application.Features.Authentication.RefreshToken;
+using HRMS.Application.Features.Authentication.RegisterEmployee;
 using HRMS.Application.Features.Authentication.RegisterOrganization;
 using HRMS.Application.Features.Departments.CreateDepartment;
 using HRMS.Application.Features.Departments.GetDepartments;
@@ -15,6 +16,7 @@ using HRMS.Application.Features.Positions.GetPositions;
 using HRMS.Application.Features.Roles.CreateRole;
 using HRMS.Application.Features.Roles.GetRoleDetails;
 using HRMS.Application.Features.Roles.GetRoles;
+using HRMS.Application.Features.Roles.UpdateRole;
 using HRMS.Application.Features.WorkSchedules.CreateWorkSchedules;
 using HRMS.Application.Features.WorkSchedules.GetWorkSchedules;
 using HRMS.Application.Features.WorkSchedules.GetWorkScheduleWithDays;
@@ -112,7 +114,13 @@ public static class DependencyInjection
         services.AddScoped<
             IQueryHandler<GetRoleByIdQuery, GetRoleDetailsResponse>,
             GetRoleByIdHandler>();
+        services.AddScoped<
+            ICommandHandler<UpdateRoleCommand, bool>,
+            UpdateRoleHandler>();
 
+        services.AddScoped<
+            ICommandHandler<RegisterEmployeeCommand, int>,
+            RegisterEmployeeHandler>();
 
         return services;
     }

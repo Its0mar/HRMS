@@ -6,7 +6,7 @@ using Microsoft.Data.SqlClient;
 
 namespace HRMS.Infrastructure.Repositories;
 
-internal sealed class RegistrationRepository : IOrganizationRegistrationRepository
+internal sealed class RegistrationRepository : IRegistrationRepository
 {
     private readonly IDbConnectionFactory _connectionFactory;
 
@@ -25,9 +25,9 @@ internal sealed class RegistrationRepository : IOrganizationRegistrationReposito
     public Task<bool> UsernameExistsAsync(string username, CancellationToken cancellationToken) =>
         ExistsAsync("dbo.User_UsernameExists", "@Username", SqlDbType.VarChar, 20, username, cancellationToken);
 
-    public async Task<OrganizationRegistrationResult> RegisterAsync(
+    public async Task<OrganizationRegistrationResult> RegisterOrganizationWithUserAsync(
         Organization organization,
-        OwnerRegistrationData owner,
+        User user,
         CancellationToken cancellationToken)
     {
         await using var connection = _connectionFactory.CreateConnection();
@@ -37,11 +37,46 @@ internal sealed class RegistrationRepository : IOrganizationRegistrationReposito
         try
         {
             var organizationId = await CreateOrganizationAsync(connection, transaction, organization, cancellationToken);
-            var ownerUserId = await CreateUserAsync(connection, transaction, organizationId, owner, cancellationToken);
+            var ownerUserId = await CreateUserAsync(connection, transaction, user, cancellationToken);
             //var roleId = await CreateRoleAsync(connection, transaction, organizationId, "OrganizationOwner", cancellationToken);
             await AssignRoleAsync(connection, transaction, ownerUserId, 10, cancellationToken);
             await transaction.CommitAsync(cancellationToken);
             return new OrganizationRegistrationResult(organizationId, ownerUserId);
+        }
+        catch
+        {
+            await transaction.RollbackAsync(CancellationToken.None);
+            throw;
+        }
+    }
+
+    public async Task<int> UserRegisterAsync(
+        User user,
+        int roleId,
+        CancellationToken cancellationToken)
+    {
+        await using var connection = _connectionFactory.CreateConnection();
+        await connection.OpenAsync(cancellationToken);
+        await using var transaction = (SqlTransaction)await connection.BeginTransactionAsync(cancellationToken);
+
+        try
+        {
+            var userId = await CreateUserAsync(
+                connection,
+                transaction,
+                user,
+                cancellationToken);
+
+            await AssignRoleAsync(
+                connection,
+                transaction,
+                userId,
+                roleId,
+                cancellationToken);
+
+            await transaction.CommitAsync(cancellationToken);
+
+            return userId;
         }
         catch
         {
@@ -60,7 +95,7 @@ internal sealed class RegistrationRepository : IOrganizationRegistrationReposito
         return result is not null && result != DBNull.Value && Convert.ToBoolean(result);
     }
 
-    private static async Task<int> CreateOrganizationAsync(SqlConnection connection, SqlTransaction transaction, Organization organization, CancellationToken cancellationToken)
+    private static async Task<int> CreateOrganizationAsync(SqlConnection connection, SqlTransaction? transaction, Organization organization, CancellationToken cancellationToken)
     {
         await using var command = CreateCommand(connection, transaction, "dbo.Organization_Create");
         command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar, 30) { Value = organization.Name });
@@ -75,26 +110,19 @@ internal sealed class RegistrationRepository : IOrganizationRegistrationReposito
         return Convert.ToInt32(await command.ExecuteScalarAsync(cancellationToken));
     }
 
-    private static async Task<int> CreateUserAsync(SqlConnection connection, SqlTransaction transaction, int organizationId, OwnerRegistrationData owner, CancellationToken cancellationToken)
+    private static async Task<int> CreateUserAsync(SqlConnection connection, SqlTransaction transaction, User user, CancellationToken cancellationToken)
     {
         await using var command = CreateCommand(connection, transaction, "dbo.User_Create");
-        command.Parameters.Add(new SqlParameter("@OrganizationId", SqlDbType.Int) { Value = organizationId });
-        command.Parameters.Add(new SqlParameter("@Username", SqlDbType.VarChar, 20) { Value = owner.Username });
-        command.Parameters.Add(new SqlParameter("@Email", SqlDbType.VarChar, 40) { Value = owner.Email });
-        command.Parameters.Add(new SqlParameter("@PasswordHash", SqlDbType.VarChar, -1) { Value = owner.PasswordHash });
-        command.Parameters.Add(new SqlParameter("@FirstName", SqlDbType.VarChar, 20) { Value = owner.FirstName });
-        command.Parameters.Add(new SqlParameter("@LastName", SqlDbType.VarChar, 20) { Value = owner.LastName });
+        command.Parameters.Add(new SqlParameter("@OrganizationId", SqlDbType.Int) { Value = user.OrganizationId });
+        command.Parameters.Add(new SqlParameter("@Username", SqlDbType.VarChar, 20) { Value = user.Username });
+        command.Parameters.Add(new SqlParameter("@Email", SqlDbType.VarChar, 40) { Value = user.Email });
+        command.Parameters.Add(new SqlParameter("@PasswordHash", SqlDbType.VarChar, -1) { Value = user.PasswordHash });
+        command.Parameters.Add(new SqlParameter("@FirstName", SqlDbType.VarChar, 20) { Value = user.FirstName });
+        command.Parameters.Add(new SqlParameter("@LastName", SqlDbType.VarChar, 20) { Value = user.LastName });
         command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit) { Value = true });
         command.Parameters.Add(new SqlParameter("@IsDeleted", SqlDbType.Bit) { Value = false });
         command.Parameters.Add(new SqlParameter("@CreatedAt", SqlDbType.DateTime2) { Value = DateTime.UtcNow });
-        return Convert.ToInt32(await command.ExecuteScalarAsync(cancellationToken));
-    }
-
-    private static async Task<int> CreateRoleAsync(SqlConnection connection, SqlTransaction transaction, int organizationId, string roleName, CancellationToken cancellationToken)
-    {
-        await using var command = CreateCommand(connection, transaction, "dbo.Role_Create");
-        command.Parameters.Add(new SqlParameter("@OrganizationId", SqlDbType.Int) { Value = organizationId });
-        command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar, 30) { Value = roleName });
+        command.Parameters.Add(new SqlParameter("@EmployeeId", user.EmployeeId ?? (object)DBNull.Value));
         return Convert.ToInt32(await command.ExecuteScalarAsync(cancellationToken));
     }
 

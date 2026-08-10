@@ -2,7 +2,7 @@ using HRMS.Domain.Entities;
 
 namespace HRMS.Application.Abstractions.Persistence;
 
-public interface IOrganizationRegistrationRepository
+public interface IRegistrationRepository
 {
     Task<bool> OrganizationCodeExistsAsync(
         string code,
@@ -20,8 +20,13 @@ public interface IOrganizationRegistrationRepository
         string username,
         CancellationToken cancellationToken);
 
-    Task<OrganizationRegistrationResult> RegisterAsync(
+    Task<OrganizationRegistrationResult> RegisterOrganizationWithUserAsync(
         Organization organization,
-        OwnerRegistrationData owner,
+        User user,
+        CancellationToken cancellationToken);
+
+    public Task<int> UserRegisterAsync(
+        User user,
+        int roleId,
         CancellationToken cancellationToken);
 }
