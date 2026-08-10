@@ -75,7 +75,6 @@ namespace HRMS.Infrastructure.Repositories
                 new SqlParameter("@OrganizationId", organizationId)
                 );
         }
-
         public async Task<EmployeeInfoForUserRegister?> GetEmployeeInfoForUserRegisterationAsync(int employeeId, int organizationId, CancellationToken cancellationToken)
         {
             return await _sqlExecutor.QueryFirstOrDefaultAsync(
@@ -86,6 +85,18 @@ namespace HRMS.Infrastructure.Repositories
                 new SqlParameter("@OrganizationId", organizationId)
                 );
         }
+        public async Task<EmployeeAccessInfo?> GetAccessByEmployeeIdAsync(int employeeId, int organizationId, CancellationToken cancellationToken)
+        {
+            return await _sqlExecutor.QueryFirstOrDefaultAsync(
+                "dbo.EmployeeAccess_GetByEmployeeId",
+                MapToEmployeeAccessInfo,
+                cancellationToken,
+                new SqlParameter("@EmployeeId", employeeId),
+                new SqlParameter("@OrganizationId", organizationId));
+        }
+
+
+
         private EmployeeOptionResponse MapToEmployeeOptionResponse(SqlDataReader reader)
         {
             var id = reader.GetInt32(reader.GetOrdinal("Id"));
@@ -104,7 +115,14 @@ namespace HRMS.Infrastructure.Repositories
             return new EmployeeInfoForUserRegister(firstName, lastName, email);
         }
 
-
+        private EmployeeAccessInfo MapToEmployeeAccessInfo(SqlDataReader reader)
+        {
+            return new EmployeeAccessInfo(
+                reader.GetInt32(reader.GetOrdinal("UserId")),
+                reader.GetInt32(reader.GetOrdinal("EmployeeId")),
+                reader.GetInt32(reader.GetOrdinal("RoleId")),
+                reader.GetString(reader.GetOrdinal("Username")));
+        }
         private static SqlParameter NullableInt(
             string name,
             int? value)
@@ -132,5 +150,7 @@ namespace HRMS.Infrastructure.Repositories
                     : value
             };
         }
+
+
     }
 }

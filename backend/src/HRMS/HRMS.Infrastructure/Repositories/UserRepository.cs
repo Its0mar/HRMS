@@ -38,6 +38,21 @@ internal sealed class UserRepository : IUserRepository
             );
     }
 
+    public async Task<bool> UpdateAccessAsync(int employeeId, int organizationId, string username, int roleId, CancellationToken cancellationToken)
+    {
+        var result = await _executor.ExecuteWithScalarIntAsync(
+            "dbo.EmployeeAccess_Update",
+            cancellationToken,
+            new SqlParameter("@EmployeeId", employeeId),
+            new SqlParameter("@OrganizationId", organizationId),
+            new SqlParameter("@Username", username),
+            new SqlParameter("@RoleId", roleId));
+
+        return result == 1;
+    }
+
+
+
     private string map(SqlDataReader reader)
     {
         return reader.GetString(reader.GetOrdinal("Code"));
