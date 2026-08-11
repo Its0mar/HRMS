@@ -1,6 +1,7 @@
 using FluentValidation;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Authentication.Login;
+using HRMS.Application.Features.Authentication.Logout;
 using HRMS.Application.Features.Authentication.RefreshToken;
 using HRMS.Application.Features.Departments.CreateDepartment;
 using HRMS.Application.Features.Departments.GetDepartments;
@@ -137,6 +138,11 @@ public static class DependencyInjection
         services.AddScoped<
             ICommandHandler<UpdateEmployeeAccessCommand, bool>,
             UpdateEmployeeAccessHandler>();
+
+        services.AddScoped<
+            ICommandHandler<LogoutCommand, bool>,
+            LogoutCommandHandler>();
+
 
         return services;
     }

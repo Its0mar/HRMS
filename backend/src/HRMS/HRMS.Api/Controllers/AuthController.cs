@@ -3,6 +3,7 @@ using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
 using HRMS.Application.Features.Authentication.Login;
+using HRMS.Application.Features.Authentication.Logout;
 using HRMS.Application.Features.Authentication.RefreshToken;
 using HRMS.Domain.Entities.Common;
 using Microsoft.AspNetCore.Authorization;
@@ -71,27 +72,23 @@ public sealed class AuthController : ApiController
 
     [HttpPost("logout")]
     public async Task<IActionResult> Logout(
-        [FromServices] IRefreshTokenRepository repository,
-        [FromServices] IRefreshTokenGenerator generator,
+        [FromServices] ICommandDispatcher dispatcher,
         CancellationToken cancellationToken)
     {
-        if (Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
-        {
-            await repository.RevokeAsync(
-                generator.Hash(refreshToken),
-                DateTime.UtcNow,
-                cancellationToken);
-        }
 
-        Response.Cookies.Delete("refreshToken", new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.None,
-            Path = "/api"
-        });
+        var refreshToken = Request.Cookies["refreshToken"];
 
-        return NoContent();
+        var result = await dispatcher.SendAsync(
+            new LogoutCommand(refreshToken),
+            cancellationToken);
+
+        return result.Match<IActionResult>(
+            _ =>
+            {
+                DeleteRefreshTokenCookie();
+                return NoContent();
+            },
+            Problem);
     }
 
 
@@ -106,6 +103,19 @@ public sealed class AuthController : ApiController
                 Secure = true,
                 SameSite = SameSiteMode.None,
                 Expires = expiresAt,
+                Path = "/api"
+            });
+    }
+
+    private void DeleteRefreshTokenCookie()
+    {
+        Response.Cookies.Delete(
+            "refreshToken",
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
                 Path = "/api"
             });
     }
