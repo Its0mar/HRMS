@@ -7,4 +7,5 @@ export interface EmployeeListItem {
     positionName: string | null;
     employmentType: string;
     employmentStatus: string;
+    hasUserAccess: boolean;
 }

@@ -2,11 +2,11 @@
 using HRMS.Api.Contracts.Roles;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
-using HRMS.Application.Features.Permissions.GetPermissionOptions;
 using HRMS.Application.Features.Roles.CreateRole;
 using HRMS.Application.Features.Roles.GetRoleDetails;
 using HRMS.Application.Features.Roles.GetRoles;
 using HRMS.Application.Features.Roles.GetRolesOptions;
+using HRMS.Application.Features.Roles.Permissions.GetPermissionOptions;
 using HRMS.Application.Features.Roles.UpdateRole;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

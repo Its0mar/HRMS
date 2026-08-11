@@ -4,7 +4,7 @@ using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
 using HRMS.Domain.Entities;
 
-namespace HRMS.Application.Features.Authentication.RegisterEmployee
+namespace HRMS.Application.Features.Employees.Access.CreateEmployeeAccess
 {
     public sealed class RegisterEmployeeHandler : ICommandHandler<RegisterEmployeeCommand, int>
     {

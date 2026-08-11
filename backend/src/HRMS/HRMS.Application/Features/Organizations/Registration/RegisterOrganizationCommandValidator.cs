@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace HRMS.Application.Features.Authentication.RegisterOrganization
+namespace HRMS.Application.Features.Organizations.Registration
 {
     public sealed class RegisterOrganizationCommandValidator
     : AbstractValidator<RegisterOrganizationCommand>

@@ -47,11 +47,11 @@ namespace HRMS.Api.Controllers
         [HttpGet]
         [Authorize(Policy = Permissions.Departments.View)]
         public async Task<IActionResult> GetAsync(
-            [FromServices] IQueryHandler<GetDepartmentsQuery, List<DepartmentListItem>> handler,
+            [FromServices] IQueryDispatcher dispatcher,
             CancellationToken cancellationToken)
         {
             var query = new GetDepartmentsQuery();
-            var result = await handler.HandleAsync(query, cancellationToken);
+            var result = await dispatcher.SendAsync(query, cancellationToken);
 
             return result.Match(
                 ok => Ok(result.Value),

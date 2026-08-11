@@ -2,7 +2,7 @@
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
 
-namespace HRMS.Application.Features.Employees.GetEmployeeAccess
+namespace HRMS.Application.Features.Employees.Access.GetEmployeeAccess
 {
     public sealed class GetEmployeeAccessHandler : IQueryHandler<GetEmployeeAccessQuery, GetEmployeeAccessResponse>
     {

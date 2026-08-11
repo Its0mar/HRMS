@@ -2,7 +2,7 @@
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
 
-namespace HRMS.Application.Features.Permissions.GetPermissionOptions
+namespace HRMS.Application.Features.Roles.Permissions.GetPermissionOptions
 {
     public sealed class GetPermissionOptionsHandler
     : IQueryHandler<GetPermissionOptionsQuery, IReadOnlyList<PermissionOptionResponse>>

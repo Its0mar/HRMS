@@ -8,13 +8,15 @@ import { IconRefresh, IconUser, IconUserPlus } from "@tabler/icons-react";
 import { DataTable, type DataTableColumn } from "../../../Common/DataTable/DataTable";
 import { useDisclosure } from "@mantine/hooks";
 import { CreateAccessModal } from "./CreateAccessModal";
+import { UpdateAccessModal } from "./UpdateAccessModal";
 
 export function EmployeesList() {
 
     const [employees, setEmployees] = useState<EmployeeListItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [accessOpened, accessModal] = useDisclosure(false);
+    const [createAccessOpened, createAccessModal] = useDisclosure(false);
+    const [updateAccessOpened, updateAccessModal] = useDisclosure(false);
 
     const [selectedEmployee, setSelectedEmployee] =
         useState<{
@@ -22,7 +24,7 @@ export function EmployeesList() {
             name: string;
         } | null>(null);
 
-    
+
 
     const fetchEmployees = async () => {
         setIsLoading(true);
@@ -55,13 +57,32 @@ export function EmployeesList() {
             name: employeeName,
         });
 
-        accessModal.open();
+        createAccessModal.open();
     };
 
-    const handleAccessClose = () => {
-        accessModal.close();
+    const handleUpdateAccess = (
+        employeeId: number,
+        employeeName: string,
+    ) => {
+        setSelectedEmployee({
+            id: employeeId,
+            name: employeeName,
+        });
+
+        updateAccessModal.open();
+    };
+
+    const handleCreateAccessClose = () => {
+        createAccessModal.close();
         setSelectedEmployee(null);
     };
+
+    const handleUpdateAccessClose = () => {
+        updateAccessModal.close();
+        setSelectedEmployee(null);
+    };
+
+
 
     const columns: DataTableColumn<EmployeeListItem>[] = [
         {
@@ -141,26 +162,46 @@ export function EmployeesList() {
             header: "Actions",
             render: (employee) => (
                 <Group>
-                    <Button 
-                    size="xs"
-                    variant="light"
-                    onClick={() => console.log(employee.id)}
-                >
-                    View
-                </Button>
+                    <Button
+                        size="xs"
+                        variant="light"
+                        onClick={() => console.log(employee.id)}
+                    >
+                        View
+                    </Button>
 
-                <Button
-                    size="xs"
-                    variant="light"
-                    onClick={() =>
-                        handleCreateAccess(
-                            employee.id,
-                            employee.fullName,
-                        )
-                    }
-                >
-                    Edit Access
-                </Button>
+                    {!employee.hasUserAccess && (
+                        <Button
+                            size="xs"
+                            variant="light"
+                            onClick={() =>
+                                handleCreateAccess(
+                                    employee.id,
+                                    employee.fullName,
+                                )
+                            }
+                        >
+                            Create Access
+                        </Button>
+                    )}
+
+                    {employee.hasUserAccess && (
+                        <Button
+                            size="xs"
+                            variant="light"
+                            onClick={() =>
+                                handleUpdateAccess(
+                                    employee.id,
+                                    employee.fullName,
+                                )
+                            }
+                        >
+                            Update Access
+                        </Button>
+                    )}
+
+
+
                 </Group>
             )
         }
@@ -179,21 +220,21 @@ export function EmployeesList() {
                             <Title order={1}>Employees</Title>
 
                         </Group>
-                        
+
                         <Text c="gray.4">
                             View and manage your organization employees.
                         </Text>
                     </div>
 
-                        <Group>
-                            <Badge size="lg" variant="light" color="indigo">
-                                {employees.length} total
-                            </Badge>
+                    <Group>
+                        <Badge size="lg" variant="light" color="indigo">
+                            {employees.length} total
+                        </Badge>
 
-                            <Button leftSection={<IconUserPlus size={16} />}>
-                                New Employee
-                            </Button>
-                        </Group>
+                        <Button leftSection={<IconUserPlus size={16} />}>
+                            New Employee
+                        </Button>
+                    </Group>
                 </Group>
 
                 {error && (
@@ -212,7 +253,7 @@ export function EmployeesList() {
                             >
                                 Retry
                             </Button>
-                        </Group>        
+                        </Group>
                     </Alert>
                 )}
 
@@ -227,11 +268,21 @@ export function EmployeesList() {
                 />
 
                 <CreateAccessModal
-                    opened={accessOpened}
+                    opened={createAccessOpened}
                     employeeId={selectedEmployee?.id ?? null}
                     employeeName={selectedEmployee?.name ?? null}
-                    onClose={handleAccessClose}
+                    onClose={handleCreateAccessClose}
                     onCreated={() => {
+                        void fetchEmployees();
+                    }}
+                />
+
+                <UpdateAccessModal
+                    opened={updateAccessOpened}
+                    employeeId={selectedEmployee?.id ?? null}
+                    employeeName={selectedEmployee?.name ?? null}
+                    onClose={handleUpdateAccessClose}
+                    onUpdated={() => {
                         void fetchEmployees();
                     }}
                 />

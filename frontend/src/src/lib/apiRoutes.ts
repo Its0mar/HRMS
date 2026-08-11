@@ -13,7 +13,9 @@ export const API_ROUTES = {
     },
     EMPLOYEES: {
         "GET_ALL" : "/Employees",
-        "GET_OPTIONS" : "/Employees/options"
+        "GET_OPTIONS" : "/Employees/options",
+        GET_ACCESS: (employeeId: number) => `/Employees/${employeeId}/access`,
+        UPDATE_ACCESS: (employeeId: number) => `/Employees/${employeeId}/access`
     },
     WORK_SCHEDULES : {
         "GET_ALL" : "/WorkSchedules",

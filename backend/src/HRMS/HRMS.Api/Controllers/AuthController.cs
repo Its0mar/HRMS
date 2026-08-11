@@ -4,10 +4,7 @@ using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
 using HRMS.Application.Features.Authentication.Login;
 using HRMS.Application.Features.Authentication.RefreshToken;
-using HRMS.Application.Features.Authentication.RegisterEmployee;
-using HRMS.Application.Features.Authentication.RegisterOrganization;
 using HRMS.Domain.Entities.Common;
-using HRMS.Domain.Entities.Roles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,36 +14,9 @@ namespace HRMS.Api.Controllers;
 [ApiVersion(1)]
 public sealed class AuthController : ApiController
 {
-    [HttpPost("organizations")]
-    public async Task<IActionResult> RegisterOrganization(
-        RegisterOrganizationCommand command,
-        [FromServices] ICommandDispatcher dispatcher,
-        CancellationToken cancellationToken)
-    {
-        var result = await dispatcher.SendAsync(
-            command,
-            cancellationToken);
 
-        return result.Match<IActionResult>(
-            response => StatusCode(StatusCodes.Status201Created, response),
-            Problem);
-    }
 
-    [HttpPost("employess")]
-    [Authorize(Permissions.Employees.Create)]
-    public async Task<IActionResult> RegisterEmployeeAsync(
-        RegisterEmployeeCommand command,
-        [FromServices] ICommandDispatcher dispatcher,
-        CancellationToken cancellationToken)
-    {
-        var result = await dispatcher.SendAsync(
-            command,
-            cancellationToken);
 
-        return result.Match<IActionResult>(
-            response => StatusCode(StatusCodes.Status201Created, response),
-            Problem);
-    }
 
 
     [HttpPost("login")]

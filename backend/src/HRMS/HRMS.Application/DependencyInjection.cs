@@ -2,22 +2,23 @@ using FluentValidation;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Authentication.Login;
 using HRMS.Application.Features.Authentication.RefreshToken;
-using HRMS.Application.Features.Authentication.RegisterEmployee;
-using HRMS.Application.Features.Authentication.RegisterOrganization;
 using HRMS.Application.Features.Departments.CreateDepartment;
 using HRMS.Application.Features.Departments.GetDepartments;
 using HRMS.Application.Features.Departments.UpdateDepartment;
+using HRMS.Application.Features.Employees.Access.CreateEmployeeAccess;
+using HRMS.Application.Features.Employees.Access.GetEmployeeAccess;
 using HRMS.Application.Features.Employees.CreateEmployee;
-using HRMS.Application.Features.Employees.GetEmployeeAccess;
 using HRMS.Application.Features.Employees.GetEmployeeOptions;
 using HRMS.Application.Features.Employees.GetEmployees;
-using HRMS.Application.Features.Permissions.GetPermissionOptions;
+using HRMS.Application.Features.Employees.UpdateEmployeeAccess;
+using HRMS.Application.Features.Organizations.Registration;
 using HRMS.Application.Features.Positions.CreatePosition;
 using HRMS.Application.Features.Positions.GetPositions;
 using HRMS.Application.Features.Roles.CreateRole;
 using HRMS.Application.Features.Roles.GetRoleDetails;
 using HRMS.Application.Features.Roles.GetRoles;
 using HRMS.Application.Features.Roles.GetRolesOptions;
+using HRMS.Application.Features.Roles.Permissions.GetPermissionOptions;
 using HRMS.Application.Features.Roles.UpdateRole;
 using HRMS.Application.Features.WorkSchedules.CreateWorkSchedules;
 using HRMS.Application.Features.WorkSchedules.GetWorkSchedules;
@@ -36,6 +37,7 @@ public static class DependencyInjection
             RegisterOrganizationCommandValidator>();
 
         services.AddScoped<ICommandDispatcher, CommandDispatcher>();
+        services.AddScoped<IQueryDispatcher, QueryDispatcher>();
 
         services.AddScoped<
             ICommandHandler<
@@ -131,6 +133,10 @@ public static class DependencyInjection
         services.AddScoped<
             IQueryHandler<GetEmployeeAccessQuery, GetEmployeeAccessResponse>,
             GetEmployeeAccessHandler>();
+
+        services.AddScoped<
+            ICommandHandler<UpdateEmployeeAccessCommand, bool>,
+            UpdateEmployeeAccessHandler>();
 
         return services;
     }

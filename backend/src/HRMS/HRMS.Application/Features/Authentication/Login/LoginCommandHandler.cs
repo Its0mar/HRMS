@@ -14,22 +14,19 @@ namespace HRMS.Application.Features.Authentication.Login
         private readonly IPasswordHasher _passwordHasher;
         private readonly IAccessTokenGenerator _accessTokenGenerator;
         private readonly IRefreshTokenGenerator _refreshTokenGenerator;
-        private readonly IValidator<LoginCommand> _validator;
 
         public LoginCommandHandler(
             IUserRepository users,
             IRefreshTokenRepository refreshTokenrepository,
             IPasswordHasher passwordHasher,
             IAccessTokenGenerator tokenGenerator,
-            IRefreshTokenGenerator refreshTokenGenerator,
-            IValidator<LoginCommand> validator)
+            IRefreshTokenGenerator refreshTokenGenerator)
         {
             _userRepository = users;
             _refreshTokenRepository = refreshTokenrepository; 
             _passwordHasher = passwordHasher;
             _accessTokenGenerator = tokenGenerator;
             _refreshTokenGenerator = refreshTokenGenerator;
-            _validator = validator;
         }
 
         public async Task<ErrorOr<LoginResponse>> HandleAsync(
@@ -75,7 +72,7 @@ namespace HRMS.Application.Features.Authentication.Login
             await _refreshTokenRepository.CreateOrReplaceAsync(userId, refreshTokenHash, expiresAt, createdAt, cancellationToken);
             
             return new LoginResponse(
-            User: AuthenticatedUserResponse.From(user),
+            User: AuthenticatedUserResponse.From(user, permissions),
                 AccessToken: accessToken,
                 RefreshToken: rawRefreshToken,
                 RefreshTokenExpiresAt: expiresAt);

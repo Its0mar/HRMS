@@ -2,8 +2,9 @@
 using HRMS.Api.Contracts.Employess;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
+using HRMS.Application.Features.Employees.Access.CreateEmployeeAccess;
+using HRMS.Application.Features.Employees.Access.GetEmployeeAccess;
 using HRMS.Application.Features.Employees.CreateEmployee;
-using HRMS.Application.Features.Employees.GetEmployeeAccess;
 using HRMS.Application.Features.Employees.GetEmployeeOptions;
 using HRMS.Application.Features.Employees.GetEmployees;
 using HRMS.Application.Features.Employees.UpdateEmployeeAccess;
@@ -71,6 +72,21 @@ namespace HRMS.Api.Controllers
                 Problem);
         }
 
+        [HttpPost("access")]
+        [Authorize(Permissions.Employees.Create)]
+        public async Task<IActionResult> CreateAccess(
+            RegisterEmployeeCommand command,
+            [FromServices] ICommandDispatcher dispatcher,
+            CancellationToken cancellationToken)
+        {
+            var result = await dispatcher.SendAsync(
+                command,
+                cancellationToken);
+
+            return result.Match<IActionResult>(
+                response => StatusCode(StatusCodes.Status201Created, response),
+                Problem);
+        }
 
         [HttpGet("{employeeId:int}/access")]
         [Authorize(Policy = Permissions.Employees.Update)]

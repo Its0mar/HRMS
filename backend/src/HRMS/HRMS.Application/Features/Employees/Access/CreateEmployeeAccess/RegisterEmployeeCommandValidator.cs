@@ -1,7 +1,7 @@
 ﻿
 using FluentValidation;
 
-namespace HRMS.Application.Features.Authentication.RegisterEmployee
+namespace HRMS.Application.Features.Employees.Access.CreateEmployeeAccess
 {
     public class RegisterEmployeeCommandValidator : AbstractValidator<RegisterEmployeeCommand>
     {

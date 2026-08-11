@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace HRMS.Application.Features.Employees.GetEmployees
+﻿namespace HRMS.Application.Features.Employees.GetEmployees
 {
     public record GetEmployeesResponse(
         int Id,
@@ -12,5 +8,6 @@ namespace HRMS.Application.Features.Employees.GetEmployees
         string DepartmentName,
         string PositionName,
         string EmploymentType,
-        string EmploymentStatus);
+        string EmploymentStatus,
+        bool HasUserAccess);
 }

@@ -1,6 +1,6 @@
 using HRMS.Application.Abstractions.Messaging;
 
-namespace HRMS.Application.Features.Authentication.RegisterOrganization;
+namespace HRMS.Application.Features.Organizations.Registration;
 
 public sealed record RegisterOrganizationCommand(
     string OrganizationName,

@@ -1,4 +1,4 @@
-﻿namespace HRMS.Application.Features.Employees.GetEmployeeAccess
+﻿namespace HRMS.Application.Features.Employees.Access.GetEmployeeAccess
 {
     public record GetEmployeeAccessResponse(
         int UserId,

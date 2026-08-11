@@ -2,9 +2,10 @@ using ErrorOr;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
+using HRMS.Application.Features.Authentication;
 using HRMS.Domain.Entities;
 
-namespace HRMS.Application.Features.Authentication.RegisterOrganization
+namespace HRMS.Application.Features.Organizations.Registration
 {
     internal sealed class RegisterOrganizationCommandHandler
     : ICommandHandler<

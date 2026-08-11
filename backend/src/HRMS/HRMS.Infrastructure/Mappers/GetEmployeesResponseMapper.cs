@@ -32,7 +32,10 @@ namespace HRMS.Infrastructure.Mappers
                     reader.GetOrdinal("EmploymentType")),
 
                 EmploymentStatus: reader.GetString(
-                    reader.GetOrdinal("EmploymentStatus"))
+                    reader.GetOrdinal("EmploymentStatus")),
+
+                HasUserAccess : reader.GetBoolean(
+                    reader.GetOrdinal("HasUserAccess"))
             );
         }
     }
