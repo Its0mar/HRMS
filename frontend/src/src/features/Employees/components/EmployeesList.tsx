@@ -11,6 +11,7 @@ import { CreateAccessModal } from "./CreateAccessModal";
 import { UpdateAccessModal } from "./UpdateAccessModal";
 import { PERMISSIONS } from "../../Auth/constants/permissions";
 import { usePermission } from "../../Auth/hooks/usePermission";
+import { CreateEmployeeModal } from "./CreateEmployeeModal";
 
 export function EmployeesList() {
 
@@ -19,6 +20,7 @@ export function EmployeesList() {
     const [error, setError] = useState<string | null>(null);
     const [createAccessOpened, createAccessModal] = useDisclosure(false);
     const [updateAccessOpened, updateAccessModal] = useDisclosure(false);
+    const [createEmployeeOpened, createEmployeeModal] = useDisclosure(false);
 
     const [selectedEmployee, setSelectedEmployee] =
         useState<{
@@ -75,6 +77,8 @@ export function EmployeesList() {
         updateAccessModal.open();
     };
 
+
+
     const handleCreateAccessClose = () => {
         createAccessModal.close();
         setSelectedEmployee(null);
@@ -83,6 +87,10 @@ export function EmployeesList() {
     const handleUpdateAccessClose = () => {
         updateAccessModal.close();
         setSelectedEmployee(null);
+    };
+
+    const handleCreateEmployeeClose = () => {
+        createEmployeeModal.close();
     };
 
 
@@ -234,7 +242,7 @@ export function EmployeesList() {
                             {employees.length} total
                         </Badge>
 
-                        {canCreateEmployee && <Button leftSection={<IconUserPlus size={16} />}>
+                        {canCreateEmployee && <Button leftSection={<IconUserPlus size={16} />} variant="light" onClick={createEmployeeModal.open}>
                             New Employee
                         </Button>}
                     </Group>
@@ -268,6 +276,14 @@ export function EmployeesList() {
                     minWidth={1000}
                     emptyTitle="No employees yet"
                     emptyDescription="Employees will appear here once created."
+                />
+
+                <CreateEmployeeModal
+                    opened={createEmployeeOpened}
+                    onClose={handleCreateEmployeeClose}
+                    onCreated={() => {
+                        void fetchEmployees();
+                    }}
                 />
 
                 <CreateAccessModal

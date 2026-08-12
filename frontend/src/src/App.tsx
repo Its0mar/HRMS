@@ -13,6 +13,7 @@ import { WorkSchedules } from "./features/WorkSchedules/components/WorkSchedules
 import { RolesList } from "./features/Roles/components/RolesList";
 import { PermissionRoute } from "./Components/PermissionRoute";
 import { PERMISSIONS } from "./features/Auth/constants/permissions";
+import { BasicInfo } from "./features/Dashboard/components/BasicInfo";
 
 function App() {
   return (
@@ -22,8 +23,8 @@ function App() {
         <div className="min-h-screen bg-gray-900 text-white">
           <Routes>
             <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<Navigate to="/departments" replace />} />
-
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<BasicInfo />} />
 
 
               {/* <PermissionRoute permission={PERMISSIONS.DEPARTMENTS.VIEW}> */}

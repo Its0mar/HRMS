@@ -93,13 +93,14 @@ export function LoginForm() {
                         </Notification>
                     )}
 
-                    <form onSubmit={form.onSubmit(handleSubmit)}>
+                    <form  onSubmit={form.onSubmit(handleSubmit)}>
                         <Stack gap="md">
                             <TextInput
                                 withAsterisk
                                 label="Identifier"
                                 placeholder="Email or username"
                                 key={form.key("identifier")}
+                                disabled={isLoading}
                                 {...form.getInputProps("identifier")}
                             />
 
@@ -108,6 +109,7 @@ export function LoginForm() {
                                 label="Password"
                                 placeholder="Enter your password"
                                 key={form.key("password")}
+                                disabled={isLoading}
                                 {...form.getInputProps("password")}
                             />
 

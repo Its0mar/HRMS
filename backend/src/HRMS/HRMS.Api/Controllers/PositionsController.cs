@@ -29,11 +29,11 @@ namespace HRMS.Api.Controllers
         [HttpGet]
         [Authorize(Policy = Permissions.Positions.View)]
         public async Task<IActionResult> GetAsync(
-            GetPositionsQuery query,
-            [FromServices] IQueryHandler<GetPositionsQuery, List<GetPositionResponse>> handler,
+            [FromServices] IQueryDispatcher dispatcher,
             CancellationToken cancellationToken)
         {
-            var result = await handler.HandleAsync(query, cancellationToken);
+            var query = new GetPositionsQuery();
+            var result = await dispatcher.SendAsync(query, cancellationToken);
 
             return result.Match(
                 ok => Ok(result.Value),

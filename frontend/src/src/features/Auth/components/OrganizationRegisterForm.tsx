@@ -135,6 +135,7 @@ export function OrganizationRegisterForm() {
                                     withAsterisk
                                     label="Organization name"
                                     placeholder="Acme Corporation"
+                                    disabled={isLoading}
                                     {...form.getInputProps("organizationName")}
                                 />
 
@@ -142,6 +143,7 @@ export function OrganizationRegisterForm() {
                                     withAsterisk
                                     label="Organization code"
                                     placeholder="ACME"
+                                    disabled={isLoading}
                                     {...form.getInputProps("organizationCode")}
                                 />
 
@@ -150,6 +152,7 @@ export function OrganizationRegisterForm() {
                                     type="email"
                                     label="Organization email"
                                     placeholder="contact@acme.com"
+                                    disabled={isLoading}
                                     {...form.getInputProps("organizationEmail")}
                                 />
 
@@ -157,18 +160,21 @@ export function OrganizationRegisterForm() {
                                     withAsterisk
                                     label="Address"
                                     placeholder="Amman, Jordan"
+                                    disabled={isLoading}
                                     {...form.getInputProps("address")}
                                 />
 
                                 <TextInput
                                     label="Website"
                                     placeholder="https://acme.com"
+                                    disabled={isLoading}
                                     {...form.getInputProps("website")}
                                 />
 
                                 <TextInput
                                     label="Logo URL"
                                     placeholder="https://acme.com/logo.png"
+                                    disabled={isLoading}
                                     {...form.getInputProps("logoUrl")}
                                 />
                             </SimpleGrid>
@@ -186,6 +192,7 @@ export function OrganizationRegisterForm() {
                                     withAsterisk
                                     label="First name"
                                     placeholder="Joe"
+                                    disabled={isLoading}
                                     {...form.getInputProps("firstName")}
                                 />
 
@@ -193,6 +200,7 @@ export function OrganizationRegisterForm() {
                                     withAsterisk
                                     label="Last name"
                                     placeholder="Doe"
+                                    disabled={isLoading}
                                     {...form.getInputProps("lastName")}
                                 />
 
@@ -200,6 +208,7 @@ export function OrganizationRegisterForm() {
                                     withAsterisk
                                     label="Username"
                                     placeholder="joe.doe"
+                                    disabled={isLoading}
                                     {...form.getInputProps("ownerUsername")}
                                 />
 
@@ -208,6 +217,7 @@ export function OrganizationRegisterForm() {
                                     type="email"
                                     label="Email"
                                     placeholder="joe@acme.com"
+                                    disabled={isLoading}
                                     {...form.getInputProps("ownerEmail")}
                                 />
 
@@ -215,6 +225,7 @@ export function OrganizationRegisterForm() {
                                     withAsterisk
                                     label="Password"
                                     placeholder="At least 8 characters"
+                                    disabled={isLoading}
                                     {...form.getInputProps("password")}
                                 />
 
@@ -222,6 +233,7 @@ export function OrganizationRegisterForm() {
                                     withAsterisk
                                     label="Confirm password"
                                     placeholder="At least 8 characters"
+                                    disabled={isLoading}
                                     {...form.getInputProps("confirmPassword")}
                                 />
                             </SimpleGrid>
