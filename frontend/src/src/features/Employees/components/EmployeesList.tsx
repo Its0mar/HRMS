@@ -9,6 +9,8 @@ import { DataTable, type DataTableColumn } from "../../../Common/DataTable/DataT
 import { useDisclosure } from "@mantine/hooks";
 import { CreateAccessModal } from "./CreateAccessModal";
 import { UpdateAccessModal } from "./UpdateAccessModal";
+import { PERMISSIONS } from "../../Auth/constants/permissions";
+import { usePermission } from "../../Auth/hooks/usePermission";
 
 export function EmployeesList() {
 
@@ -24,6 +26,7 @@ export function EmployeesList() {
             name: string;
         } | null>(null);
 
+    const canCreateEmployee = usePermission(PERMISSIONS.EMPLOYEES.CREATE);    
 
 
     const fetchEmployees = async () => {
@@ -231,9 +234,9 @@ export function EmployeesList() {
                             {employees.length} total
                         </Badge>
 
-                        <Button leftSection={<IconUserPlus size={16} />}>
+                        {canCreateEmployee && <Button leftSection={<IconUserPlus size={16} />}>
                             New Employee
-                        </Button>
+                        </Button>}
                     </Group>
                 </Group>
 

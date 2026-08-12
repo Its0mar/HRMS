@@ -11,37 +11,22 @@ namespace HRMS.Application.Features.Employees.CreateEmployee
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly ICurrentUser _currentUser;
+        private readonly IWorkScheduleRepository _workScheduleRepository;
 
-        public CreateEmployeeHandler(IEmployeeRepository employeeRepository, ICurrentUser currentUser)
+        public CreateEmployeeHandler(
+            IEmployeeRepository employeeRepository,
+            ICurrentUser currentUser,
+            IWorkScheduleRepository workScheduleRepository)
         {
             _employeeRepository = employeeRepository;
             _currentUser = currentUser;
+            _workScheduleRepository = workScheduleRepository;
         }
 
         public async Task<ErrorOr<CreateEmployeeResponse>> HandleAsync(CreateEmployeeCommand command, CancellationToken cancellationToken)
         {
-            var personalInformation = new PersonalInformation(
-                command.FirstName,
-                command.LastName,
-                command.DateOfBirth,
-                command.Gender,
-                command.NationalId,
-                command.Nationality,
-                command.MaritalStatus,
-                command.Phone,
-                command.Email,
-                command.Address,
-                command.ProfilePictureUrl);
-
-            var employmentInformation = new EmploymentInformation(
-                command.DepartmentId,
-                command.PositionId,
-                command.ManagerEmployeeId,
-                command.HireDate,
-                command.EmploymentType,
-                command.EmploymentStatus,
-                command.WorkEmail,
-                command.WorkPhone);
+            var personalInformation = CreatePersonalInformationFromCommand(command);
+            var employmentInformation = CreateEmploymentInformationFromCommand(command);
 
             var employee = new Employee(
                 command.EmployeeNumber,
@@ -54,5 +39,34 @@ namespace HRMS.Application.Features.Employees.CreateEmployee
             return new CreateEmployeeResponse(result);
 
         }
+
+        private PersonalInformation CreatePersonalInformationFromCommand(CreateEmployeeCommand command)
+        {
+            return new PersonalInformation(
+                command.FirstName,
+                command.LastName,
+                command.DateOfBirth,
+                command.Gender,
+                command.NationalId,
+                command.Nationality,
+                command.MaritalStatus,
+                command.Phone,
+                command.Email,
+                command.Address,
+                command.ProfilePictureUrl);
+        }
+        private EmploymentInformation CreateEmploymentInformationFromCommand(CreateEmployeeCommand command)
+        {
+            return new EmploymentInformation(
+                command.DepartmentId,
+                command.PositionId,
+                command.ManagerEmployeeId,
+                command.HireDate,
+                command.EmploymentType,
+                command.EmploymentStatus,
+                command.WorkEmail,
+                command.WorkPhone);
+        }
+
     }
 }

@@ -5,7 +5,7 @@ export function validateUpdateAccessForm(
   values: CreateAccessFormValues,
 ): FormErrors {
   const errors: FormErrors = {};
-  const username = values.username.trim();
+  const username = values.username;
 
   if (username.length < 3) {
     errors.username =

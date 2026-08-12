@@ -11,6 +11,8 @@ import { PublicRoute } from "./Components/PublicRoute";
 import { EmployeesList } from "./features/Employees/components/EmployeesList";
 import { WorkSchedules } from "./features/WorkSchedules/components/WorkSchedules";
 import { RolesList } from "./features/Roles/components/RolesList";
+import { PermissionRoute } from "./Components/PermissionRoute";
+import { PERMISSIONS } from "./features/Auth/constants/permissions";
 
 function App() {
   return (
@@ -21,8 +23,26 @@ function App() {
           <Routes>
             <Route element={<ProtectedRoute />}>
               <Route path="/" element={<Navigate to="/departments" replace />} />
-              <Route path="/departments" element={<DepartmentsList />} />
-              <Route path="/employees" element={<EmployeesList />} />
+
+
+
+              {/* <PermissionRoute permission={PERMISSIONS.DEPARTMENTS.VIEW}> */}
+                <Route path="/departments" element={ 
+                  <PermissionRoute permission={PERMISSIONS.DEPARTMENTS.VIEW}>
+                    <DepartmentsList /> 
+                  </PermissionRoute>}
+                  />
+              
+
+          
+                <Route path="/employees" element={
+                  <PermissionRoute permission={PERMISSIONS.EMPLOYEES.VIEW}>
+                    <EmployeesList />
+                    </PermissionRoute>}
+                  />
+              
+
+
               <Route path="/work-schedules" element={<WorkSchedules />} />
               <Route path="/roles" element={<RolesList/>} />
             </Route>

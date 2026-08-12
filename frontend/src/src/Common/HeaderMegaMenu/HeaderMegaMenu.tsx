@@ -20,6 +20,8 @@ import { API_ROUTES } from "../../lib/apiRoutes";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useEmployeeOptionsStore } from "../../features/Employees/store/useEmployeeOptionsStore";
 import classes from "./HeaderMegaMenu.module.css";
+import { PERMISSIONS } from "../../features/Auth/constants/permissions";
+import { usePermission } from "../../features/Auth/hooks/usePermission";
 
 export function HeaderMegaMenu() {
   const [drawerOpened, drawer] = useDisclosure(false);
@@ -29,6 +31,9 @@ export function HeaderMegaMenu() {
   const isAuthenticated = useAuthStore((state) => Boolean(state.accessToken));
   const clearSession = useAuthStore((state) => state.clearSession);
   const invalidateEmployees = useEmployeeOptionsStore((state) => state.invalidate);
+
+  const canViewDepartments = usePermission(PERMISSIONS.DEPARTMENTS.VIEW);
+  const canViewEmployees = usePermission(PERMISSIONS.EMPLOYEES.VIEW);
 
   const displayName = user
     ? `${user.firstName} ${user.lastName}`.trim()
@@ -63,13 +68,13 @@ export function HeaderMegaMenu() {
                 Roles
               </Link>
 
-              <Link to="/departments" className={classes.link}>
+              {canViewDepartments && <Link to="/departments" className={classes.link}>
                 Departments
-              </Link>
+              </Link>}
               
-              <Link to="/employees" className={classes.link}>
+              {canViewEmployees && <Link to="/employees" className={classes.link}>
                 Employees
-              </Link>
+              </Link> }
 
             <Link to="/work-schedules" className={classes.link}>
                 Work Schedules

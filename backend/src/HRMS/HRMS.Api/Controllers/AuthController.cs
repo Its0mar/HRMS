@@ -15,11 +15,6 @@ namespace HRMS.Api.Controllers;
 [ApiVersion(1)]
 public sealed class AuthController : ApiController
 {
-
-
-
-
-
     [HttpPost("login")]
     public async Task<IActionResult> Login(
         LoginCommand command,
