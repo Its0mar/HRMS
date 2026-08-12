@@ -2,6 +2,7 @@
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
+using HRMS.Application.Abstractions.Services;
 using HRMS.Domain.Entities.Employees;
 
 namespace HRMS.Application.Features.Employees.CreateEmployee
@@ -11,13 +12,16 @@ namespace HRMS.Application.Features.Employees.CreateEmployee
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly ICurrentUser _currentUser;
+        private readonly IFileService _fileService;
 
         public CreateEmployeeHandler(
             IEmployeeRepository employeeRepository,
-            ICurrentUser currentUser)
+            ICurrentUser currentUser,
+            IFileService fileServcie)
         {
             _employeeRepository = employeeRepository;
             _currentUser = currentUser;
+            _fileService = fileServcie;
         }
 
         public async Task<ErrorOr<CreateEmployeeResponse>> HandleAsync(CreateEmployeeCommand command, CancellationToken cancellationToken)
@@ -32,6 +36,16 @@ namespace HRMS.Application.Features.Employees.CreateEmployee
                 employmentInformation);
 
             var result =  await _employeeRepository.CreateAsync(employee, cancellationToken);
+
+            if (command.ProfilePicture is not null)
+            {
+                var path = await _fileService.UploadFileAsync(
+                    command.ProfilePicture.Content,
+                    command.ProfilePicture.FileName,
+                    "employees-profile-pic",
+                    true,
+                    cancellationToken);
+            }
 
             return new CreateEmployeeResponse(result);
 
@@ -50,7 +64,7 @@ namespace HRMS.Application.Features.Employees.CreateEmployee
                 command.Phone,
                 command.Email,
                 command.Address,
-                command.ProfilePictureUrl);
+                null);
         }
         private EmploymentInformation CreateEmploymentInformationFromCommand(CreateEmployeeCommand command)
         {

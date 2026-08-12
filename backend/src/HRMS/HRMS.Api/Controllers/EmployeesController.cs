@@ -1,7 +1,9 @@
 ﻿using Asp.Versioning;
+using HRMS.Api.Contracts.Employees;
 using HRMS.Api.Contracts.Employess;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
+using HRMS.Application.Abstractions.Models;
 using HRMS.Application.Features.Employees.Access.CreateEmployeeAccess;
 using HRMS.Application.Features.Employees.Access.GetEmployeeAccess;
 using HRMS.Application.Features.Employees.CreateEmployee;
@@ -28,16 +30,51 @@ namespace HRMS.Api.Controllers
         [HttpPost]
         [Authorize(Policy = Permissions.Employees.Create)]
         public async Task<IActionResult> CreateAsync(
-            CreateEmployeeCommand command,
+            [FromForm] CreateEmployeeRequest request,
             [FromServices] ICommandDispatcher dispatcher, 
             CancellationToken cancellationToken)
         {
-           var result =  await dispatcher.SendAsync(
+            UploadedFile? profilePicture = null;
+
+            if (request.ProfilePicture is not null)
+            {
+                profilePicture = new UploadedFile(
+                    request.ProfilePicture.OpenReadStream(),
+                    request.ProfilePicture.FileName,
+                    request.ProfilePicture.ContentType,
+                    request.ProfilePicture.Length);
+            }
+
+            var command = new CreateEmployeeCommand(
+                request.EmployeeNumber,
+                request.FirstName,
+                request.LastName,
+                request.DateOfBirth,
+                request.Gender,
+                request.NationalId,
+                request.Nationality,
+                request.MaritalStatus,
+                request.Phone,
+                request.Email,
+                request.Address,
+                profilePicture,
+                request.DepartmentId,
+                request.PositionId,
+                request.ManagerEmployeeId,
+                request.HireDate,
+                request.EmploymentType,
+                request.EmploymentStatus,
+                request.WorkEmail,
+                request.WorkPhone);
+
+            var result = await dispatcher.SendAsync(
                 command,
                 cancellationToken);
 
             return result.Match<IActionResult>(
-                response => Ok(result.Value),
+                response => StatusCode(
+                    StatusCodes.Status201Created,
+                    response),
                 Problem);
         }
 

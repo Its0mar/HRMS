@@ -48,10 +48,19 @@ namespace HRMS.Application.Features.Employees.CreateEmployee
                .MinimumLength(30)
                .MaximumLength(300);
 
-            RuleFor(x => x.ProfilePictureUrl)
-               .MinimumLength(10)
-               .MaximumLength(300);
+            When(command => command.ProfilePicture is not null, () =>
+            {
+                RuleFor(command => command.ProfilePicture!.Length)
+                    .GreaterThan(0)
+                    .LessThanOrEqualTo(5 * 1024 * 1024);
 
+                RuleFor(command => command.ProfilePicture!.ContentType)
+                    .Must(type => type is
+                        "image/jpeg" or
+                        "image/png" or
+                        "image/webp")
+                    .WithMessage("Only JPEG, PNG, and WebP images are allowed.");
+            });
         }
     }
 }

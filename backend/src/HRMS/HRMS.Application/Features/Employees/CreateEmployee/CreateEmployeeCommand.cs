@@ -1,9 +1,10 @@
 ﻿using HRMS.Application.Abstractions.Messaging;
+using HRMS.Application.Abstractions.Models;
 using HRMS.Domain.Entities.Employees.Enums;
 
 namespace HRMS.Application.Features.Employees.CreateEmployee
 {
-    public record CreateEmployeeCommand(
+    public sealed record CreateEmployeeCommand(
         string EmployeeNumber,
         string FirstName,
         string LastName,
@@ -15,7 +16,7 @@ namespace HRMS.Application.Features.Employees.CreateEmployee
         string Phone,
         string Email,
         string Address,
-        string? ProfilePictureUrl,
+        UploadedFile? ProfilePicture,
         int DepartmentId,
         int PositionId,
         int? ManagerEmployeeId,
@@ -23,6 +24,6 @@ namespace HRMS.Application.Features.Employees.CreateEmployee
         EmploymentType EmploymentType,
         EmploymentStatus EmploymentStatus,
         string WorkEmail,
-        string? WorkPhone
-        ) : ICommand<CreateEmployeeResponse>;
+        string? WorkPhone)
+        : ICommand<CreateEmployeeResponse>;
 }

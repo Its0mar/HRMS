@@ -1,9 +1,12 @@
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Persistence;
+using HRMS.Application.Abstractions.Services;
+using HRMS.Application.Common.Settings;
 using HRMS.Domain.Entities.Common;
 using HRMS.Infrastructure.Persistence;
 using HRMS.Infrastructure.Repositories;
 using HRMS.Infrastructure.Security;
+using HRMS.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -67,6 +70,9 @@ public static class DependencyInjection
         services.AddScoped<IWorkScheduleRepository, WorkScheduleRepository>();
         services.AddScoped<IRolesRepository, RolesRepository>();
         services.AddScoped<IPermissionsRepository, PermissionsRepository>();
+        services.AddScoped<IFileService, FileService>();
+
+        services.Configure<CloudinarySettings>(configuration.GetSection("Cloudinary"));
 
         return services;
     }

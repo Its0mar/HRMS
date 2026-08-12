@@ -14,8 +14,7 @@ namespace HRMS.Infrastructure.Repositories
     {
         private readonly ISqlExecutor _sqlExecutor;
 
-        public EmployeeRepository(
-            ISqlExecutor sqlExecutor
+        public EmployeeRepository(ISqlExecutor sqlExecutor
             )
         {
             _sqlExecutor = sqlExecutor;
@@ -95,6 +94,16 @@ namespace HRMS.Infrastructure.Repositories
                 new SqlParameter("@OrganizationId", organizationId));
         }
 
+        public async Task<bool> UploadProfilePicturePath(int employeeId, int organizationId, string picPath, CancellationToken cancellationToken)
+        {
+            return await _sqlExecutor.ExecuteScalarBoolAsync(
+                "Employees_UpatePicPath",
+                cancellationToken,
+                new SqlParameter("@EmployeeId", employeeId),
+                new SqlParameter("@OrganizationId", organizationId),
+                new SqlParameter("@PicPath", picPath)
+                );
+        }
 
 
         private EmployeeOptionResponse MapToEmployeeOptionResponse(SqlDataReader reader)
@@ -150,7 +159,5 @@ namespace HRMS.Infrastructure.Repositories
                     : value
             };
         }
-
-
     }
 }

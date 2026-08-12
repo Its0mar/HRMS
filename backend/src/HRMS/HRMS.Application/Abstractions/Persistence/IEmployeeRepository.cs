@@ -12,6 +12,7 @@ namespace HRMS.Application.Abstractions.Persistence
         public Task<List<EmployeeOptionResponse>> GetEmployeesOptionsAsync(int organizationId, CancellationToken cancellationToken);
         public Task<EmployeeInfoForUserRegister?> GetEmployeeInfoForUserRegisterationAsync(int employeeId, int organizationId, CancellationToken cancellationToken);
         Task<EmployeeAccessInfo?> GetAccessByEmployeeIdAsync(int employeeId, int organizationId, CancellationToken cancellationToken);
+        Task<bool> UploadProfilePicturePath(int employeeId, int organizationId, string picPath, CancellationToken cancellationToken);
 
     }
 }
