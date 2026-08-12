@@ -22,6 +22,7 @@ using HRMS.Application.Features.Roles.GetRolesOptions;
 using HRMS.Application.Features.Roles.Permissions.GetPermissionOptions;
 using HRMS.Application.Features.Roles.UpdateRole;
 using HRMS.Application.Features.WorkSchedules.CreateWorkSchedules;
+using HRMS.Application.Features.WorkSchedules.GetWorkScheduleOptions;
 using HRMS.Application.Features.WorkSchedules.GetWorkSchedules;
 using HRMS.Application.Features.WorkSchedules.GetWorkScheduleWithDays;
 using HRMS.Application.Features.WorkSchedules.UpdateWorkSchedule;
@@ -142,6 +143,10 @@ public static class DependencyInjection
         services.AddScoped<
             ICommandHandler<LogoutCommand, bool>,
             LogoutCommandHandler>();
+
+        services.AddScoped<
+            IQueryHandler<GetWorkScheduleOptionsQuery, IReadOnlyList<GetWorkScheduleOptionsResponse>>,
+            GetWorkScheduleOptionsHandler>();
 
 
         return services;

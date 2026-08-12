@@ -11,16 +11,13 @@ namespace HRMS.Application.Features.Employees.CreateEmployee
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly ICurrentUser _currentUser;
-        private readonly IWorkScheduleRepository _workScheduleRepository;
 
         public CreateEmployeeHandler(
             IEmployeeRepository employeeRepository,
-            ICurrentUser currentUser,
-            IWorkScheduleRepository workScheduleRepository)
+            ICurrentUser currentUser)
         {
             _employeeRepository = employeeRepository;
             _currentUser = currentUser;
-            _workScheduleRepository = workScheduleRepository;
         }
 
         public async Task<ErrorOr<CreateEmployeeResponse>> HandleAsync(CreateEmployeeCommand command, CancellationToken cancellationToken)
