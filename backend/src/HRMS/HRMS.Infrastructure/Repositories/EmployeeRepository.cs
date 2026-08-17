@@ -106,6 +106,8 @@ namespace HRMS.Infrastructure.Repositories
         }
 
 
+
+
         private EmployeeOptionResponse MapToEmployeeOptionResponse(SqlDataReader reader)
         {
             var id = reader.GetInt32(reader.GetOrdinal("Id"));

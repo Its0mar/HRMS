@@ -20,6 +20,7 @@ internal sealed class CurrentUser : ICurrentUser
     public int Id => ReadRequiredIntegerClaim(JwtRegisteredClaimNames.Sub, ClaimTypes.NameIdentifier);
 
     public int OrganizationId => ReadRequiredIntegerClaim("organization_id");
+    public int EmployeeId => ReadRequiredIntegerClaim("employee_id");
 
     private ClaimsPrincipal? User => _httpContextAccessor.HttpContext?.User;
 

@@ -12,6 +12,11 @@ namespace HRMS.Infrastructure.Mappers
                 ? (DateTime?)null
                 : reader.GetDateTime(updatedAtIndex);
 
+            var employeeIdIndex = reader.GetOrdinal("EmployeeId");
+            int? employeeId = reader.IsDBNull(employeeIdIndex)
+                ? (int?)null
+                : reader.GetInt32(employeeIdIndex);
+
             return User.Restore(
                 reader.GetInt32(reader.GetOrdinal("Id")),
                 reader.GetString(reader.GetOrdinal("Username")),
@@ -23,7 +28,8 @@ namespace HRMS.Infrastructure.Mappers
                 reader.GetBoolean(reader.GetOrdinal("IsActive")),
                 reader.GetBoolean(reader.GetOrdinal("IsDeleted")),
                 reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
-                updatedAt
+                updatedAt,
+                employeeId
                 );
         }
     }

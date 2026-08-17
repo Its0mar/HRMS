@@ -3,5 +3,5 @@
 namespace HRMS.Application.Features.Attendance.ClockIn
 {
     public record ClockInCommand(
-        int EmployeeId) : ICommand<bool>;
+        int employeeId) : ICommand<bool>;
 }

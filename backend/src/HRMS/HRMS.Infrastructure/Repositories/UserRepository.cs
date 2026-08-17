@@ -2,6 +2,7 @@ using HRMS.Application.Abstractions.Persistence;
 using HRMS.Domain.Entities;
 using HRMS.Infrastructure.Mappers;
 using HRMS.Infrastructure.Persistence;
+using Microsoft.Data.SqlClient;
 using static HRMS.Infrastructure.Persistence.SqlParams;
 
 namespace HRMS.Infrastructure.Repositories;

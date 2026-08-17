@@ -48,7 +48,7 @@ namespace HRMS.Infrastructure.Repositories
         public async Task<AttendanceLog?> GetTodayLogAsync(int employeeId, DateOnly date, CancellationToken cancellationToken)
         {
             return await sqlExecutor.QueryFirstOrDefaultAsync(
-                "dbo.Attendance_GetMyRecord",
+                "dbo.Attendance_GetTodayStatus",
                 AttendanceLogMapper.Map,
                 cancellationToken,
                 new SqlParameter("@EmployeeId", employeeId),

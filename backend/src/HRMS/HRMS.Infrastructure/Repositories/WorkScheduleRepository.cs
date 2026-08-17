@@ -1,4 +1,5 @@
 ﻿using HRMS.Application.Abstractions.Persistence;
+using HRMS.Domain.Entities.Employees;
 using HRMS.Domain.Entities.WorkSchedules;
 using HRMS.Infrastructure.Mappers;
 using HRMS.Infrastructure.Persistence;
@@ -98,10 +99,19 @@ namespace HRMS.Infrastructure.Repositories
 
         public async Task<WorkSchedule?> GetEmployeeWorkScheduleByEmployeeId(int employeeId, int organizationId, CancellationToken cancellationToken)
         {
+            var workScheduleId = await GetEmployeeWorkScheduleIdAsync(employeeId, cancellationToken);
+            if (workScheduleId is null) return null;
+
+            return await GetWorkScheduleByIdAsync(workScheduleId.Value, organizationId, cancellationToken);
+        }
+
+        private async Task<int?> GetEmployeeWorkScheduleIdAsync(int employeeId, CancellationToken cancellationToken)
+        {
             return await _sqlExecutor.QueryFirstOrDefaultAsync(
-                "WorkSchedules_GetByEmployeeId",
-                WorkScheduleMapper.Map,
-                cancellationToken);
+                "Employees_GetWorkScheduleIdByEmpId",
+                reader => reader.GetInt32(reader.GetOrdinal("WorkScheduleId")),
+                cancellationToken,
+                new SqlParameter("@EmployeeId", employeeId));
         }
 
         private static SqlParameter CreateWorkScheduleDayDataTable(IEnumerable<WorkScheduleDay> days)

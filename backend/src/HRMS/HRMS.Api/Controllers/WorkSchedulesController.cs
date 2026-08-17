@@ -47,7 +47,7 @@ namespace HRMS.Api.Controllers
         {
             var result = await dispatcher.SendAsync(command, cancellationToken);
             return result.Match(
-                ture => Ok(),
+                ok => Ok(),
                 errors => Problem(errors)
                 );
         }

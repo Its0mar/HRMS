@@ -19,15 +19,16 @@ namespace HRMS.Application.Features.Attendance.ClockIn
             var today = DateOnly.FromDateTime(now);
             var orgId = currentUser.OrganizationId;
 
+
             //check if employee clocked in today
-            var existingLog = await attendanceRepository.GetTodayLogAsync(command.EmployeeId, today, cancellationToken);
+            var existingLog = await attendanceRepository.GetTodayLogAsync(command.employeeId, today, cancellationToken);
             if (existingLog is not null)
             {
                 return Error.Conflict("Attendance.AlreadyClockedIn", "You have already clocked in for today.");
             }
 
             //get the current workschedule for employee and check if today is a working day
-            var workSchedule = await workScheduleRepository.GetEmployeeWorkScheduleByEmployeeId(command.EmployeeId, currentUser.OrganizationId, cancellationToken);
+            var workSchedule = await workScheduleRepository.GetEmployeeWorkScheduleByEmployeeId(command.employeeId, currentUser.OrganizationId, cancellationToken);
 
             var workDay = convertFromDayOfWeekToWorkDay(now.DayOfWeek);
             var todayScheduleDay = workSchedule?.Days.FirstOrDefault(d => d.WorkDay == workDay);
@@ -47,7 +48,7 @@ namespace HRMS.Application.Features.Attendance.ClockIn
                 lateMinutes = (int)(now - shiftStartTime).TotalMinutes;
             }
 
-            var attendanceLog = new AttendanceLog(command.EmployeeId, workSchedule.Id.Value, currentUser.OrganizationId, status, lateMinutes);
+            var attendanceLog = new AttendanceLog(command.employeeId, workSchedule.Id.Value, currentUser.OrganizationId, status, lateMinutes);
             
             return await attendanceRepository.ClockInAsync(attendanceLog, cancellationToken) > 0;
         }

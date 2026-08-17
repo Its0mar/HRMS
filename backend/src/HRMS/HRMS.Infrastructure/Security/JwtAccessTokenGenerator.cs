@@ -39,6 +39,7 @@ internal sealed class JwtAccessTokenGenerator : IAccessTokenGenerator
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
             new Claim("organization_id", user.OrganizationId.ToString()),
+            new Claim("employee_id", user.EmployeeId.ToString() ?? string.Empty),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
