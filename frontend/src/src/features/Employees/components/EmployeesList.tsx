@@ -12,6 +12,7 @@ import { UpdateAccessModal } from "./UpdateAccessModal";
 import { PERMISSIONS } from "../../Auth/constants/permissions";
 import { usePermission } from "../../Auth/hooks/usePermission";
 import { CreateEmployeeModal } from "./CreateEmployeeModal";
+import { AssignWorkScheduleModal } from "./AssignWorkScheduleModal";
 
 export function EmployeesList() {
 
@@ -21,6 +22,7 @@ export function EmployeesList() {
     const [createAccessOpened, createAccessModal] = useDisclosure(false);
     const [updateAccessOpened, updateAccessModal] = useDisclosure(false);
     const [createEmployeeOpened, createEmployeeModal] = useDisclosure(false);
+    const [assignWorkScheduleOpened, assignWorkScheduleModal] = useDisclosure(false);
 
     const [selectedEmployee, setSelectedEmployee] =
         useState<{
@@ -28,7 +30,7 @@ export function EmployeesList() {
             name: string;
         } | null>(null);
 
-    const canCreateEmployee = usePermission(PERMISSIONS.EMPLOYEES.CREATE);    
+    const canCreateEmployee = usePermission(PERMISSIONS.EMPLOYEES.CREATE);
 
 
     const fetchEmployees = async () => {
@@ -65,6 +67,17 @@ export function EmployeesList() {
         createAccessModal.open();
     };
 
+    const handleAssignWorkSchedule = (
+        employeeId: number,
+        employeeName: string,
+    ) => (
+        setSelectedEmployee({
+            id: employeeId,
+            name: employeeName,
+        }),
+        assignWorkScheduleModal.open()
+    )
+
     const handleUpdateAccess = (
         employeeId: number,
         employeeName: string,
@@ -91,6 +104,11 @@ export function EmployeesList() {
 
     const handleCreateEmployeeClose = () => {
         createEmployeeModal.close();
+    };
+
+    const handleAssignWorkScheduleClose = () => {
+        assignWorkScheduleModal.close();
+        setSelectedEmployee(null);
     };
 
 
@@ -211,6 +229,19 @@ export function EmployeesList() {
                         </Button>
                     )}
 
+                    <Button
+                        size="xs"
+                        variant="light"
+                        onClick={() =>
+                            handleAssignWorkSchedule(
+                                employee.id,
+                                employee.fullName,
+                            )
+                        }
+                    >
+                        Assgin Work Schedule
+                    </Button>
+
 
 
                 </Group>
@@ -305,6 +336,17 @@ export function EmployeesList() {
                         void fetchEmployees();
                     }}
                 />
+
+                <AssignWorkScheduleModal
+                    opened={assignWorkScheduleOpened}
+                    employeeId={selectedEmployee?.id ?? null}
+                    employeeName={selectedEmployee?.name ?? null}
+                    onClose={handleAssignWorkScheduleClose}
+                    onCreated={() => {
+                        void fetchEmployees();
+                    }}
+                />
+
 
             </Stack>
         </main>

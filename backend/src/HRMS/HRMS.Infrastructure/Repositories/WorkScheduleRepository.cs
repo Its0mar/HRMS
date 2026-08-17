@@ -1,5 +1,4 @@
 ﻿using HRMS.Application.Abstractions.Persistence;
-using HRMS.Domain.Entities;
 using HRMS.Domain.Entities.WorkSchedules;
 using HRMS.Infrastructure.Mappers;
 using HRMS.Infrastructure.Persistence;
@@ -63,6 +62,17 @@ namespace HRMS.Infrastructure.Repositories
                 new SqlParameter("@Id", id),
                 new SqlParameter("@OrganizationId", organizationId)
                 );
+        }
+
+        public async Task<bool> AssignEmployeeAsync(int employeeId, int workScheduleId, DateTime effectiveFrom, CancellationToken cancellationToken)
+        {
+            return await _sqlExecutor.ExecuteAsync(
+                "WorkSchedule_AssignEmployee",
+                cancellationToken,
+                new SqlParameter("@EmployeeId", employeeId),
+                new SqlParameter("@WorkScheduleId", workScheduleId),
+                new SqlParameter("@EffectiveFrom", effectiveFrom)
+                ) > 0;
         }
 
         public async Task<IEnumerable<WorkSchedule>> GetWorkSchedulesByOrganizationIdAsync(int organizationId, CancellationToken cancellationToken)

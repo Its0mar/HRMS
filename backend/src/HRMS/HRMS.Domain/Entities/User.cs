@@ -11,6 +11,7 @@ namespace HRMS.Domain.Entities
         public string LastName { get; private set; }
         public int OrganizationId { get; private set; }
         public int? EmployeeId { get; private set; } = null;
+        public bool CanAuthenticate => !IsDeleted && IsActive;
 
         public User(
             string username,

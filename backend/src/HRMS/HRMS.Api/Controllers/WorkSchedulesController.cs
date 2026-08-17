@@ -2,6 +2,7 @@
 using ErrorOr;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
+using HRMS.Application.Features.WorkSchedules.AssignEmployee;
 using HRMS.Application.Features.WorkSchedules.CreateWorkSchedules;
 using HRMS.Application.Features.WorkSchedules.GetWorkScheduleOptions;
 using HRMS.Application.Features.WorkSchedules.GetWorkSchedules;
@@ -61,6 +62,22 @@ namespace HRMS.Api.Controllers
 
             return result.Match(
                 workSchedules => Ok(workSchedules),
+                errors => Problem(errors)
+            );
+        }
+
+        [HttpPost("assignments")]
+        [Authorize]
+        public async Task<IActionResult> AssignEmployee(
+            AssignEmployeeCommand command,
+            [FromServices] ICommandHandler<AssignEmployeeCommand, bool> handler,
+            CancellationToken cancellationToken
+            )
+        {
+            var result = await handler.HandleAsync(command, cancellationToken);
+
+            return result.Match(
+                _ => Ok(),
                 errors => Problem(errors)
             );
         }

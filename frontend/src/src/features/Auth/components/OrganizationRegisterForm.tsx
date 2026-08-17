@@ -73,7 +73,7 @@ export function OrganizationRegisterForm() {
 
         try {
             await apiClient.post(
-                API_ROUTES.AUTH.REGISTER,
+                API_ROUTES.ORGRANIZATIONS.CREATE,
                 request
             );
 

@@ -2,33 +2,19 @@
 using HRMS.Domain.Entities;
 using HRMS.Infrastructure.Mappers;
 using HRMS.Infrastructure.Persistence;
-using Microsoft.Data.SqlClient;
-using System.Data;
+using static HRMS.Infrastructure.Persistence.SqlParams;
 
 namespace HRMS.Infrastructure.Repositories
 {
-    internal sealed class RefreshTokenRepository
-    : IRefreshTokenRepository
+    internal sealed class RefreshTokenRepository(ISqlExecutor sqlExecutor) : IRefreshTokenRepository
     {
-        private readonly ISqlExecutor _sqlExecutor;
-
-        public RefreshTokenRepository(
-            ISqlExecutor sqlExecutor)
+        public async Task<RefreshToken?> GetByHashAsync(string tokenHash, CancellationToken cancellationToken)
         {
-            _sqlExecutor = sqlExecutor;
-        }
-
-        public Task<RefreshToken?> GetByHashAsync(
-            string tokenHash,
-            CancellationToken cancellationToken)
-        {
-            return _sqlExecutor.QueryFirstOrDefaultAsync(
+            return await sqlExecutor.QueryFirstOrDefaultAsync(
                 "dbo.RefreshToken_GetByHash",
                 RefreshTokenMapper.Map,
                 cancellationToken,
-                TokenHashParameter(
-                    "@TokenHash",
-                    tokenHash));
+                TokenHash("@TokenHash", tokenHash));
         }
 
         public async Task CreateOrReplaceAsync(
@@ -38,37 +24,16 @@ namespace HRMS.Infrastructure.Repositories
             DateTime createdAt,
             CancellationToken cancellationToken)
         {
-            await _sqlExecutor.ExecuteAsync(
+            await sqlExecutor.ExecuteAsync(
                 "dbo.RefreshToken_CreateOrReplace",
                 cancellationToken,
-
-                new SqlParameter(
-                    "@UserId",
-                    SqlDbType.Int)
-                {
-                    Value = userId
-                },
-
-                TokenHashParameter(
-                    "@TokenHash",
-                    tokenHash),
-
-                new SqlParameter(
-                    "@ExpiresAt",
-                    SqlDbType.DateTime2)
-                {
-                    Value = expiresAt
-                },
-
-                new SqlParameter(
-                    "@CreatedAt",
-                    SqlDbType.DateTime2)
-                {
-                    Value = createdAt
-                });
+                Int("@UserId", userId),
+                TokenHash("@TokenHash", tokenHash),
+                DateTime2("@ExpiresAt", expiresAt),
+                DateTime2("@CreatedAt", createdAt));
         }
 
-        public Task<bool> RotateAsync(
+        public async Task<bool> RotateAsync(
             int userId,
             string currentTokenHash,
             string newTokenHash,
@@ -76,72 +41,24 @@ namespace HRMS.Infrastructure.Repositories
             DateTime createdAt,
             CancellationToken cancellationToken)
         {
-            return _sqlExecutor.ExecuteScalarBoolAsync(
+            return await sqlExecutor.ExecuteScalarBoolAsync(
                 "dbo.RefreshToken_Rotate",
                 cancellationToken,
+                Int("@UserId", userId),
+                TokenHash("@CurrentTokenHash", currentTokenHash),
+                TokenHash("@NewTokenHash", newTokenHash),
+                DateTime2("@ExpiresAt", expiresAt),
+                DateTime2("@CreatedAt", createdAt));
 
-                new SqlParameter(
-                    "@UserId",
-                    SqlDbType.Int)
-                {
-                    Value = userId
-                },
-
-                TokenHashParameter(
-                    "@CurrentTokenHash",
-                    currentTokenHash),
-
-                TokenHashParameter(
-                    "@NewTokenHash",
-                    newTokenHash),
-
-                new SqlParameter(
-                    "@ExpiresAt",
-                    SqlDbType.DateTime2)
-                {
-                    Value = expiresAt
-                },
-
-                new SqlParameter(
-                    "@CreatedAt",
-                    SqlDbType.DateTime2)
-                {
-                    Value = createdAt
-                });
         }
 
-        public Task<bool> RevokeAsync(
-            string tokenHash,
-            DateTime revokedAt,
-            CancellationToken cancellationToken)
+        public async Task<bool> RevokeAsync(string tokenHash, DateTime revokedAt, CancellationToken cancellationToken)
         {
-            return _sqlExecutor.ExecuteScalarBoolAsync(
+            return await sqlExecutor.ExecuteScalarBoolAsync(
                 "dbo.RefreshToken_Revoke",
                 cancellationToken,
-
-                TokenHashParameter(
-                    "@TokenHash",
-                    tokenHash),
-
-                new SqlParameter(
-                    "@RevokedAt",
-                    SqlDbType.DateTime2)
-                {
-                    Value = revokedAt
-                });
-        }
-
-        private static SqlParameter TokenHashParameter(
-            string name,
-            string tokenHash)
-        {
-            return new SqlParameter(
-                name,
-                SqlDbType.Char,
-                64)
-            {
-                Value = tokenHash
-            };
+                TokenHash("@TokenHash", tokenHash),
+                DateTime2("@RevokedAt", revokedAt));
         }
     }
 }

@@ -7,25 +7,11 @@ using HRMS.Domain.Entities;
 
 namespace HRMS.Application.Features.Organizations.Registration
 {
-    internal sealed class RegisterOrganizationCommandHandler
-    : ICommandHandler<
-        RegisterOrganizationCommand,
-        RegisterOrganizationResponse>
+    internal sealed class RegisterOrganizationCommandHandler(
+        IRegistrationRepository registrationRepository,
+        IPasswordHasher passwordHasher) : ICommandHandler<RegisterOrganizationCommand, RegisterOrganizationResponse>
     {
-        private readonly IRegistrationRepository _repository;
-        private readonly IPasswordHasher _passwordHasher;
-
-        public RegisterOrganizationCommandHandler(
-            IRegistrationRepository repository,
-            IPasswordHasher passwordHasher)
-        {
-            _repository = repository;
-            _passwordHasher = passwordHasher;
-        }
-
-        public async Task<ErrorOr<RegisterOrganizationResponse>> HandleAsync(
-            RegisterOrganizationCommand command,
-            CancellationToken cancellationToken)
+        public async Task<ErrorOr<RegisterOrganizationResponse>> HandleAsync(RegisterOrganizationCommand command, CancellationToken cancellationToken)
         {
             var organizationCode = command.OrganizationCode.Trim().ToUpperInvariant();
             var organizationEmail = command.OrganizationEmail.Trim().ToLowerInvariant();
@@ -52,7 +38,7 @@ namespace HRMS.Application.Features.Organizations.Registration
                 website: NormalizeOptional(command.Website),
                 logoUrl: NormalizeOptional(command.LogoUrl));
 
-            var passwordHash =  _passwordHasher.Hash(command.Password);
+            var passwordHash =  passwordHasher.Hash(command.Password);
 
             var user = new User(
                 ownerUsername,
@@ -62,14 +48,7 @@ namespace HRMS.Application.Features.Organizations.Registration
                 command.LastName.Trim(),
                 -1); 
 
-            //var owner = new OwnerRegistrationData(
-            //    Username: ownerUsername,
-            //    Email: ownerEmail,
-            //    PasswordHash: _passwordHasher.Hash(command.Password),
-            //    FirstName: command.FirstName.Trim(),
-            //    LastName: command.LastName.Trim());
-
-            var result = await _repository.RegisterOrganizationWithUserAsync(
+            var result = await registrationRepository.RegisterOrganizationWithUserAsync(
                 organization,
                 user,
                 cancellationToken);
@@ -86,28 +65,28 @@ namespace HRMS.Application.Features.Organizations.Registration
             string ownerUsername,
             CancellationToken cancellationToken)
         {
-            if (await _repository.OrganizationCodeExistsAsync(
+            if (await registrationRepository.OrganizationCodeExistsAsync(
                     organizationCode,
                     cancellationToken))
             {
                 return AuthenticationErrors.OrganizationCodeExists;
             }
 
-            if (await _repository.OrganizationEmailExistsAsync(
+            if (await registrationRepository.OrganizationEmailExistsAsync(
                     organizationEmail,
                     cancellationToken))
             {
                 return AuthenticationErrors.OrganizationEmailExists;
             }
 
-            if (await _repository.UserEmailExistsAsync(
+            if (await registrationRepository.UserEmailExistsAsync(
                     ownerEmail,
                     cancellationToken))
             {
                 return AuthenticationErrors.UserEmailExists;
             }
 
-            if (await _repository.UsernameExistsAsync(
+            if (await registrationRepository.UsernameExistsAsync(
                     ownerUsername,
                     cancellationToken))
             {

@@ -1,10 +1,13 @@
 export const API_ROUTES = {
     AUTH : {
         LOGIN : "/Auth/login",
-        REGISTER : "/Auth/organizations",
         REFRESH : "/Auth/refresh",
         LOGOUT : "/Auth/logout",
         REGISTER_EMPLOYEE : "/Auth/employees"
+    },
+    ORGRANIZATIONS : {
+        CREATE : "/Organizations",
+        
     },
     DEPARTMENTS : {
         "GET_ALL" : "/Departments",
@@ -25,7 +28,9 @@ export const API_ROUTES = {
         "GET_ALL" : "/WorkSchedules",
         "CREATE" : "/WorkSchedules",
         GET_BY_ID:(scheduleId: number) => "/WorkSchedules/" + scheduleId,
-        UPDATE:  "/WorkSchedules"
+        UPDATE:  "/WorkSchedules",
+        "GET_OPTIONS" : "/WorkSchedules/options",
+        ASSIGN_EMPLOYEE: "/WorkSchedules/assignments",
     },
     ROLES : {
           GET_ALL: "/Roles",

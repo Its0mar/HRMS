@@ -2,59 +2,44 @@ using HRMS.Application.Abstractions.Persistence;
 using HRMS.Domain.Entities;
 using HRMS.Infrastructure.Mappers;
 using HRMS.Infrastructure.Persistence;
-using Microsoft.Data.SqlClient;
+using static HRMS.Infrastructure.Persistence.SqlParams;
 
 namespace HRMS.Infrastructure.Repositories;
 
-internal sealed class UserRepository : IUserRepository
+internal sealed class UserRepository(ISqlExecutor sqlExecutor) : IUserRepository
 {
-    private readonly ISqlExecutor _executor;
-
-    public UserRepository(ISqlExecutor executor) => _executor = executor;
-
-    public Task<User?> GetByIdentifierAsync(string identifier, CancellationToken cancellationToken) =>
-        _executor.QueryFirstOrDefaultAsync(
+    public async Task<User?> GetByIdentifierAsync(string identifier, CancellationToken cancellationToken) =>
+        await sqlExecutor.QueryFirstOrDefaultAsync(
             "dbo.SP_GetUserByIdentifier",
             UserMapper.Map,
             cancellationToken,
-            new SqlParameter("@Identifier", identifier));
+            VarChar("@Identifier",40, identifier));
 
-    public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken)
-    {
-        return await _executor.QueryFirstOrDefaultAsync(
+    public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken) =>
+         await sqlExecutor.QueryFirstOrDefaultAsync(
             "dbo.Users_GetById",
             UserMapper.Map,
             cancellationToken,
-            new SqlParameter("@Id", id));
-    }
+            Int("@Id", id));
+    
 
-    public async Task<IReadOnlyList<string>> GetUserPermissions(int userId,  CancellationToken cancellationToken)
-    {
-        return await _executor.QueryAsync(
+    public async Task<IReadOnlyList<string>> GetUserPermissions(int userId,  CancellationToken cancellationToken) =>
+        await sqlExecutor.QueryAsync(
             "Permissions_GetForUser",
-            map,
+            reader => reader.GetString(reader.GetOrdinal("Code")),
             cancellationToken,
-            new SqlParameter("@UserId", userId)
-            );
-    }
+            Int("@UserId", userId));
 
     public async Task<bool> UpdateAccessAsync(int employeeId, int organizationId, string username, int roleId, CancellationToken cancellationToken)
     {
-        var result = await _executor.ExecuteWithScalarIntAsync(
+        var result = await sqlExecutor.ExecuteWithScalarIntAsync(
             "dbo.EmployeeAccess_Update",
             cancellationToken,
-            new SqlParameter("@EmployeeId", employeeId),
-            new SqlParameter("@OrganizationId", organizationId),
-            new SqlParameter("@Username", username),
-            new SqlParameter("@RoleId", roleId));
+            Int("@EmployeeId", employeeId),
+            Int("@OrganizationId", organizationId),
+            VarChar("@Username",40, username),
+            Int("@RoleId", roleId));
 
         return result == 1;
-    }
-
-
-
-    private string map(SqlDataReader reader)
-    {
-        return reader.GetString(reader.GetOrdinal("Code"));
     }
 }
