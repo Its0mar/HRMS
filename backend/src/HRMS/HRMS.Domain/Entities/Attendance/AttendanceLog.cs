@@ -26,7 +26,7 @@ namespace HRMS.Domain.Entities.Attendance
             ClockIn = DateTime.UtcNow;
         }
 
-        public AttendanceLog Restore(int? id, int employeeId, int workScheduleId, int organizationId, DateOnly date, DateTime clockIn, DateTime? clockOut, AttendanceStatus status, int? totalMinutes, int lateMinutes, int overtimeMinutes, string? notes)
+        public static AttendanceLog Restore(int? id, int employeeId, int workScheduleId, int organizationId, DateOnly date, DateTime clockIn, DateTime? clockOut, AttendanceStatus status, int? totalMinutes, int lateMinutes, int overtimeMinutes, string? notes)
         {
             return new AttendanceLog(employeeId, workScheduleId, organizationId)
             {

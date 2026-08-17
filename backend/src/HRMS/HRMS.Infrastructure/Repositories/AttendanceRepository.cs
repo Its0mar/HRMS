@@ -1,7 +1,9 @@
 ﻿
 using HRMS.Application.Abstractions.Persistence;
 using HRMS.Domain.Entities.Attendance;
+using HRMS.Infrastructure.Mappers;
 using HRMS.Infrastructure.Persistence;
+using Microsoft.Data.SqlClient;
 using static HRMS.Infrastructure.Persistence.SqlParams;
 
 namespace HRMS.Infrastructure.Repositories
@@ -22,19 +24,35 @@ namespace HRMS.Infrastructure.Repositories
                 Int("@LateMinutes", log.LateMinutes));
         }
 
-        public Task<bool> ClockOutAsync(int attendanceLogId, DateTime clockOut, int totalMinutes, int overTimeMinutes, CancellationToken cancellationToken)
+        public async Task<bool> ClockOutAsync(int attendanceLogId, DateTime clockOut, int totalMinutes, int overTimeMinutes, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await sqlExecutor.ExecuteScalarBoolAsync(
+                "dbo.Attendance_ClockOut",
+                cancellationToken,
+                Int("@AttendanceLogId", attendanceLogId),
+                DateTime2("@ClockOut", clockOut),
+                Int("@TotalMinutes", totalMinutes),
+                Int("@OverTimeMinutes", overTimeMinutes));
         }
 
-        public Task<IReadOnlyList<AttendanceLog>> GetMyRecordsAsync(int employeeId, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<AttendanceLog>> GetMyRecordsAsync(int employeeId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await sqlExecutor.QueryAsync(
+                "dbo.Attendance_GetMyRecord",
+                AttendanceLogMapper.Map,
+                cancellationToken,
+                new SqlParameter("@EmployeeId", employeeId));
+
         }
 
-        public Task<AttendanceLog?> GetTodayLogAsync(int employeeId, DateTime date, CancellationToken cancellationToken)
+        public async Task<AttendanceLog?> GetTodayLogAsync(int employeeId, DateTime date, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await sqlExecutor.QueryFirstOrDefaultAsync(
+                "dbo.Attendance_GetMyRecord",
+                AttendanceLogMapper.Map,
+                cancellationToken,
+                new SqlParameter("@EmployeeId", employeeId),
+                new SqlParameter("@Date", date));
         }
     }
 }

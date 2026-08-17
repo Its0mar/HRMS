@@ -6,7 +6,7 @@ export function PublicRoute() {
     const isAuthenticated = useAuthStore((state) => Boolean(state.accessToken));
 
     if (isAuthenticated) {
-        return <Navigate to="/departments" replace />;
+        return <Navigate to="/dashboard" replace />;
     }
 
     return <Outlet />
