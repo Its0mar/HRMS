@@ -16,24 +16,24 @@ namespace HRMS.Domain.Entities.Attendance
         public int OvertimeMinutes { get; private set; } = 0;
         public string? Notes { get; private set; }
 
-        public AttendanceLog(int employeeId, int workScheduleId, int organizationId) 
+        public AttendanceLog(int employeeId, int workScheduleId, int organizationId, AttendanceStatus status, int lateMinutes) 
         {
             EmployeeId = employeeId;
             WorkScheduleId = workScheduleId;
             OrganizationId = organizationId;
-            Date = new DateOnly();
-            Status = AttendanceStatus.Present;
+            Date = DateOnly.FromDateTime(DateTime.UtcNow);
+            Status = status;
+            LateMinutes = lateMinutes;
             ClockIn = DateTime.UtcNow;
         }
 
         public static AttendanceLog Restore(int? id, int employeeId, int workScheduleId, int organizationId, DateOnly date, DateTime clockIn, DateTime? clockOut, AttendanceStatus status, int? totalMinutes, int lateMinutes, int overtimeMinutes, string? notes)
         {
-            return new AttendanceLog(employeeId, workScheduleId, organizationId)
+            return new AttendanceLog(employeeId, workScheduleId, organizationId, status, lateMinutes)
             {
                 Id = id,
                 ClockOut = clockOut,
                 TotalMinutes = totalMinutes,
-                LateMinutes = lateMinutes,
                 OvertimeMinutes = overtimeMinutes,
                 Notes = notes
             };

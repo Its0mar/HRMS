@@ -95,6 +95,15 @@ namespace HRMS.Infrastructure.Repositories
                 new SqlParameter("@Name", name)
                 );
         }
+
+        public async Task<WorkSchedule?> GetEmployeeWorkScheduleByEmployeeId(int employeeId, int organizationId, CancellationToken cancellationToken)
+        {
+            return await _sqlExecutor.QueryFirstOrDefaultAsync(
+                "WorkSchedules_GetByEmployeeId",
+                WorkScheduleMapper.Map,
+                cancellationToken);
+        }
+
         private static SqlParameter CreateWorkScheduleDayDataTable(IEnumerable<WorkScheduleDay> days)
         {
             var daysTable = new DataTable();

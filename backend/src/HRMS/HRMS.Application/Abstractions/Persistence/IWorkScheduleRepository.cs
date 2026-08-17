@@ -11,6 +11,8 @@ namespace HRMS.Application.Abstractions.Persistence
         public Task<IEnumerable<WorkSchedule>> GetWorkSchedulesByOrganizationIdAsync(int organizationId, CancellationToken cancellationToken);
         public Task<bool> NameExistAsync(string name, int organizationId, int? excludeId, CancellationToken cancellationToken);
         public Task<bool> AssignEmployeeAsync(int employeeId, int workScheduleId, DateTime effectiveFrom, CancellationToken cancellationToken);
+        public Task<WorkSchedule?> GetEmployeeWorkScheduleByEmployeeId(int employeeId, int organizationId, CancellationToken cancellationToken);
+
 
 
     }

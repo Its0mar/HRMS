@@ -1,5 +1,6 @@
 using FluentValidation;
 using HRMS.Application.Abstractions.Messaging;
+using HRMS.Application.Features.Attendance.ClockIn;
 using HRMS.Application.Features.Authentication.Login;
 using HRMS.Application.Features.Authentication.Logout;
 using HRMS.Application.Features.Authentication.RefreshToken;
@@ -153,6 +154,9 @@ public static class DependencyInjection
             ICommandHandler<AssignEmployeeCommand, bool>,
             AssignEmployeeHandler>();
 
+        services.AddScoped<
+            ICommandHandler<ClockInCommand, bool>,
+            ClockInHandler>();
 
         return services;
     }
