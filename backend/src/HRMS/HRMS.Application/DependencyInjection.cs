@@ -1,6 +1,9 @@
 using FluentValidation;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Attendance.ClockIn;
+using HRMS.Application.Features.Attendance.ClockOut;
+using HRMS.Application.Features.Attendance.GetEmployeeAttendance;
+using HRMS.Application.Features.Attendance.GetUserAttendance;
 using HRMS.Application.Features.Authentication.Login;
 using HRMS.Application.Features.Authentication.Logout;
 using HRMS.Application.Features.Authentication.RefreshToken;
@@ -157,6 +160,14 @@ public static class DependencyInjection
         services.AddScoped<
             ICommandHandler<ClockInCommand, bool>,
             ClockInHandler>();
+
+        services.AddScoped<
+            ICommandHandler<ClockOutCommand, bool>,
+            ClockOutHandler>();
+
+        services.AddScoped<
+            IQueryHandler<GetEmployeeAttendanceQuery, IReadOnlyList<GetEmployeeAttendanceResponse>>,
+            GetEmployeeAttendanceHandler>();
 
         return services;
     }

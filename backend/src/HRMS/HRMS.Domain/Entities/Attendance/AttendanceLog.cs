@@ -32,6 +32,7 @@ namespace HRMS.Domain.Entities.Attendance
             return new AttendanceLog(employeeId, workScheduleId, organizationId, status, lateMinutes)
             {
                 Id = id,
+                ClockIn = clockIn,
                 ClockOut = clockOut,
                 TotalMinutes = totalMinutes,
                 OvertimeMinutes = overtimeMinutes,
