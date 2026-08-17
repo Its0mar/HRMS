@@ -71,6 +71,7 @@ public static class DependencyInjection
         services.AddScoped<IRolesRepository, RolesRepository>();
         services.AddScoped<IPermissionsRepository, PermissionsRepository>();
         services.AddScoped<IFileService, FileService>();
+        services.AddScoped<IAttendanceRepository, AttendanceRepository>();
 
         services.Configure<CloudinarySettings>(configuration.GetSection("Cloudinary"));
 

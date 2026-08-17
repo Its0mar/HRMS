@@ -2,8 +2,8 @@
 {
     public enum AttendanceCorrectionsStatus
     {
-        Pending = 0,
-        Approved = 1,
-        Rejcted = 2,
+        Pending = 1,
+        Approved = 2,
+        Rejcted = 3,
     }
 }
