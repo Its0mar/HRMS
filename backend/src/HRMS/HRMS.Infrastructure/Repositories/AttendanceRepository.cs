@@ -53,5 +53,19 @@ namespace HRMS.Infrastructure.Repositories
                 new SqlParameter("@EmployeeId", employeeId),
                 new SqlParameter("@Date", date));
         }
+
+        public async Task<int> CreateAttendanceCorrectionAsync(AttendanceCorrection attendanceCorrection, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.ExecuteWithScalarIntAsync(
+                "dbo.Attendance_CreateAttendanceCorrection",
+                cancellationToken,
+                Int("@OrganizationId", attendanceCorrection.OrganizationId),
+                Int("@EmployeeId", attendanceCorrection.EmployeeId),
+                NullableInt("@AttendanceLogId", attendanceCorrection.AttendanceLogId),
+                DateTime2("@RequestedClockIn", attendanceCorrection.RequestedClockIn),
+                DateTime2("@RequestedClockOut", attendanceCorrection.RequestedClockOut),
+                VarChar("@Reason", 300, attendanceCorrection.Reason)
+                );
+        }
     }
 }

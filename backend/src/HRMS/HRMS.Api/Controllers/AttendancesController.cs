@@ -4,6 +4,7 @@ using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Attendance.ClockIn;
 using HRMS.Application.Features.Attendance.ClockOut;
 using HRMS.Application.Features.Attendance.GetEmployeeAttendance;
+using HRMS.Application.Features.Attendance.SubmitCorrection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,6 +50,17 @@ namespace HRMS.Api.Controllers
 
             return result.Match(
                 Ok,
+                Problem);
+        }
+
+        [Authorize]
+        [HttpPost("correct")]
+        public async Task<IActionResult> Correct(SubmitCorrectionCommand command, CancellationToken cancellationToken)
+        {
+            var result = await commandDispatcher.SendAsync(command, cancellationToken);
+
+            return result.Match(
+                _ => Ok(),
                 Problem);
         }
     }
