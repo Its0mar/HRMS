@@ -1,5 +1,4 @@
-﻿
-using HRMS.Application.Abstractions.Persistence;
+﻿using HRMS.Application.Abstractions.Persistence;
 using HRMS.Domain.Entities.Attendance;
 using HRMS.Infrastructure.Mappers;
 using HRMS.Infrastructure.Persistence;
@@ -45,7 +44,7 @@ namespace HRMS.Infrastructure.Repositories
 
         }
 
-        public async Task<AttendanceLog?> GetTodayLogAsync(int employeeId, DateOnly date, CancellationToken cancellationToken)
+        public async Task<AttendanceLog?> GetTodayLogForEmployeeAsync(int employeeId, DateOnly date, CancellationToken cancellationToken)
         {
             return await sqlExecutor.QueryFirstOrDefaultAsync(
                 "dbo.Attendance_GetTodayStatus",

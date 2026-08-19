@@ -43,5 +43,12 @@ export const API_ROUTES = {
 
         UPDATE: (roleId: number) =>
             `/Roles/${roleId}`,
+    },
+
+    ATTENDANCES : {
+        "GET_ALL" : "/Attendances",
+        "CLOCK_IN" : "/Attendances/ClockIn",
+        "CLOCK_OUT" : "/Attendances/ClockOut"
     }
+
 }

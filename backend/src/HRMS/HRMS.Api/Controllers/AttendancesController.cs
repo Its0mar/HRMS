@@ -3,7 +3,7 @@ using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Attendance.ClockIn;
 using HRMS.Application.Features.Attendance.ClockOut;
-using HRMS.Application.Features.Attendance.GetUserAttendance;
+using HRMS.Application.Features.Attendance.GetEmployeeAttendance;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +11,7 @@ namespace HRMS.Api.Controllers
 {
     [ApiController]
     [ApiVersion(1)]
-    public class AttendanceController(
+    public class AttendancesController(
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher,
         ICurrentUser currentUser) : ApiController

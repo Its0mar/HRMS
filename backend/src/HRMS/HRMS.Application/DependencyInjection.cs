@@ -3,7 +3,6 @@ using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Attendance.ClockIn;
 using HRMS.Application.Features.Attendance.ClockOut;
 using HRMS.Application.Features.Attendance.GetEmployeeAttendance;
-using HRMS.Application.Features.Attendance.GetUserAttendance;
 using HRMS.Application.Features.Authentication.Login;
 using HRMS.Application.Features.Authentication.Logout;
 using HRMS.Application.Features.Authentication.RefreshToken;

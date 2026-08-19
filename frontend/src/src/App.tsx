@@ -14,6 +14,7 @@ import { RolesList } from "./features/Roles/components/RolesList";
 import { PermissionRoute } from "./Components/PermissionRoute";
 import { PERMISSIONS } from "./features/Auth/constants/permissions";
 import { BasicInfo } from "./features/Dashboard/components/BasicInfo";
+import { AttendanceList } from "./features/Attendance/components/AttendanceList";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
 
               <Route path="/work-schedules" element={<WorkSchedules />} />
               <Route path="/roles" element={<RolesList/>} />
+              <Route path="attendances" element={<AttendanceList />} />
             </Route>
 
             <Route element={<PublicRoute />}>

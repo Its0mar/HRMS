@@ -1,7 +1,7 @@
 ﻿using ErrorOr;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
-using HRMS.Application.Features.Attendance.GetUserAttendance;
+using HRMS.Domain.Entities.Attendance;
 
 namespace HRMS.Application.Features.Attendance.GetEmployeeAttendance
 {
@@ -12,7 +12,26 @@ namespace HRMS.Application.Features.Attendance.GetEmployeeAttendance
         {
             var records = await attendanceRepository.GetMyRecordsAsync(command.EmployeeId, cancellationToken);
 
-            return records.Select(r => new GetEmployeeAttendanceResponse(r.Date, r.ClockIn, r.ClockOut, r.Status.ToString(), r.TotalMinutes, r.LateMinutes, r.OvertimeMinutes)).ToList();
+            return records.Select(Map).ToList();
+        }
+
+        private GetEmployeeAttendanceResponse Map(AttendanceLog r)
+        {
+            var clockInIso = DateTime.SpecifyKind(r.ClockIn, DateTimeKind.Utc).ToString("o");
+
+            string? clockOutIso = r.ClockOut.HasValue
+                ? DateTime.SpecifyKind(r.ClockOut.Value, DateTimeKind.Utc).ToString("o")
+                : null;
+
+            return new GetEmployeeAttendanceResponse(
+                r.Date,
+                clockInIso,
+                clockOutIso,
+                r.Status.ToString(),
+                r.TotalMinutes,
+                r.LateMinutes,
+                r.OvertimeMinutes);
         }
     }
+
 }

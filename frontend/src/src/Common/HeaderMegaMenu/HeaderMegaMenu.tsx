@@ -75,9 +75,13 @@ export function HeaderMegaMenu() {
               {canViewEmployees && <Link to="/employees" className={classes.link}>
                 Employees
               </Link> }
-
+{/* 
             <Link to="/work-schedules" className={classes.link}>
                 Work Schedules
+              </Link> */}
+
+            <Link to="/attendances" className={classes.link}>
+                Attendances
               </Link>
 
             </Group>

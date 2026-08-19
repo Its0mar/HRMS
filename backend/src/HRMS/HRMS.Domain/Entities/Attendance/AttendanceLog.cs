@@ -36,7 +36,8 @@ namespace HRMS.Domain.Entities.Attendance
                 ClockOut = clockOut,
                 TotalMinutes = totalMinutes,
                 OvertimeMinutes = overtimeMinutes,
-                Notes = notes
+                Notes = notes,
+                Date = date,
             };
         }
     }

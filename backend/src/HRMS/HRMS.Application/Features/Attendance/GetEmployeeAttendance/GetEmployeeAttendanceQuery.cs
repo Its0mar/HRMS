@@ -1,7 +1,6 @@
 ﻿using HRMS.Application.Abstractions.Messaging;
-using HRMS.Application.Features.Attendance.GetEmployeeAttendance;
 
-namespace HRMS.Application.Features.Attendance.GetUserAttendance
+namespace HRMS.Application.Features.Attendance.GetEmployeeAttendance
 {
     public record GetEmployeeAttendanceQuery(int EmployeeId) : IQuery<IReadOnlyList<GetEmployeeAttendanceResponse>>;
 }

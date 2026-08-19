@@ -21,7 +21,7 @@ namespace HRMS.Application.Features.Attendance.ClockIn
 
 
             //check if employee clocked in today
-            var existingLog = await attendanceRepository.GetTodayLogAsync(command.employeeId, today, cancellationToken);
+            var existingLog = await attendanceRepository.GetTodayLogForEmployeeAsync(command.employeeId, today, cancellationToken);
             if (existingLog is not null)
             {
                 return Error.Conflict("Attendance.AlreadyClockedIn", "You have already clocked in for today.");
@@ -30,7 +30,7 @@ namespace HRMS.Application.Features.Attendance.ClockIn
             //get the current workschedule for employee and check if today is a working day
             var workSchedule = await workScheduleRepository.GetEmployeeWorkScheduleByEmployeeId(command.employeeId, currentUser.OrganizationId, cancellationToken);
 
-            var workDay = convertFromDayOfWeekToWorkDay(now.DayOfWeek);
+            var workDay = ConvertToWorkDay(now.DayOfWeek);
             var todayScheduleDay = workSchedule?.Days.FirstOrDefault(d => d.WorkDay == workDay);
             if (workSchedule is null || workSchedule.Id is null || todayScheduleDay is null || !todayScheduleDay.IsWorkingDay)
             {
@@ -53,15 +53,16 @@ namespace HRMS.Application.Features.Attendance.ClockIn
             return await attendanceRepository.ClockInAsync(attendanceLog, cancellationToken) > 0;
         }
 
-        private WorkDay convertFromDayOfWeekToWorkDay(DayOfWeek dayOfWeek)
+        private static WorkDay ConvertToWorkDay(DayOfWeek dayOfWeek) => dayOfWeek switch
         {
-            if (dayOfWeek == DayOfWeek.Sunday) { return WorkDay.Sunday; }
-            if (dayOfWeek == DayOfWeek.Monday) { return WorkDay.Monday; }
-            if (dayOfWeek == DayOfWeek.Tuesday) { return WorkDay.Tuesday; }
-            if (dayOfWeek == DayOfWeek.Wednesday) { return WorkDay.Wednesday; }
-            if (dayOfWeek == DayOfWeek.Thursday) { return WorkDay.Thursday; }
-            if (dayOfWeek == DayOfWeek.Friday) { return WorkDay.Friday; }
-            return WorkDay.Saturday;
-        }
+            DayOfWeek.Sunday => WorkDay.Sunday,
+            DayOfWeek.Monday => WorkDay.Monday,
+            DayOfWeek.Tuesday => WorkDay.Tuesday,
+            DayOfWeek.Wednesday => WorkDay.Wednesday,
+            DayOfWeek.Thursday => WorkDay.Thursday,
+            DayOfWeek.Friday => WorkDay.Friday,
+            DayOfWeek.Saturday => WorkDay.Saturday,
+            _ => WorkDay.Sunday
+        };
     }
 }

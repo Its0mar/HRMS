@@ -18,7 +18,7 @@ namespace HRMS.Application.Features.Attendance.ClockOut
             var today = DateOnly.FromDateTime(now);
             var orgId = currentUser.OrganizationId;
 
-            var existingLog = await attendanceRepository.GetTodayLogAsync(command.employeeId, today, cancellationToken);
+            var existingLog = await attendanceRepository.GetTodayLogForEmployeeAsync(command.employeeId, today, cancellationToken);
             if (existingLog is null)
             {
                 return Error.Conflict("Attendance.NotClockedIn", "You have not clocked in for today.");
@@ -33,12 +33,11 @@ namespace HRMS.Application.Features.Attendance.ClockOut
             var workDay = convertFromDayOfWeekToWorkDay(now.DayOfWeek);
             var todayScheduleDay = workSchedule?.Days.FirstOrDefault(d => d.WorkDay == workDay);
 
-            var totalMinutes = (now - existingLog.ClockIn).Minutes;
-            var WorkedMinusRequired = (totalMinutes - todayScheduleDay!.MinimumMinutesPerDay);
+            var totalMinutes = (int)(now - existingLog.ClockIn).TotalMinutes;
+            var minimumMinutes = todayScheduleDay?.MinimumMinutesPerDay ?? 480; // Default to 480 mins (8 hrs) if null
+            var overtimeMinutes = Math.Max(0, totalMinutes - minimumMinutes);
 
-            var overTimeMinutes = WorkedMinusRequired > 0 ? WorkedMinusRequired : 0;
-
-            return await attendanceRepository.ClockOutAsync(existingLog.Id!.Value, now, totalMinutes, overTimeMinutes.Value, cancellationToken);
+            return await attendanceRepository.ClockOutAsync(existingLog.Id!.Value, now, totalMinutes, overtimeMinutes, cancellationToken);
 
 
         }
