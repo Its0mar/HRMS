@@ -14,7 +14,8 @@ interface RoleFormProps {
   onCancel: () => void;
 }
 
-export function RoleForm({   form,
+export function RoleForm({
+  form,
   permissions,
   isSubmitting,
   submitLabel,

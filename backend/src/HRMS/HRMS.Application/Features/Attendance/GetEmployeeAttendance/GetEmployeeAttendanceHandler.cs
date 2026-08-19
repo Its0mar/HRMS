@@ -24,6 +24,7 @@ namespace HRMS.Application.Features.Attendance.GetEmployeeAttendance
                 : null;
 
             return new GetEmployeeAttendanceResponse(
+                r.Id!.Value,
                 r.Date,
                 clockInIso,
                 clockOutIso,

@@ -48,7 +48,8 @@ export const API_ROUTES = {
     ATTENDANCES : {
         "GET_ALL" : "/Attendances",
         "CLOCK_IN" : "/Attendances/ClockIn",
-        "CLOCK_OUT" : "/Attendances/ClockOut"
+        "CLOCK_OUT" : "/Attendances/ClockOut",
+        "SUBMIT_CORRECTION" : "/Attendances/Correct"
     }
 
 }

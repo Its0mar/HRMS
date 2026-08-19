@@ -1,8 +1,10 @@
 import type { DataTableColumn } from "../../../Common/DataTable/DataTable";
 import type { AttendanceListItem } from "../types/AttendanceListItem";
-import { Badge, Text } from "@mantine/core";
+import { Badge, Button, Text } from "@mantine/core";
 
-export const AttendanceColumns: DataTableColumn<AttendanceListItem>[] = [
+export const getAttendanceColumns = (
+    onUpdateTiming: (attendance: AttendanceListItem) => void
+): DataTableColumn<AttendanceListItem>[] => [
     {
         key: "number",
         header: "No.",
@@ -40,10 +42,10 @@ export const AttendanceColumns: DataTableColumn<AttendanceListItem>[] = [
                 variant="light"
                 color={
                     attendance.status === "Present" ? "green"
-                    : attendance.status === "Late" ? "yellow"
-                    : attendance.status === "HalfDay" ? "blue"
-                    : attendance.status === "Absent" ? "red"
-                    : "gray"
+                        : attendance.status === "Late" ? "yellow"
+                            : attendance.status === "HalfDay" ? "blue"
+                                : attendance.status === "Absent" ? "red"
+                                    : "gray"
                 }
             >
                 {attendance.status}
@@ -76,7 +78,21 @@ export const AttendanceColumns: DataTableColumn<AttendanceListItem>[] = [
                 {attendance.overtimeMinutes > 0 ? `${attendance.overtimeMinutes} mins` : "0"}
             </Text>
         )
-    }
+    },
+
+    {
+        key: "actions",
+        header: "Actions",
+        render: (attendance) => (
+            <Button
+                size="xs"
+                variant="light"
+                onClick={() => onUpdateTiming(attendance)}
+            >
+                Update Timing
+            </Button>
+        ),
+    },
 ];
 
 const formatLocalTime = (isoString: string | null) => {
