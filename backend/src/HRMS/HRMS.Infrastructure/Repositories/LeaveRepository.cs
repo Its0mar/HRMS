@@ -1,6 +1,7 @@
 ﻿using HRMS.Application.Abstractions.Persistence;
 using HRMS.Domain.Entities.Leaves;
 using HRMS.Infrastructure.Persistence;
+using Microsoft.Data.SqlClient;
 using static HRMS.Infrastructure.Persistence.SqlParams;
 
 namespace HRMS.Infrastructure.Repositories
@@ -21,6 +22,16 @@ namespace HRMS.Infrastructure.Repositories
                 );
         }
 
+        public async Task<IReadOnlyList<LeaveType>> GetForOrganizationAsync(int organizationId, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.QueryAsync(
+                "dbo.LeaveTypes_GetForOrganization",
+                Map,
+                cancellationToken,
+                Int("@OrganizationId", organizationId)
+                );
+        }
+
         public async Task<bool> NameOrCodeExistAsync(string name, string code, int organizationId, CancellationToken cancellationToken)
         {
             return await sqlExecutor.ExecuteScalarBoolAsync(
@@ -29,6 +40,20 @@ namespace HRMS.Infrastructure.Repositories
                 NullableVarChar("@Name", 100, name),
                 NullableVarChar("@Code", 20, code),
                 Int("@OrganizationId", organizationId)
+                );
+        }
+
+
+        private LeaveType Map(SqlDataReader reader)
+        {
+            return LeaveType.Restore(
+                reader.GetInt32(reader.GetOrdinal("Id")),
+                reader.GetInt32(reader.GetOrdinal("OrganizationId")),
+                reader.GetString(reader.GetOrdinal("Name")),
+                reader.GetString(reader.GetOrdinal("Code")),
+                reader.GetInt32(reader.GetOrdinal("DefaultDaysPerYear")),
+                reader.GetBoolean(reader.GetOrdinal("IsPaid")),
+                reader.GetBoolean(reader.GetOrdinal("RequiresApproval"))
                 );
         }
     }

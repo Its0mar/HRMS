@@ -21,6 +21,7 @@ using HRMS.Application.Features.Employees.GetEmployeeOptions;
 using HRMS.Application.Features.Employees.GetEmployees;
 using HRMS.Application.Features.Employees.UpdateEmployeeAccess;
 using HRMS.Application.Features.Leaves.LeaveType.CreateLeaveType;
+using HRMS.Application.Features.Leaves.LeaveType.GetLeaveTypes;
 using HRMS.Application.Features.Organizations.Registration;
 using HRMS.Application.Features.Positions.CreatePosition;
 using HRMS.Application.Features.Positions.GetPositions;
@@ -194,6 +195,9 @@ public static class DependencyInjection
             ICommandHandler<CreateLeaveTypeCommand, bool>,
             CreateLeaveTypeHandler>();
 
+        services.AddScoped<
+            IQueryHandler<GetLeaveTypesQuery, IReadOnlyList<LeaveTypeResponse>>,
+            GetLeaveTypesHandler>();
 
         return services;
     }
