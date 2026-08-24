@@ -20,6 +20,7 @@ using HRMS.Application.Features.Employees.CreateEmployee;
 using HRMS.Application.Features.Employees.GetEmployeeOptions;
 using HRMS.Application.Features.Employees.GetEmployees;
 using HRMS.Application.Features.Employees.UpdateEmployeeAccess;
+using HRMS.Application.Features.Leaves.LeaveType.CreateLeaveType;
 using HRMS.Application.Features.Organizations.Registration;
 using HRMS.Application.Features.Positions.CreatePosition;
 using HRMS.Application.Features.Positions.GetPositions;
@@ -188,6 +189,10 @@ public static class DependencyInjection
         services.AddScoped<
             ICommandHandler<AttendanceCorrectionApproveCommand, bool>,
             AttendanceCorrectionApproveHandler>();
+
+        services.AddScoped<
+            ICommandHandler<CreateLeaveTypeCommand, bool>,
+            CreateLeaveTypeHandler>();
 
 
         return services;
