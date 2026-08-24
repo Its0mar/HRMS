@@ -1,5 +1,7 @@
 ﻿using HRMS.Application.Abstractions.Persistence;
 using HRMS.Application.Abstractions.Persistence.Models;
+using HRMS.Domain.Entities.Attendance;
+using HRMS.Infrastructure.Mappers.Attendance;
 using HRMS.Infrastructure.Persistence;
 using Microsoft.Data.SqlClient;
 using static HRMS.Infrastructure.Persistence.SqlParams;
@@ -8,7 +10,7 @@ namespace HRMS.Infrastructure.Repositories
 {
     public sealed class AttendanceCorrectionsRepository(ISqlExecutor sqlExecutor) : IAttendanceCorrectionsRepository
     {
-        public async Task<IReadOnlyList<OrganizationAttendanceCorrection>> GetOrganizationRecordsAsync(int organizationId, int status, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<AttendanceCorrectionResoonse>> GetOrganizationRecordsAsync(int organizationId, int status, CancellationToken cancellationToken)
         {
             return await sqlExecutor.QueryAsync(
                 "AttendanceCorrections_GetOrganizationRecords",
@@ -19,12 +21,36 @@ namespace HRMS.Infrastructure.Repositories
                 );
         }
 
-        private OrganizationAttendanceCorrection Map(SqlDataReader reader)
+        public async Task<AttendanceCorrection?> GetByIdAsync(int Id, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.QueryFirstOrDefaultAsync(
+                "dbo.AttendanceCorrections_GetById",
+                AttendanceCorrectionMapper.Map,
+                cancellationToken,
+                Int("Id", Id)
+                );
+        }
+        
+        public async Task ApproveOrRejectCorrection(AttendanceCorrection correction, CancellationToken cancellationToken)
+        {
+            await sqlExecutor.ExecuteAsync(
+                "AttendanceCorrections_ApproveCorrection",
+                cancellationToken,
+                NullableInt("Id", correction.Id),
+                Int("OrganizationId", correction.OrganizationId),
+                Int("@Status", (int) correction.Status),
+                NullableInt("@ReviewedById", correction.ReviewedById),
+                NullableDateTime2("@ReviewedAt", correction.ReviewedAt)
+                );
+        }
+
+
+        private AttendanceCorrectionResoonse Map(SqlDataReader reader)
         {
             var AttendanceLogIdIndex = reader.GetOrdinal("AttendanceLogId");
             var attendanceLogId = reader.IsDBNull(AttendanceLogIdIndex) ? (int?) null: reader.GetInt32(AttendanceLogIdIndex);
 
-            return new OrganizationAttendanceCorrection(
+            return new AttendanceCorrectionResoonse(
                 reader.GetInt32(reader.GetOrdinal("Id")),
                 attendanceLogId,
                 reader.GetDateTime(reader.GetOrdinal("RequestedClockIn")),

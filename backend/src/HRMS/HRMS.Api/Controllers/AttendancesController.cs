@@ -2,6 +2,7 @@
 using ErrorOr;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
+using HRMS.Application.Features.Attendance.AttendanceCorrections.AttendanceCorrectionApprove;
 using HRMS.Application.Features.Attendance.AttendanceCorrections.GetOrganizationAttendanceCorrection;
 using HRMS.Application.Features.Attendance.AttendanceCorrections.SubmitCorrection;
 using HRMS.Application.Features.Attendance.ClockIn;
@@ -92,6 +93,19 @@ namespace HRMS.Api.Controllers
 
             return result.Match(
                 Ok,
+                Problem);
+        }
+
+        [Authorize]
+        [HttpPost("corrections/approve")]
+        public async Task<IActionResult> Approve(
+            AttendanceCorrectionApproveCommand command,
+            CancellationToken cancellationToken)
+        {
+            var result = await commandDispatcher.SendAsync(command, cancellationToken);
+
+            return result.Match(
+                ok => Ok(),
                 Problem);
         }
     }

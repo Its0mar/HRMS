@@ -35,5 +35,19 @@
             };
 
         }
+
+        public void Approve(int reviewedById) 
+        {
+            ReviewedById = reviewedById;
+            ReviewedAt = DateTime.UtcNow;
+            Status = AttendanceCorrectionsStatus.Approved;
+        }
+
+        public void Reject(int reviewedById)
+        {
+            ReviewedById = reviewedById;
+            ReviewedAt = DateTime.UtcNow;
+            Status = AttendanceCorrectionsStatus.Rejcted;
+        }
     }
 }

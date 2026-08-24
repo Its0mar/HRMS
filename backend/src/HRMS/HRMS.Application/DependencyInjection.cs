@@ -1,6 +1,7 @@
 using FluentValidation;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence.Models;
+using HRMS.Application.Features.Attendance.AttendanceCorrections.AttendanceCorrectionApprove;
 using HRMS.Application.Features.Attendance.AttendanceCorrections.GetOrganizationAttendanceCorrection;
 using HRMS.Application.Features.Attendance.AttendanceCorrections.SubmitCorrection;
 using HRMS.Application.Features.Attendance.ClockIn;
@@ -181,8 +182,12 @@ public static class DependencyInjection
             GetOrganizationAttendanceHandler>();
 
         services.AddScoped<
-            IQueryHandler<GetOrganizationAttendanceCorrectionQuery, IReadOnlyList<OrganizationAttendanceCorrection>>,
+            IQueryHandler<GetOrganizationAttendanceCorrectionQuery, IReadOnlyList<AttendanceCorrectionResoonse>>,
             GetOrganizationAttendanceCorrectionHandler>();
+
+        services.AddScoped<
+            ICommandHandler<AttendanceCorrectionApproveCommand, bool>,
+            AttendanceCorrectionApproveHandler>();
 
 
         return services;

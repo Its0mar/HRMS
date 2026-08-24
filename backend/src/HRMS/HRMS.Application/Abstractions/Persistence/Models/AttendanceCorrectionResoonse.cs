@@ -1,6 +1,6 @@
 ﻿namespace HRMS.Application.Abstractions.Persistence.Models
 {
-    public record OrganizationAttendanceCorrection(
+    public record AttendanceCorrectionResoonse(
         int Id,
         int? AttendanceLogId,
         DateTime RequestedClockIn,

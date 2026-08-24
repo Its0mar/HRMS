@@ -9,9 +9,9 @@ namespace HRMS.Application.Features.Attendance.AttendanceCorrections.GetOrganiza
     public sealed class GetOrganizationAttendanceCorrectionHandler(
         IAttendanceCorrectionsRepository attendanceCorrectionsRepository,
         ICurrentUser currentUser) 
-        : IQueryHandler<GetOrganizationAttendanceCorrectionQuery, IReadOnlyList<OrganizationAttendanceCorrection>>
+        : IQueryHandler<GetOrganizationAttendanceCorrectionQuery, IReadOnlyList<AttendanceCorrectionResoonse>>
     {
-        public async Task<ErrorOr<IReadOnlyList<OrganizationAttendanceCorrection>>> HandleAsync(GetOrganizationAttendanceCorrectionQuery query, CancellationToken cancellationToken)
+        public async Task<ErrorOr<IReadOnlyList<AttendanceCorrectionResoonse>>> HandleAsync(GetOrganizationAttendanceCorrectionQuery query, CancellationToken cancellationToken)
         {
             var records = await attendanceCorrectionsRepository.GetOrganizationRecordsAsync(currentUser.OrganizationId, (int)query.Status, cancellationToken);
             return records.ToList();

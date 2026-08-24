@@ -6,5 +6,5 @@ namespace HRMS.Application.Features.Attendance.AttendanceCorrections.GetOrganiza
 {
     public sealed record GetOrganizationAttendanceCorrectionQuery(
             AttendanceCorrectionsStatus Status
-        ) : IQuery<IReadOnlyList<OrganizationAttendanceCorrection>>;
+        ) : IQuery<IReadOnlyList<AttendanceCorrectionResoonse>>;
 }
