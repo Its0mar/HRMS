@@ -1,7 +1,7 @@
 ﻿using HRMS.Domain.Entities.Attendance;
 using Microsoft.Data.SqlClient;
 
-namespace HRMS.Infrastructure.Mappers
+namespace HRMS.Infrastructure.Mappers.Attendance
 {
     public static class AttendanceLogMapper
     {

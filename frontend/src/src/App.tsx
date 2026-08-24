@@ -15,6 +15,7 @@ import { PermissionRoute } from "./Components/PermissionRoute";
 import { PERMISSIONS } from "./features/Auth/constants/permissions";
 import { BasicInfo } from "./features/Dashboard/components/BasicInfo";
 import { AttendanceList } from "./features/Attendance/components/AttendanceList";
+import { CompanyAttendanceList } from "./features/Attendance/components/CompanyAttendanceList";
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<BasicInfo />} />
-
+              <Route  path="/attendances/company" element={<CompanyAttendanceList />} />
 
               {/* <PermissionRoute permission={PERMISSIONS.DEPARTMENTS.VIEW}> */}
                 <Route path="/departments" element={ 
@@ -34,7 +35,8 @@ function App() {
                     <DepartmentsList /> 
                   </PermissionRoute>}
                   />
-              
+
+                
 
           
                 <Route path="/employees" element={

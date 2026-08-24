@@ -4,6 +4,7 @@ using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Attendance.ClockIn;
 using HRMS.Application.Features.Attendance.ClockOut;
 using HRMS.Application.Features.Attendance.GetEmployeeAttendance;
+using HRMS.Application.Features.Attendance.GetOrganizationAttendance;
 using HRMS.Application.Features.Attendance.SubmitCorrection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -61,6 +62,21 @@ namespace HRMS.Api.Controllers
 
             return result.Match(
                 _ => Ok(),
+                Problem);
+        }
+
+        [Authorize]
+        [HttpGet("Organization")]
+        public async Task<IActionResult> GetOrganizationAttendance(
+            [FromQuery] DateOnly? date,
+            [FromQuery] string? searchTerm,
+            CancellationToken cancellationToken)
+        {
+            var query = new GetOrganizationAttendanceQuery(date, searchTerm);
+            var result = await queryDispatcher.SendAsync(query, cancellationToken);
+
+            return result.Match(
+                Ok,
                 Problem);
         }
     }

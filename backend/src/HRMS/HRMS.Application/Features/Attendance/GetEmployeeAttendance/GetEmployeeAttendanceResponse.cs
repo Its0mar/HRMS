@@ -1,5 +1,4 @@
-﻿
-namespace HRMS.Application.Features.Attendance.GetEmployeeAttendance
+﻿namespace HRMS.Application.Features.Attendance.GetEmployeeAttendance
 {
     public sealed record GetEmployeeAttendanceResponse(
         int Id,

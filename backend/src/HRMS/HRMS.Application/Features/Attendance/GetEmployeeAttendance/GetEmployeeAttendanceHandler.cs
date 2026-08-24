@@ -34,5 +34,4 @@ namespace HRMS.Application.Features.Attendance.GetEmployeeAttendance
                 r.OvertimeMinutes);
         }
     }
-
 }

@@ -1,6 +1,7 @@
 ﻿using HRMS.Application.Abstractions.Persistence;
+using HRMS.Application.Features.Attendance.GetOrganizationAttendance;
 using HRMS.Domain.Entities.Attendance;
-using HRMS.Infrastructure.Mappers;
+using HRMS.Infrastructure.Mappers.Attendance;
 using HRMS.Infrastructure.Persistence;
 using Microsoft.Data.SqlClient;
 using static HRMS.Infrastructure.Persistence.SqlParams;
@@ -66,6 +67,18 @@ namespace HRMS.Infrastructure.Repositories
                 DateTime2("@RequestedClockOut", attendanceCorrection.RequestedClockOut),
                 VarChar("@Reason", 300, attendanceCorrection.Reason)
                 );
+        }
+
+
+        public async Task<IReadOnlyList<GetOrganizationAttendanceResponse>> GetOrganizationRecordsAsync(int organizationId, DateOnly? date, string? searchTerm, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.QueryAsync(
+                "dbo.Attendance_GetOrganizationRecords",
+                OrganizationAttendanceMapper.Map,
+                cancellationToken,
+                Int("@OrganizationId", organizationId),
+                date.HasValue ? Date("@Date", date.Value.ToDateTime(TimeOnly.MinValue)) : NullableDateTime2("@Date", null),
+                NullableVarChar("@SearchTerm", 100, searchTerm));
         }
     }
 }

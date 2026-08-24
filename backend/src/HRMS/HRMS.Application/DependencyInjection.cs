@@ -3,6 +3,7 @@ using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Attendance.ClockIn;
 using HRMS.Application.Features.Attendance.ClockOut;
 using HRMS.Application.Features.Attendance.GetEmployeeAttendance;
+using HRMS.Application.Features.Attendance.GetOrganizationAttendance;
 using HRMS.Application.Features.Attendance.SubmitCorrection;
 using HRMS.Application.Features.Authentication.Login;
 using HRMS.Application.Features.Authentication.Logout;
@@ -172,6 +173,11 @@ public static class DependencyInjection
         services.AddScoped<
              ICommandHandler<SubmitCorrectionCommand, bool>,
              SubmitCorrectionHandler>();
+
+        services.AddScoped<
+            IQueryHandler<GetOrganizationAttendanceQuery, IReadOnlyList<GetOrganizationAttendanceResponse>>,
+            GetOrganizationAttendanceHandler>();
+
 
         return services;
     }
