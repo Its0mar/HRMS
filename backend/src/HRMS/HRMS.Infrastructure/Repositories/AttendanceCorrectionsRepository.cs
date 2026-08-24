@@ -10,7 +10,7 @@ namespace HRMS.Infrastructure.Repositories
 {
     public sealed class AttendanceCorrectionsRepository(ISqlExecutor sqlExecutor) : IAttendanceCorrectionsRepository
     {
-        public async Task<IReadOnlyList<AttendanceCorrectionResoonse>> GetOrganizationRecordsAsync(int organizationId, int status, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<AttendanceCorrectionResponse>> GetOrganizationRecordsAsync(int organizationId, int status, CancellationToken cancellationToken)
         {
             return await sqlExecutor.QueryAsync(
                 "AttendanceCorrections_GetOrganizationRecords",
@@ -45,12 +45,12 @@ namespace HRMS.Infrastructure.Repositories
         }
 
 
-        private AttendanceCorrectionResoonse Map(SqlDataReader reader)
+        private AttendanceCorrectionResponse Map(SqlDataReader reader)
         {
             var AttendanceLogIdIndex = reader.GetOrdinal("AttendanceLogId");
             var attendanceLogId = reader.IsDBNull(AttendanceLogIdIndex) ? (int?) null: reader.GetInt32(AttendanceLogIdIndex);
 
-            return new AttendanceCorrectionResoonse(
+            return new AttendanceCorrectionResponse(
                 reader.GetInt32(reader.GetOrdinal("Id")),
                 attendanceLogId,
                 reader.GetDateTime(reader.GetOrdinal("RequestedClockIn")),

@@ -5,7 +5,7 @@ namespace HRMS.Application.Abstractions.Persistence
 {
     public interface IAttendanceCorrectionsRepository
     {
-        public Task<IReadOnlyList<AttendanceCorrectionResoonse>> GetOrganizationRecordsAsync(int organizationId, int status, CancellationToken cancellationToken);
+        public Task<IReadOnlyList<AttendanceCorrectionResponse>> GetOrganizationRecordsAsync(int organizationId, int status, CancellationToken cancellationToken);
         public Task<AttendanceCorrection?> GetByIdAsync(int Id, CancellationToken cancellationToken);
         public Task ApproveOrRejectCorrection(AttendanceCorrection correction, CancellationToken cancellationToken);
 

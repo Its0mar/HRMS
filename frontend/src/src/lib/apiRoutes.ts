@@ -50,7 +50,12 @@ export const API_ROUTES = {
         "CLOCK_IN" : "/Attendances/ClockIn",
         "CLOCK_OUT" : "/Attendances/ClockOut",
         "SUBMIT_CORRECTION" : "/Attendances/Correct",
-        GET_ORGANIZATION: "/Attendances/Organization"
+        GET_ORGANIZATION: "/Attendances/Organization",
+
+        CORRECTIONS : {
+            "GET_ALL" : "/Attendances/corrections/organization",
+            "Approve_Reject" : "/Attendances/corrections/approve"
+        }
     }
 
 }

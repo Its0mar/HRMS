@@ -86,7 +86,7 @@ namespace HRMS.Api.Controllers
         [Authorize]
         [HttpGet("corrections/organization")]
         public async Task<IActionResult> GetOrganizationAttendanceCorrection(
-            GetOrganizationAttendanceCorrectionQuery query,
+            [FromQuery] GetOrganizationAttendanceCorrectionQuery query,
             CancellationToken cancellationToken)
         {
             var result = await queryDispatcher.SendAsync(query, cancellationToken);

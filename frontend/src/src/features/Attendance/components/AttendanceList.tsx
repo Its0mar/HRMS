@@ -23,6 +23,7 @@ export function AttendanceList() {
         submitCorrectionModel.open();
     };
 
+
     const handleSubmitClose = () => {
         setselectedLogId(null);
         submitCorrectionModel.close();

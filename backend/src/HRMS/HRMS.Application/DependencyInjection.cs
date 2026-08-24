@@ -182,7 +182,7 @@ public static class DependencyInjection
             GetOrganizationAttendanceHandler>();
 
         services.AddScoped<
-            IQueryHandler<GetOrganizationAttendanceCorrectionQuery, IReadOnlyList<AttendanceCorrectionResoonse>>,
+            IQueryHandler<GetOrganizationAttendanceCorrectionQuery, IReadOnlyList<AttendanceCorrectionResponse>>,
             GetOrganizationAttendanceCorrectionHandler>();
 
         services.AddScoped<
