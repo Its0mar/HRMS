@@ -56,6 +56,10 @@ export const API_ROUTES = {
             "GET_ALL" : "/Attendances/corrections/organization",
             "Approve_Reject" : "/Attendances/corrections/approve"
         }
+    },
+
+    LEAVES : {
+        "GET_ALL" : "/Leaves/leavetypes/get",
     }
 
 }

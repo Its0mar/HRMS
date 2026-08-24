@@ -17,6 +17,7 @@ import { BasicInfo } from "./features/Dashboard/components/BasicInfo";
 import { AttendanceList } from "./features/Attendance/components/AttendanceList";
 import { CompanyAttendanceList } from "./features/Attendance/components/CompanyAttendanceList";
 import { CompanyAttendanceCorrectionsList } from "./features/Attendance/components/CompanyAttendanceCorrectionsList";
+import { LeaveTypesList } from "./features/Leaves/components/LeaveTypesList";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
               <Route path="/dashboard" element={<BasicInfo />} />
               <Route  path="/attendances/company" element={<CompanyAttendanceList />} />
               <Route  path="/attendances/corrections/company" element={<CompanyAttendanceCorrectionsList />} />
+              <Route path="leave/types" element={<LeaveTypesList />} />
 
               {/* <PermissionRoute permission={PERMISSIONS.DEPARTMENTS.VIEW}> */}
                 <Route path="/departments" element={ 
