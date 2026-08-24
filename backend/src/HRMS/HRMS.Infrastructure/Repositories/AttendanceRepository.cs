@@ -69,7 +69,6 @@ namespace HRMS.Infrastructure.Repositories
                 );
         }
 
-
         public async Task<IReadOnlyList<GetOrganizationAttendanceResponse>> GetOrganizationRecordsAsync(int organizationId, DateOnly? date, string? searchTerm, CancellationToken cancellationToken)
         {
             return await sqlExecutor.QueryAsync(

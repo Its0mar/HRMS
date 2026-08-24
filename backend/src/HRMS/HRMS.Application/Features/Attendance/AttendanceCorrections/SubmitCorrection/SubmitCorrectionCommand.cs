@@ -1,6 +1,6 @@
 ﻿using HRMS.Application.Abstractions.Messaging;
 
-namespace HRMS.Application.Features.Attendance.SubmitCorrection
+namespace HRMS.Application.Features.Attendance.AttendanceCorrections.SubmitCorrection
 {
     public sealed record SubmitCorrectionCommand(
         int? AttendanceLogId,

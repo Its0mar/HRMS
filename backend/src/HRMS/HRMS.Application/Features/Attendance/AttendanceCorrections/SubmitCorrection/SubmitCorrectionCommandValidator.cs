@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace HRMS.Application.Features.Attendance.SubmitCorrection;
+namespace HRMS.Application.Features.Attendance.AttendanceCorrections.SubmitCorrection;
 
 public sealed class SubmitCorrectionCommandValidator : AbstractValidator<SubmitCorrectionCommand>
 {

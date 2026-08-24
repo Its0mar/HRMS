@@ -4,7 +4,7 @@ using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
 using HRMS.Domain.Entities.Attendance;
 
-namespace HRMS.Application.Features.Attendance.SubmitCorrection
+namespace HRMS.Application.Features.Attendance.AttendanceCorrections.SubmitCorrection
 {
     public sealed class SubmitCorrectionHandler(IAttendanceRepository attendanceRepository, ICurrentUser currentUser)
         : ICommandHandler<SubmitCorrectionCommand, bool>

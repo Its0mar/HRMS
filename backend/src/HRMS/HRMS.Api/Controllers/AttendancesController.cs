@@ -1,11 +1,13 @@
 ﻿using Asp.Versioning;
+using ErrorOr;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
+using HRMS.Application.Features.Attendance.AttendanceCorrections.GetOrganizationAttendanceCorrection;
+using HRMS.Application.Features.Attendance.AttendanceCorrections.SubmitCorrection;
 using HRMS.Application.Features.Attendance.ClockIn;
 using HRMS.Application.Features.Attendance.ClockOut;
 using HRMS.Application.Features.Attendance.GetEmployeeAttendance;
 using HRMS.Application.Features.Attendance.GetOrganizationAttendance;
-using HRMS.Application.Features.Attendance.SubmitCorrection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -79,5 +81,21 @@ namespace HRMS.Api.Controllers
                 Ok,
                 Problem);
         }
+
+        [Authorize]
+        [HttpGet("corrections/organization")]
+        public async Task<IActionResult> GetOrganizationAttendanceCorrection(
+            GetOrganizationAttendanceCorrectionQuery query,
+            CancellationToken cancellationToken)
+        {
+            var result = await queryDispatcher.SendAsync(query, cancellationToken);
+
+            return result.Match(
+                Ok,
+                Problem);
+        }
     }
+
+
+    
 }
