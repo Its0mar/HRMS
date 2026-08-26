@@ -28,7 +28,7 @@ namespace HRMS.Domain.Entities.Leaves
             Status = LeaveRequestStatus.Pending;
         }
 
-        public LeaveRequest Restore(int? id, int organizationId, int employeeId, int leaveTypeId, DateTime startDate, DateTime endDate, decimal totalDays, 
+        public static LeaveRequest Restore(int? id, int organizationId, int employeeId, int leaveTypeId, DateTime startDate, DateTime endDate, decimal totalDays, 
             string reason, LeaveRequestStatus status, int? reviewedById, DateTime? reviewedAt, string? rejectionReason)
         {
             return new LeaveRequest(organizationId, employeeId, leaveTypeId, startDate, endDate, totalDays, reason)

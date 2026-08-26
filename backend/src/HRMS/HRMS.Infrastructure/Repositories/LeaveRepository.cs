@@ -1,5 +1,6 @@
 ﻿using HRMS.Application.Abstractions.Persistence;
 using HRMS.Application.Abstractions.Persistence.Models;
+using HRMS.Application.Features.Leaves.LeaveRequests;
 using HRMS.Domain.Entities.Leaves;
 using HRMS.Infrastructure.Mappers.Leaves;
 using HRMS.Infrastructure.Persistence;
@@ -142,6 +143,17 @@ namespace HRMS.Infrastructure.Repositories
                 
         }
 
+        public async Task<List<LeaveRequestResponse>> GetEmployeeLeaveRequestsAsync(int employeeId, int organizationId, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.QueryAsync(
+                "LeaveRequests_GetMyRequests",
+                LeaveRequestResponseMapper.Map,
+                cancellationToken,
+                Int("@EmployeeId", employeeId),
+                Int("@OrganizationId", organizationId)
+                );
+        }
+
 
         private LeaveType LeaveTypeMap(SqlDataReader reader)
         {
@@ -168,5 +180,6 @@ namespace HRMS.Infrastructure.Repositories
                   reader.GetDecimal(reader.GetOrdinal("PendingDays"))
                 );
         }
+    
     }
 }

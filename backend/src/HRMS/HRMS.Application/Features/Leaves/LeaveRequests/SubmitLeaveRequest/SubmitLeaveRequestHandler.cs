@@ -17,6 +17,9 @@ namespace HRMS.Application.Features.Leaves.LeaveRequests.SubmitLeaveRequest
     {
         public async Task<ErrorOr<bool>> HandleAsync(SubmitLeaveRequestCommand command, CancellationToken cancellationToken)
         {
+            //todo: check for overlap
+            //todo : check for holidays (if specified in future)
+
             //get balance
             var currentYear = DateTime.Now.Year;
             var balance = await leaveRepository.GeyMyBalanceAsync(command.LeaveTypeId, currentYear, currentUser.EmployeeId, cancellationToken);

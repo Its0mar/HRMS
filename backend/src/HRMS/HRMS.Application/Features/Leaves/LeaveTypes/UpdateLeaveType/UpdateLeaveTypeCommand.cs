@@ -1,6 +1,6 @@
 ﻿using HRMS.Application.Abstractions.Messaging;
 
-namespace HRMS.Application.Features.Leaves.LeaveType.UpdateLeaveType
+namespace HRMS.Application.Features.Leaves.LeaveTypes.UpdateLeaveType
 {
     public record UpdateLeaveTypeCommand(
         int Id,

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace HRMS.Application.Features.Leaves.LeaveType.CreateLeaveType
+namespace HRMS.Application.Features.Leaves.LeaveTypes.CreateLeaveType
 {
     public sealed class CreateLeaveTypeCommandValidator : AbstractValidator<CreateLeaveTypeCommand>
     {

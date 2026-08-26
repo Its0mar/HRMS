@@ -1,4 +1,4 @@
-﻿namespace HRMS.Application.Features.Leaves.LeaveType.GetLeaveTypes
+﻿namespace HRMS.Application.Features.Leaves.LeaveTypes.GetLeaveTypes
 {
     public record LeaveTypeResponse(
         int Id,

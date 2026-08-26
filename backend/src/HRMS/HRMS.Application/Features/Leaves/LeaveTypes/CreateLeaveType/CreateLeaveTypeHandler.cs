@@ -4,7 +4,7 @@ using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
 using LeaveTypeEntity = HRMS.Domain.Entities.Leaves.LeaveType;
 
-namespace HRMS.Application.Features.Leaves.LeaveType.CreateLeaveType
+namespace HRMS.Application.Features.Leaves.LeaveTypes.CreateLeaveType
 {
     public sealed class CreateLeaveTypeHandler(ILeaveRepository leaveRepository, ICurrentUser currentUser) : ICommandHandler<CreateLeaveTypeCommand, bool>
     {

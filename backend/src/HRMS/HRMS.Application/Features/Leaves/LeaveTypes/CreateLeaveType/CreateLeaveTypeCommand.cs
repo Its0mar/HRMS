@@ -1,6 +1,6 @@
 ﻿using HRMS.Application.Abstractions.Messaging;
 
-namespace HRMS.Application.Features.Leaves.LeaveType.CreateLeaveType
+namespace HRMS.Application.Features.Leaves.LeaveTypes.CreateLeaveType
 {
     public record CreateLeaveTypeCommand(
         string Name,

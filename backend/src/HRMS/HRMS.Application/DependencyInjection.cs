@@ -21,10 +21,12 @@ using HRMS.Application.Features.Employees.GetEmployeeOptions;
 using HRMS.Application.Features.Employees.GetEmployees;
 using HRMS.Application.Features.Employees.UpdateEmployeeAccess;
 using HRMS.Application.Features.Leaves.LeaveBalances.GetLeaveBalances;
+using HRMS.Application.Features.Leaves.LeaveRequests;
+using HRMS.Application.Features.Leaves.LeaveRequests.GetMyLeaveRequests;
 using HRMS.Application.Features.Leaves.LeaveRequests.SubmitLeaveRequest;
-using HRMS.Application.Features.Leaves.LeaveType.CreateLeaveType;
-using HRMS.Application.Features.Leaves.LeaveType.GetLeaveTypes;
-using HRMS.Application.Features.Leaves.LeaveType.UpdateLeaveType;
+using HRMS.Application.Features.Leaves.LeaveTypes.CreateLeaveType;
+using HRMS.Application.Features.Leaves.LeaveTypes.GetLeaveTypes;
+using HRMS.Application.Features.Leaves.LeaveTypes.UpdateLeaveType;
 using HRMS.Application.Features.Organizations.Registration;
 using HRMS.Application.Features.Positions.CreatePosition;
 using HRMS.Application.Features.Positions.GetPositions;
@@ -213,6 +215,10 @@ public static class DependencyInjection
         services.AddScoped<
             ICommandHandler<SubmitLeaveRequestCommand, bool>,
             SubmitLeaveRequestHandler>();
+
+        services.AddScoped<
+            IQueryHandler<GetMyLeaveRequestsQuery, IReadOnlyList<LeaveRequestResponse>>,
+            GetMyLeaveRequestsHandler>();
 
 
         return services;

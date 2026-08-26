@@ -2,10 +2,11 @@
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Leaves.LeaveBalances.GetLeaveBalances;
+using HRMS.Application.Features.Leaves.LeaveRequests.GetMyLeaveRequests;
 using HRMS.Application.Features.Leaves.LeaveRequests.SubmitLeaveRequest;
-using HRMS.Application.Features.Leaves.LeaveType.CreateLeaveType;
-using HRMS.Application.Features.Leaves.LeaveType.GetLeaveTypes;
-using HRMS.Application.Features.Leaves.LeaveType.UpdateLeaveType;
+using HRMS.Application.Features.Leaves.LeaveTypes.CreateLeaveType;
+using HRMS.Application.Features.Leaves.LeaveTypes.GetLeaveTypes;
+using HRMS.Application.Features.Leaves.LeaveTypes.UpdateLeaveType;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -78,5 +79,18 @@ namespace HRMS.Api.Controllers
                 _ => Ok(),
                 Problem);
         }
+
+        [Authorize]
+        [HttpGet("leaveRequests/list")]
+        public async Task<IActionResult> MyRequests(CancellationToken cancellationToken)
+        {
+            var query = new GetMyLeaveRequestsQuery(currentUser.EmployeeId, currentUser.OrganizationId);
+            var result = await queryDispatcher.SendAsync(query, cancellationToken);
+
+            return result.Match(
+                Ok,
+                Problem);
+        }
+
     }
 }

@@ -3,7 +3,7 @@ using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
 
-namespace HRMS.Application.Features.Leaves.LeaveType.UpdateLeaveType
+namespace HRMS.Application.Features.Leaves.LeaveTypes.UpdateLeaveType
 {
     public sealed class UpdateLeaveTypeHandler(
         ILeaveRepository leaveRepository,

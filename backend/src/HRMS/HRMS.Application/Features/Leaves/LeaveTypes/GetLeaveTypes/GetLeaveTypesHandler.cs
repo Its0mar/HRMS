@@ -2,7 +2,7 @@
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
 
-namespace HRMS.Application.Features.Leaves.LeaveType.GetLeaveTypes
+namespace HRMS.Application.Features.Leaves.LeaveTypes.GetLeaveTypes
 {
     public sealed class GetLeaveTypesHandler(ILeaveRepository leaveRepository) : IQueryHandler<GetLeaveTypesQuery, IReadOnlyList<LeaveTypeResponse>>
     {
