@@ -11,7 +11,7 @@ namespace HRMS.Application.Features.Leaves.LeaveType.UpdateLeaveType
     {
         public async Task<ErrorOr<bool>> HandleAsync(UpdateLeaveTypeCommand command, CancellationToken cancellationToken)
         {
-            var leaveType = await leaveRepository.GetByIdAsync(command.Id, currentUser.OrganizationId, cancellationToken);
+            var leaveType = await leaveRepository.GetTypeByIdAsync(command.Id, currentUser.OrganizationId, cancellationToken);
             if (leaveType is null)
             {
                 return Error.NotFound("LeaveType.NotFound", "The specified leave type does not exist.");

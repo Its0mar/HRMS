@@ -7,8 +7,9 @@
         bool RequiresApproval,
         int Year,
         int TotalEntitledDays,
-        int UsedDays,
-        int PendingDays,
-        int RemainingDays
+        decimal UsedDays,
+        decimal PendingDays,
+        decimal RemainingDays,
+        bool IsRecordedInDb
         );
 }

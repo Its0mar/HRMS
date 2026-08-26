@@ -45,7 +45,7 @@ namespace HRMS.Infrastructure.Repositories
                 );
         }
 
-        public async Task<LeaveType?> GetByIdAsync(int id, int organizationId, CancellationToken cancellationToken)
+        public async Task<LeaveType?> GetTypeByIdAsync(int id, int organizationId, CancellationToken cancellationToken)
         {
             return await sqlExecutor.QueryFirstOrDefaultAsync(
                 "dbo.LeaveTypes_GetById",
@@ -79,6 +79,68 @@ namespace HRMS.Infrastructure.Repositories
                 new SqlParameter("@EmployeeId", employeeId),
                 new SqlParameter("@OrganizationId", organizationId));
         }
+        public async Task<EmployeeLeaveBalance?> GeyMyBalanceAsync(int leaveTypeId, int year, int employeeId, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.QueryFirstOrDefaultAsync(
+                "dbo.Leaves_GetMyBalance",
+                EmployeeLeaveBalancesMap,
+                cancellationToken,
+                new SqlParameter("@LeaveTypeId", leaveTypeId),
+                new SqlParameter("@Year", year),
+                new SqlParameter("@EmployeeId", employeeId));
+        }
+
+        public async Task<bool> CreateEmployeeBalance(EmployeeLeaveBalance balance, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.ExecuteScalarBoolAsync(
+                "dbo.EmployeeLeaveBalances_Create",
+                cancellationToken,
+                Int("@EmployeeId", balance.EmployeeId),
+                Int("@LeaveTypeId", balance.LeaveTypeId),
+                Int("@Year", balance.Year),
+                new SqlParameter("@TotalEntitledDays", System.Data.SqlDbType.Decimal)
+                {
+                    Value = balance.TotalEntitledDays
+                },
+                new SqlParameter("@PendingDays", System.Data.SqlDbType.Decimal)
+                {
+                    Value = balance.PendingDays
+                }
+
+                );
+        }
+
+        public async Task<bool> UpdatePendingDaysAsync(EmployeeLeaveBalance balance, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.ExecuteScalarBoolAsync(
+                "dbo.EmployeeLeaveBalances_UpdatePendingDays",
+                cancellationToken,
+                Int("@BalanceId", balance.Id ?? -1),
+                Int("@EmployeeId", balance.EmployeeId),
+                new SqlParameter("@PendingDays", System.Data.SqlDbType.Decimal)
+                {
+                    Value = balance.PendingDays
+                });
+        }
+
+        public async Task<bool> CreateLeaveRequestAsync(LeaveRequest request, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.ExecuteScalarBoolAsync(
+                "dbo.LeaveRequests_Create",
+                cancellationToken,
+                Int("@OrganizationId", request.OrganizationId),
+                Int("@EmployeeId", request.EmployeeId),
+                Int("@LeaveTypeId", request.LeaveTypeId),
+                DateTime2("@StartDate", request.StartDate),
+                DateTime2("@EndDate", request.EndDate),
+                new SqlParameter("@TotalDays", System.Data.SqlDbType.Decimal)
+                {
+                    Value = request.TotalDays
+                },
+                VarChar("@Reason", 300, request.Reason));
+
+                
+        }
 
 
         private LeaveType LeaveTypeMap(SqlDataReader reader)
@@ -91,6 +153,19 @@ namespace HRMS.Infrastructure.Repositories
                 reader.GetInt32(reader.GetOrdinal("DefaultDaysPerYear")),
                 reader.GetBoolean(reader.GetOrdinal("IsPaid")),
                 reader.GetBoolean(reader.GetOrdinal("RequiresApproval"))
+                );
+        }
+
+        private EmployeeLeaveBalance EmployeeLeaveBalancesMap(SqlDataReader reader)
+        {
+            return EmployeeLeaveBalance.Restore(
+                 reader.GetInt32(reader.GetOrdinal("Id")),
+                  reader.GetInt32(reader.GetOrdinal("EmployeeId")),
+                  reader.GetInt32(reader.GetOrdinal("LeaveTypeId")),
+                  reader.GetInt32(reader.GetOrdinal("Year")),
+                  reader.GetInt32(reader.GetOrdinal("TotalEntitledDays")),
+                  reader.GetDecimal(reader.GetOrdinal("UsedDays")),
+                  reader.GetDecimal(reader.GetOrdinal("PendingDays"))
                 );
         }
     }

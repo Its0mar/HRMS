@@ -14,9 +14,10 @@ namespace HRMS.Infrastructure.Mappers.Leaves
                 reader.GetBoolean(reader.GetOrdinal("RequiresApproval")),
                 reader.GetInt32(reader.GetOrdinal("Year")),
                 reader.GetInt32(reader.GetOrdinal("TotalEntitledDays")),
-                reader.GetInt32(reader.GetOrdinal("UsedDays")),
-                reader.GetInt32(reader.GetOrdinal("PendingDays")),
-                reader.GetInt32(reader.GetOrdinal("RemainingDays"))
+                reader.GetDecimal(reader.GetOrdinal("UsedDays")),
+                reader.GetDecimal(reader.GetOrdinal("PendingDays")),
+                reader.GetDecimal(reader.GetOrdinal("RemainingDays")),
+                reader.GetBoolean(reader.GetOrdinal("IsRecordedInDb"))
                 );
         }
     }

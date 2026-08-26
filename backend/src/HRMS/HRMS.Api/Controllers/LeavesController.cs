@@ -2,6 +2,7 @@
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Leaves.LeaveBalances.GetLeaveBalances;
+using HRMS.Application.Features.Leaves.LeaveRequests.SubmitLeaveRequest;
 using HRMS.Application.Features.Leaves.LeaveType.CreateLeaveType;
 using HRMS.Application.Features.Leaves.LeaveType.GetLeaveTypes;
 using HRMS.Application.Features.Leaves.LeaveType.UpdateLeaveType;
@@ -64,6 +65,17 @@ namespace HRMS.Api.Controllers
 
             return result.Match(
                 Ok,
+                Problem);
+        }
+
+        [Authorize]
+        [HttpPost("leaveRequests/apply")]
+        public async Task<IActionResult> Apply(SubmitLeaveRequestCommand command, CancellationToken cancellationToken)
+        {
+            var result = await commandDispatcher.SendAsync(command, cancellationToken);
+
+            return result.Match(
+                _ => Ok(),
                 Problem);
         }
     }

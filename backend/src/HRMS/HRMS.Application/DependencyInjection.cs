@@ -21,6 +21,7 @@ using HRMS.Application.Features.Employees.GetEmployeeOptions;
 using HRMS.Application.Features.Employees.GetEmployees;
 using HRMS.Application.Features.Employees.UpdateEmployeeAccess;
 using HRMS.Application.Features.Leaves.LeaveBalances.GetLeaveBalances;
+using HRMS.Application.Features.Leaves.LeaveRequests.SubmitLeaveRequest;
 using HRMS.Application.Features.Leaves.LeaveType.CreateLeaveType;
 using HRMS.Application.Features.Leaves.LeaveType.GetLeaveTypes;
 using HRMS.Application.Features.Leaves.LeaveType.UpdateLeaveType;
@@ -208,6 +209,11 @@ public static class DependencyInjection
         services.AddScoped<
             IQueryHandler<GetLeaveBalancesQuery, IReadOnlyList<MyLeaveBalancesResponse>>,
             GetLeaveBalancesHandler>();
+
+        services.AddScoped<
+            ICommandHandler<SubmitLeaveRequestCommand, bool>,
+            SubmitLeaveRequestHandler>();
+
 
         return services;
     }
