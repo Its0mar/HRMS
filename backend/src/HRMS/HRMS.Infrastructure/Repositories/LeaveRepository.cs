@@ -1,5 +1,7 @@
 ﻿using HRMS.Application.Abstractions.Persistence;
+using HRMS.Application.Abstractions.Persistence.Models;
 using HRMS.Domain.Entities.Leaves;
+using HRMS.Infrastructure.Mappers.Leaves;
 using HRMS.Infrastructure.Persistence;
 using Microsoft.Data.SqlClient;
 using static HRMS.Infrastructure.Persistence.SqlParams;
@@ -26,7 +28,7 @@ namespace HRMS.Infrastructure.Repositories
         {
             return await sqlExecutor.QueryAsync(
                 "dbo.LeaveTypes_GetForOrganization",
-                Map,
+                LeaveTypeMap,
                 cancellationToken,
                 Int("@OrganizationId", organizationId)
                 );
@@ -47,7 +49,7 @@ namespace HRMS.Infrastructure.Repositories
         {
             return await sqlExecutor.QueryFirstOrDefaultAsync(
                 "dbo.LeaveTypes_GetById",
-                Map,
+                LeaveTypeMap,
                 cancellationToken,
                 Int("@Id", id),
                 Int("@OrganizationId", organizationId));
@@ -67,8 +69,19 @@ namespace HRMS.Infrastructure.Repositories
                 Bit("@RequiresApproval", leaveType.RequiresApproval));
         }
 
+        public async Task<List<MyLeaveBalancesResponse>> GetMyBalancesAsync(int year, int employeeId, int organizationId, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.QueryAsync(
+                "dbo.Leaves_GetMyBalances",
+                MyLeaveBalancesResponseMapper.Map,
+                cancellationToken,
+                new SqlParameter("@Year", year),
+                new SqlParameter("@EmployeeId", employeeId),
+                new SqlParameter("@OrganizationId", organizationId));
+        }
 
-        private LeaveType Map(SqlDataReader reader)
+
+        private LeaveType LeaveTypeMap(SqlDataReader reader)
         {
             return LeaveType.Restore(
                 reader.GetInt32(reader.GetOrdinal("Id")),

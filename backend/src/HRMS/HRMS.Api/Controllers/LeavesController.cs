@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
+using HRMS.Application.Features.Leaves.LeaveBalances.GetLeaveBalances;
 using HRMS.Application.Features.Leaves.LeaveType.CreateLeaveType;
 using HRMS.Application.Features.Leaves.LeaveType.GetLeaveTypes;
 using HRMS.Application.Features.Leaves.LeaveType.UpdateLeaveType;
@@ -50,6 +51,19 @@ namespace HRMS.Api.Controllers
 
             return result.Match(
                 _ => Ok(),
+                Problem);
+        }
+
+        [Authorize]
+        [HttpGet("balances")]
+        public async Task<IActionResult> GetMyLeaveBalances([FromQuery] int year, CancellationToken cancellationToken)
+        {
+            var query = new GetLeaveBalancesQuery(year, currentUser.EmployeeId, currentUser.OrganizationId);
+
+            var result = await queryDispatcher.SendAsync(query, cancellationToken);
+
+            return result.Match(
+                Ok,
                 Problem);
         }
     }
