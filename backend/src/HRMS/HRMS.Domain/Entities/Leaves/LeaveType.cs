@@ -27,5 +27,14 @@
                 Id = id
             };
         }
+
+        public void Update(string name, string code, int defaultDaysPerYear, bool isPaid, bool requiresApproval)
+        {
+            Name = name;
+            Code = code;
+            DefaultDaysPerYear = defaultDaysPerYear;
+            IsPaid = isPaid;
+            RequiresApproval = requiresApproval;
+        }
     }
 }

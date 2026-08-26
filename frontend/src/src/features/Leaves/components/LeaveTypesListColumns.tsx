@@ -1,7 +1,10 @@
 import type { DataTableColumn } from "../../../Common/DataTable/DataTable";
-import type { LeaveTupeListItem } from "../types/LeaveTypeListItem";
+import type { LeaveTypeListItem } from "../types/LeaveTypeListItem";
+import { Badge, Button } from "@mantine/core";
 
-export const LeaveTypesListColumns : DataTableColumn<LeaveTupeListItem>[] = [
+export const getLeaveTypesListColumns = (
+    onEdit: (item: LeaveTypeListItem) => void
+): DataTableColumn<LeaveTypeListItem>[] => [
     {
         key: "name",
         header: "Name",
@@ -10,21 +13,42 @@ export const LeaveTypesListColumns : DataTableColumn<LeaveTupeListItem>[] = [
     {
         key: "code",
         header: "Code",
-        render: (item) => item.code,
+        render: (item) => <Badge variant="light" color="indigo">{item.code}</Badge>,
     },
     {
         key: "defaultDaysPerYear",
-        header: "Default Days Per Year",
-        render: (item) => item.defaultDaysPerYear,
+        header: "Default Days / Year",
+        render: (item) => `${item.defaultDaysPerYear} days`,
     },
     {
         key: "isPaid",
         header: "Is Paid",
-        render: (item) => item.isPaid ? "Paid" : "Not Paid",
+        render: (item) => (
+            <Badge color={item.isPaid ? "green" : "gray"} variant="light">
+                {item.isPaid ? "Paid" : "Unpaid"}
+            </Badge>
+        ),
     },
     {
         key: "requiresApproval",
         header: "Requires Approval",
-        render: (item) => item.isPaid ? "Yes" : "No",
+        render: (item) => (
+            <Badge color={item.requiresApproval ? "blue" : "gray"} variant="light">
+                {item.requiresApproval ? "Yes" : "No"}
+            </Badge>
+        ),
     },
-]
+    {
+        key: "actions",
+        header: "Actions",
+        render: (item) => (
+            <Button
+                size="xs"
+                variant="light"
+                onClick={() => onEdit(item)}
+            >
+                Edit
+            </Button>
+        ),
+    },
+];

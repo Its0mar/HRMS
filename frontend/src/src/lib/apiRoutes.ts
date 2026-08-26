@@ -60,6 +60,8 @@ export const API_ROUTES = {
 
     LEAVES : {
         "GET_ALL" : "/Leaves/leavetypes/get",
+        "CREATE" : "/Leaves/leavetypes/create",
+        "UPDATE" : "/Leaves/leavetypes/update"
     }
 
 }

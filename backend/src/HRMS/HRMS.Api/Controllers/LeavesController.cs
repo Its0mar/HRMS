@@ -3,6 +3,7 @@ using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Leaves.LeaveType.CreateLeaveType;
 using HRMS.Application.Features.Leaves.LeaveType.GetLeaveTypes;
+using HRMS.Application.Features.Leaves.LeaveType.UpdateLeaveType;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,6 +39,17 @@ namespace HRMS.Api.Controllers
 
             return result.Match(
                 Ok,
+                Problem);
+        }
+
+        [Authorize]
+        [HttpPut("leavetypes/update")]
+        public async Task<IActionResult> Update(UpdateLeaveTypeCommand command, CancellationToken cancellationToken)
+        {
+            var result = await commandDispatcher.SendAsync(command, cancellationToken);
+
+            return result.Match(
+                _ => Ok(),
                 Problem);
         }
     }

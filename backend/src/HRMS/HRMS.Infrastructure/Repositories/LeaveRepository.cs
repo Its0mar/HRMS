@@ -43,6 +43,30 @@ namespace HRMS.Infrastructure.Repositories
                 );
         }
 
+        public async Task<LeaveType?> GetByIdAsync(int id, int organizationId, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.QueryFirstOrDefaultAsync(
+                "dbo.LeaveTypes_GetById",
+                Map,
+                cancellationToken,
+                Int("@Id", id),
+                Int("@OrganizationId", organizationId));
+        }
+
+        public async Task<bool> UpdateLeaveTypeAsync(LeaveType leaveType, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.ExecuteScalarBoolAsync(
+                "dbo.LeaveTypes_Update",
+                cancellationToken,
+                Int("@Id", leaveType.Id!.Value),
+                Int("@OrganizationId", leaveType.OrganizationId),
+                VarChar("@Name", 100, leaveType.Name),
+                VarChar("@Code", 20, leaveType.Code),
+                Int("@DefaultDaysPerYear", leaveType.DefaultDaysPerYear),
+                Bit("@IsPaid", leaveType.IsPaid),
+                Bit("@RequiresApproval", leaveType.RequiresApproval));
+        }
+
 
         private LeaveType Map(SqlDataReader reader)
         {
