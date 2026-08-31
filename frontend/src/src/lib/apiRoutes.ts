@@ -3,7 +3,8 @@ export const API_ROUTES = {
         LOGIN: "/Auth/login",
         REFRESH: "/Auth/refresh",
         LOGOUT: "/Auth/logout",
-        REGISTER_EMPLOYEE: "/Auth/employees"
+        REGISTER_EMPLOYEE: "/Auth/employees",
+        CHANGE_PASSWORD: "/Auth/change-password"
     },
     ORGRANIZATIONS: {
         CREATE: "/Organizations",
@@ -67,7 +68,8 @@ export const API_ROUTES = {
         GET_MY_REQUESTS: "/Leaves/leaveRequests/list",
         GET_ORGANIZATION_REQUESTS: "/Leaves/leaveRequests/organization/list",
         APPROVE_REQUEST: "/Leaves/requests/approve",
-        REJECT_REQUEST: "/Leaves/requests/reject"
+        REJECT_REQUEST: "/Leaves/requests/reject",
+        CANCEL_REQUEST: (id: number) => `/Leaves/requests/${id}/cancel`,
     },
 
     DASHBOARD: {

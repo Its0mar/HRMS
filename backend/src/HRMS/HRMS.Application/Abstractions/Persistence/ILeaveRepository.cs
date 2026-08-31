@@ -22,6 +22,8 @@ namespace HRMS.Application.Abstractions.Persistence
         public Task<bool> AcceptLeaveRequest(int organizationId, int leaveRequestId, CancellationToken cancellationToken);
         Task<bool> ApproveLeaveRequestAsync(int requestId, int organizationId, int reviewedById, CancellationToken cancellationToken);
         Task<bool> RejectLeaveRequestAsync(int requestId, int organizationId, int reviewedById, string rejectionReason, CancellationToken cancellationToken);
+        Task<bool> CancelLeaveRequestAsync(int requestId, int employeeId, int organizationId, CancellationToken cancellationToken);
+
 
 
 

@@ -2,6 +2,7 @@ using Asp.Versioning;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
+using HRMS.Application.Features.Authentication.ChangePassword;
 using HRMS.Application.Features.Authentication.Login;
 using HRMS.Application.Features.Authentication.Logout;
 using HRMS.Application.Features.Authentication.RefreshToken;
@@ -58,6 +59,16 @@ public sealed class AuthController(ICommandDispatcher dispatcher) : ApiControlle
                 DeleteRefreshTokenCookie();
                 return NoContent();
             },
+            Problem);
+    }
+
+    [Authorize]
+    [HttpPost("change-password")]
+    public async Task<IActionResult> ChangePassword(ChangePasswordCommand command, CancellationToken cancellationToken)
+    {
+        var result = await dispatcher.SendAsync(command, cancellationToken);
+        return result.Match<IActionResult>(
+            _ => Ok(new { message = "Password updated successfully." }),
             Problem);
     }
 

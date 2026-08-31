@@ -3,8 +3,8 @@ import type { EmployeeListItem } from "../types/EmployeeListItem";
 import { API_ROUTES } from "../../../lib/apiRoutes";
 import { apiClient } from "../../../lib/apiClient";
 import axios from "axios";
-import { Badge, Button, Group, Stack, ThemeIcon, Title, Text, Alert } from "@mantine/core";
-import { IconRefresh, IconUser, IconUserPlus } from "@tabler/icons-react";
+import { Badge, Button, Group, Stack, ThemeIcon, Title, Text, Alert, TextInput } from "@mantine/core";
+import { IconRefresh, IconUser, IconUserPlus, IconSearch } from "@tabler/icons-react";
 import { DataTable, type DataTableColumn } from "../../../Common/DataTable/DataTable";
 import { useDisclosure } from "@mantine/hooks";
 import { CreateAccessModal } from "./CreateAccessModal";
@@ -15,8 +15,8 @@ import { CreateEmployeeModal } from "./CreateEmployeeModal";
 import { AssignWorkScheduleModal } from "./AssignWorkScheduleModal";
 
 export function EmployeesList() {
-
     const [employees, setEmployees] = useState<EmployeeListItem[]>([]);
+    const [searchQuery, setSearchQuery] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [createAccessOpened, createAccessModal] = useDisclosure(false);
@@ -299,14 +299,31 @@ export function EmployeesList() {
                     </Alert>
                 )}
 
+                {/* Search Bar */}
+                <TextInput
+                    placeholder="Search by name, employee number, email, or department..."
+                    leftSection={<IconSearch size={16} />}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.currentTarget.value)}
+                    radius="md"
+                />
+
                 <DataTable
-                    data={employees}
+                    data={employees.filter((emp) => {
+                        const q = searchQuery.toLowerCase();
+                        return (
+                            emp.fullName.toLowerCase().includes(q) ||
+                            emp.employeeNumber.toLowerCase().includes(q) ||
+                            (emp.workEmail && emp.workEmail.toLowerCase().includes(q)) ||
+                            (emp.departmentName && emp.departmentName.toLowerCase().includes(q))
+                        );
+                    })}
                     columns={columns}
                     getRowKey={(employee) => employee.id}
                     isLoading={isLoading}
                     minWidth={1000}
-                    emptyTitle="No employees yet"
-                    emptyDescription="Employees will appear here once created."
+                    emptyTitle="No employees found"
+                    emptyDescription={searchQuery ? "No employees match your search query." : "Employees will appear here once created."}
                 />
 
                 <CreateEmployeeModal

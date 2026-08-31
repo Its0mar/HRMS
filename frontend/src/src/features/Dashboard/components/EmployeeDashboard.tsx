@@ -35,6 +35,12 @@ export function EmployeeDashboard() {
     const [isLoading, setIsLoading] = useState(true);
     const [isClocking, setIsClocking] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [currentTime, setCurrentTime] = useState(new Date());
+
+    useEffect(() => {
+        const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+        return () => clearInterval(timer);
+    }, []);
 
     const fetchDashboard = async () => {
         setIsLoading(true);
@@ -162,9 +168,14 @@ export function EmployeeDashboard() {
                             </div>
                         </Group>
 
-                        <Badge size="lg" variant="filled" color="indigo" radius="sm">
-                            {user?.email}
-                        </Badge>
+                        <Group gap="sm">
+                            <Badge size="lg" variant="light" color="indigo" radius="sm" leftSection={<IconClock size={15} />}>
+                                {currentTime.toLocaleTimeString()}
+                            </Badge>
+                            <Badge size="lg" variant="filled" color="indigo" radius="sm">
+                                {user?.email}
+                            </Badge>
+                        </Group>
                     </Group>
                 </Paper>
 

@@ -23,6 +23,7 @@ const renderStatusBadge = (status: number) => {
 export const getCompanyLeaveRequestsColumns = (
     onApprove: (item: CompanyLeaveRequestItem) => void,
     onReject: (item: CompanyLeaveRequestItem) => void,
+    onViewDetails: (item: CompanyLeaveRequestItem) => void,
     isSubmitting: boolean = false
 ): DataTableColumn<CompanyLeaveRequestItem>[] => [
     {
@@ -87,14 +88,23 @@ export const getCompanyLeaveRequestsColumns = (
         render: (item) => {
             if (item.status !== 1) {
                 return (
-                    <Text size="xs" c="dimmed">
-                        {item.reviewedByName ? `By ${item.reviewedByName}` : "Reviewed"}
-                    </Text>
+                    <Group gap="xs">
+                        <Button size="xs" variant="subtle" color="indigo" onClick={() => onViewDetails(item)}>
+                            View
+                        </Button>
+                        <Text size="xs" c="dimmed">
+                            {item.reviewedByName ? `By ${item.reviewedByName}` : "Reviewed"}
+                        </Text>
+                    </Group>
                 );
             }
 
             return (
                 <Group gap="xs" wrap="nowrap">
+                    <Button size="xs" variant="subtle" color="indigo" onClick={() => onViewDetails(item)}>
+                        View
+                    </Button>
+
                     <Button
                         size="xs"
                         color="green"

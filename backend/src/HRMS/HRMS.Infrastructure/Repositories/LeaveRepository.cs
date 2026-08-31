@@ -197,6 +197,16 @@ namespace HRMS.Infrastructure.Repositories
                 VarChar("@RejectionReason", 300, rejectionReason));
         }
 
+        public async Task<bool> CancelLeaveRequestAsync(int requestId, int employeeId, int organizationId, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.ExecuteScalarBoolAsync(
+                "LeaveRequests_CancelPending",
+                cancellationToken,
+                Int("@Id", requestId),
+                Int("@EmployeeId", employeeId),
+                Int("@OrganizationId", organizationId));
+        }
+
         private LeaveType LeaveTypeMap(SqlDataReader reader)
         {
             return LeaveType.Restore(

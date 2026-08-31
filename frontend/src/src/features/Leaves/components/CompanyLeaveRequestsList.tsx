@@ -21,6 +21,8 @@ import {
 } from "@mantine/core";
 import { IconBuildingCommunity, IconRefresh } from "@tabler/icons-react";
 
+import { ViewLeaveDetailsModal } from "./ViewLeaveDetailsModal";
+
 export function CompanyLeaveRequestsList() {
     const [requests, setRequests] = useState<CompanyLeaveRequestItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -32,7 +34,9 @@ export function CompanyLeaveRequestsList() {
 
     // Reject Modal State
     const [rejectModalOpened, rejectModal] = useDisclosure(false);
+    const [viewModalOpened, viewModal] = useDisclosure(false);
     const [selectedRequest, setSelectedRequest] = useState<CompanyLeaveRequestItem | null>(null);
+    const [viewingRequest, setViewingRequest] = useState<CompanyLeaveRequestItem | null>(null);
 
     const fetchLeaveRequests = async () => {
         setIsLoading(true);
@@ -121,7 +125,12 @@ export function CompanyLeaveRequestsList() {
         }
     };
 
-    const columns = getCompanyLeaveRequestsColumns(handleApprove, handleOpenRejectModal, isSubmitting);
+    const handleViewDetails = (item: CompanyLeaveRequestItem) => {
+        setViewingRequest(item);
+        viewModal.open();
+    };
+
+    const columns = getCompanyLeaveRequestsColumns(handleApprove, handleOpenRejectModal, handleViewDetails, isSubmitting);
 
     return (
         <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
@@ -180,6 +189,13 @@ export function CompanyLeaveRequestsList() {
                     onClose={rejectModal.close}
                     onConfirm={handleConfirmReject}
                     isSubmitting={isSubmitting}
+                />
+
+                {/* Leave Details Modal */}
+                <ViewLeaveDetailsModal
+                    opened={viewModalOpened}
+                    onClose={viewModal.close}
+                    request={viewingRequest}
                 />
             </Stack>
         </main>

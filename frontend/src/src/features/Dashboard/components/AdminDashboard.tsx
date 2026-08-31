@@ -24,6 +24,7 @@ import {
 } from "@mantine/core";
 import {
     IconAlertCircle,
+    IconClock,
     IconClockCheck,
     IconFileCheck,
     IconRefresh,
@@ -69,6 +70,12 @@ export function AdminDashboard() {
     const [data, setData] = useState<AdminDashboardResponse | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [currentTime, setCurrentTime] = useState(new Date());
+
+    useEffect(() => {
+        const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+        return () => clearInterval(timer);
+    }, []);
 
     const fetchAdminDashboard = async () => {
         setIsLoading(true);
@@ -136,6 +143,9 @@ export function AdminDashboard() {
                                         Manager Control Panel 👋
                                     </Title>
                                     <Badge color="indigo" variant="filled" size="sm">Management View</Badge>
+                                    <Badge color="indigo" variant="light" size="sm" leftSection={<IconClock size={14} />}>
+                                        {currentTime.toLocaleTimeString()}
+                                    </Badge>
                                 </Group>
                                 <Text size="sm" c="indigo.1">
                                     {new Date().toLocaleDateString("en-US", {

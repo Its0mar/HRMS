@@ -3,6 +3,7 @@ using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Leaves.LeaveBalances.GetLeaveBalances;
 using HRMS.Application.Features.Leaves.LeaveRequests.ApproveLeaveRequest;
+using HRMS.Application.Features.Leaves.LeaveRequests.CancelPending;
 using HRMS.Application.Features.Leaves.LeaveRequests.GetMyLeaveRequests;
 using HRMS.Application.Features.Leaves.LeaveRequests.GetOrganizationLeaveRequests;
 using HRMS.Application.Features.Leaves.LeaveRequests.RejectLeaveRequest;
@@ -124,6 +125,18 @@ namespace HRMS.Api.Controllers
             CancellationToken cancellationToken)
         {
             var result = await commandDispatcher.SendAsync(command, cancellationToken);
+            return result.Match(_ => Ok(), Problem);
+        }
+
+        [Authorize]
+        [HttpPut("requests/{id:int}/cancel")]
+        public async Task<IActionResult> Cancel(
+            int id,
+            CancellationToken cancellationToken)
+        {
+            var command = new CancelPendingCommand(id, currentUser.EmployeeId, currentUser.OrganizationId);
+            var result = await commandDispatcher.SendAsync(command, cancellationToken);
+
             return result.Match(_ => Ok(), Problem);
         }
 

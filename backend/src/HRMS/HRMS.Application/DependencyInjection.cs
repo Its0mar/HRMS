@@ -8,6 +8,7 @@ using HRMS.Application.Features.Attendance.ClockIn;
 using HRMS.Application.Features.Attendance.ClockOut;
 using HRMS.Application.Features.Attendance.GetEmployeeAttendance;
 using HRMS.Application.Features.Attendance.GetOrganizationAttendance;
+using HRMS.Application.Features.Authentication.ChangePassword;
 using HRMS.Application.Features.Authentication.Login;
 using HRMS.Application.Features.Authentication.Logout;
 using HRMS.Application.Features.Authentication.RefreshToken;
@@ -24,6 +25,7 @@ using HRMS.Application.Features.Employees.GetEmployees;
 using HRMS.Application.Features.Employees.UpdateEmployeeAccess;
 using HRMS.Application.Features.Leaves.LeaveBalances.GetLeaveBalances;
 using HRMS.Application.Features.Leaves.LeaveRequests.ApproveLeaveRequest;
+using HRMS.Application.Features.Leaves.LeaveRequests.CancelPending;
 using HRMS.Application.Features.Leaves.LeaveRequests.GetMyLeaveRequests;
 using HRMS.Application.Features.Leaves.LeaveRequests.GetOrganizationLeaveRequests;
 using HRMS.Application.Features.Leaves.LeaveRequests.RejectLeaveRequest;
@@ -244,6 +246,14 @@ public static class DependencyInjection
         services.AddScoped<
             IQueryHandler<AdminDashboardQuery, AdminDashboardResponse>,
             GetAdminDashboardHandler>();
+
+        services.AddScoped<
+            ICommandHandler<CancelPendingCommand, bool>,
+            CancelPendingHandler>();
+
+        services.AddScoped<
+            ICommandHandler<ChangePasswordCommand, bool>,
+            ChangePasswordHandler>();
 
         return services;
     }

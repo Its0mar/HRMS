@@ -3,6 +3,7 @@ using HRMS.Application.Abstractions.Persistence;
 using HRMS.Application.Abstractions.Services;
 using HRMS.Application.Common.Settings;
 using HRMS.Domain.Entities.Common;
+using HRMS.Infrastructure.Exceptions;
 using HRMS.Infrastructure.Persistence;
 using HRMS.Infrastructure.Repositories;
 using HRMS.Infrastructure.Security;
@@ -19,6 +20,9 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddProblemDetails();
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+
         var jwtKey = configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT signing key is not configured.");
         var issuer = configuration["Jwt:Issuer"] ?? throw new InvalidOperationException("JWT issuer is not configured.");
         var audience = configuration["Jwt:Audience"] ?? throw new InvalidOperationException("JWT audience is not configured.");

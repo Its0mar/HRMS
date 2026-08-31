@@ -45,6 +45,23 @@ export function MyLeavesPage() {
         }
     };
 
+    const handleCancel = async (id: number) => {
+        try {
+            await apiClient.put(API_ROUTES.LEAVES.CANCEL_REQUEST(id));
+            notifications.show({
+                title: "Request Cancelled",
+                message: "Your pending leave request has been cancelled and days restored.",
+                color: "green"
+            });
+            await fetchDashboardData();
+        } catch (err) {
+            const message = axios.isAxiosError(err)
+                ? err.response?.data?.errors?.[0]?.description ?? err.response?.data?.title
+                : "Unable to cancel leave request.";
+            notifications.show({ title: "Cancellation Error", message, color: "red" });
+        }
+    };
+
     useEffect(() => {
         void fetchDashboardData();
     }, []);
@@ -83,6 +100,19 @@ export function MyLeavesPage() {
             key: "status",
             header: "Status",
             render: (item) => renderStatusBadge(item.status)
+        },
+        {
+            key: "actions",
+            header: "Actions",
+            render: (item) => (
+                item.status === 1 ? (
+                    <Button size="xs" variant="light" color="red" onClick={() => handleCancel(item.id)}>
+                        Cancel
+                    </Button>
+                ) : (
+                    <Text size="xs" c="dimmed">-</Text>
+                )
+            )
         }
     ];
 

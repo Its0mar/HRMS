@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   Avatar,
   Box,
   Burger,
@@ -10,6 +11,8 @@ import {
   Stack,
   Text,
   UnstyledButton,
+  useComputedColorScheme,
+  useMantineColorScheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
@@ -19,8 +22,11 @@ import {
   IconClock,
   IconClockCheck,
   IconFileCheck,
+  IconKey,
   IconLogout,
+  IconMoon,
   IconShieldCheck,
+  IconSun,
   IconUser,
   IconUsers,
 } from "@tabler/icons-react";
@@ -34,10 +40,15 @@ import classes from "./HeaderMegaMenu.module.css";
 import { PERMISSIONS } from "../../features/Auth/constants/permissions";
 import { usePermission } from "../../features/Auth/hooks/usePermission";
 import { useIsManagement } from "../../features/Auth/hooks/useIsManagement";
+import { ChangePasswordModal } from "../../features/Auth/components/ChangePasswordModal";
 
 export function HeaderMegaMenu() {
   const [drawerOpened, drawer] = useDisclosure(false);
+  const [changePasswordOpened, changePasswordModal] = useDisclosure(false);
   const navigate = useNavigate();
+
+  const { setColorScheme } = useMantineColorScheme();
+  const computedColorScheme = useComputedColorScheme("dark", { getInitialValueInEffect: true });
 
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => Boolean(state.accessToken));
@@ -218,10 +229,21 @@ export function HeaderMegaMenu() {
             </Group>
           )}
 
-          {/* Account Menu */}
-          <Group visibleFrom="sm">
+          {/* Account Menu & Theme Toggle */}
+          <Group gap="sm">
+            <ActionIcon
+              onClick={() => setColorScheme(computedColorScheme === "light" ? "dark" : "light")}
+              variant="subtle"
+              color="gray"
+              size="lg"
+              aria-label="Toggle color scheme"
+            >
+              {computedColorScheme === "dark" ? <IconSun size={20} color="#f59e0b" /> : <IconMoon size={20} color="#38bdf8" />}
+            </ActionIcon>
+
             {isAuthenticated && user ? (
-              <Menu position="bottom-end" shadow="md" width={220}>
+              <Box visibleFrom="sm">
+                <Menu position="bottom-end" shadow="md" width={220}>
                 <Menu.Target>
                   <UnstyledButton>
                     <Group gap="sm">
@@ -245,6 +267,9 @@ export function HeaderMegaMenu() {
                   <Menu.Item leftSection={<IconUser size={16} />}>
                     Profile
                   </Menu.Item>
+                  <Menu.Item leftSection={<IconKey size={16} />} onClick={changePasswordModal.open}>
+                    Change Password
+                  </Menu.Item>
                   <Menu.Divider />
                   <Menu.Item
                     color="red"
@@ -254,7 +279,8 @@ export function HeaderMegaMenu() {
                     Log out
                   </Menu.Item>
                 </Menu.Dropdown>
-              </Menu>
+                </Menu>
+              </Box>
             ) : (
               <>
                 <Button component={Link} to="/login" variant="transparent" c="white">
@@ -358,6 +384,11 @@ export function HeaderMegaMenu() {
           )}
         </Stack>
       </Drawer>
+      {/* Change Password Modal */}
+      <ChangePasswordModal
+        opened={changePasswordOpened}
+        onClose={changePasswordModal.close}
+      />
     </Box>
   );
 }
