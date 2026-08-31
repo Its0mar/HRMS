@@ -11,6 +11,7 @@ using HRMS.Application.Features.Attendance.GetOrganizationAttendance;
 using HRMS.Application.Features.Authentication.Login;
 using HRMS.Application.Features.Authentication.Logout;
 using HRMS.Application.Features.Authentication.RefreshToken;
+using HRMS.Application.Features.Dashboard.AdminDashboard;
 using HRMS.Application.Features.Dashboard.EmployeeDasboard;
 using HRMS.Application.Features.Departments.CreateDepartment;
 using HRMS.Application.Features.Departments.GetDepartments;
@@ -239,6 +240,10 @@ public static class DependencyInjection
         services.AddScoped<
             IQueryHandler<EmployeeDasboardQuery, EmployeeDashboardResponse>,
             EmployeeDasboardHandler>();
+
+        services.AddScoped<
+            IQueryHandler<AdminDashboardQuery, AdminDashboardResponse>,
+            GetAdminDashboardHandler>();
 
         return services;
     }

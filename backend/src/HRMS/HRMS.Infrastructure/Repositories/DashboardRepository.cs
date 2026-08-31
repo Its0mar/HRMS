@@ -1,4 +1,5 @@
-﻿using HRMS.Application.Abstractions.Persistence;
+using HRMS.Application.Abstractions.Persistence;
+using HRMS.Application.Features.Dashboard.AdminDashboard;
 using HRMS.Application.Features.Dashboard.EmployeeDasboard;
 using HRMS.Infrastructure.Mappers.Dashboard;
 using HRMS.Infrastructure.Persistence;
@@ -17,8 +18,17 @@ namespace HRMS.Infrastructure.Repositories
                 Int("@EmployeeId", employeeId),
                 Int("@OrganizationId", organizationId),
                 Int("@Year", year)
-                );
+            );
+        }
 
+        public async Task<AdminDashboardResponse?> GetForAdminAsync(int organizationId, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.QueryMultipleAsync(
+                "dbo.Dashboard_GetAdminSummary",
+                AdminDashboardResponseMapper.MapAsync,
+                cancellationToken,
+                Int("@OrganizationId", organizationId)
+            );
         }
     }
 }

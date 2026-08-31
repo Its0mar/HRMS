@@ -71,6 +71,7 @@ export const API_ROUTES = {
     },
 
     DASHBOARD: {
-        GET_EMPLOYEE: "/Dashboards/employee"
+        GET_EMPLOYEE: "/Dashboards/employee",
+        GET_ADMIN: "/Dashboards/admin"
     }
 }
