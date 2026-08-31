@@ -33,6 +33,7 @@ import { useEmployeeOptionsStore } from "../../features/Employees/store/useEmplo
 import classes from "./HeaderMegaMenu.module.css";
 import { PERMISSIONS } from "../../features/Auth/constants/permissions";
 import { usePermission } from "../../features/Auth/hooks/usePermission";
+import { useIsManagement } from "../../features/Auth/hooks/useIsManagement";
 
 export function HeaderMegaMenu() {
   const [drawerOpened, drawer] = useDisclosure(false);
@@ -43,7 +44,10 @@ export function HeaderMegaMenu() {
   const clearSession = useAuthStore((state) => state.clearSession);
   const invalidateEmployees = useEmployeeOptionsStore((state) => state.invalidate);
 
-  // Admin & Manager Permissions
+  // Global Management Check
+  const isManagementUser = useIsManagement();
+
+  // Fine-grained Permissions
   const canViewRoles = usePermission(PERMISSIONS.ROLES.VIEW);
   const canViewDepartments = usePermission(PERMISSIONS.DEPARTMENTS.VIEW);
   const canViewEmployees = usePermission(PERMISSIONS.EMPLOYEES.VIEW);
@@ -52,16 +56,6 @@ export function HeaderMegaMenu() {
   const canViewAttendanceCorrections = usePermission(PERMISSIONS.ATTENDANCE_CORRECTIONS.VIEW);
   const canViewLeaveTypes = usePermission(PERMISSIONS.LEAVE_TYPES.VIEW);
   const canViewCompanyLeaves = usePermission(PERMISSIONS.LEAVE_REQUESTS.VIEW);
-
-  const isManagementUser =
-    canViewRoles ||
-    canViewDepartments ||
-    canViewEmployees ||
-    canViewWorkSchedules ||
-    canViewCompanyAttendance ||
-    canViewAttendanceCorrections ||
-    canViewLeaveTypes ||
-    canViewCompanyLeaves;
 
   const displayName = user ? `${user.firstName} ${user.lastName}`.trim() : "";
   const initials = user
@@ -88,122 +82,135 @@ export function HeaderMegaMenu() {
           </Link>
 
           {isAuthenticated && (
-            <Group h="100%" gap="xs" visibleFrom="sm">
-              {/* Employee Links */}
-              <Link to="/attendances" className={classes.link}>
-                My Attendance
-              </Link>
+            <Group h="100%" gap="sm" visibleFrom="sm">
+              {/* Employee Links (Hidden for Management) */}
+              {!isManagementUser && (
+                <>
+                  <Link to="/attendances" className={classes.link}>
+                    My Attendance
+                  </Link>
 
-              <Link to="/leaves/my" className={classes.link}>
-                My Leaves
-              </Link>
+                  <Link to="/leaves/my" className={classes.link}>
+                    My Leaves
+                  </Link>
+                </>
+              )}
 
-              {/* Management Dropdown Menu */}
-              {isManagementUser && (
-                <Menu position="bottom-start" shadow="md" width={240}>
+              {/* 1. Organization Dropdown Menu */}
+              {(canViewEmployees || canViewDepartments || canViewRoles) && (
+                <Menu position="bottom-start" shadow="md" width={220}>
                   <Menu.Target>
                     <UnstyledButton className={classes.link}>
                       <Group gap={4}>
-                        <span>Management & Admin</span>
+                        <span>Organization</span>
                         <IconChevronDown size={14} />
                       </Group>
                     </UnstyledButton>
                   </Menu.Target>
-
                   <Menu.Dropdown>
-                    {/* Organization Section */}
-                    {(canViewEmployees || canViewDepartments || canViewRoles) && (
-                      <>
-                        <Menu.Label>Organization</Menu.Label>
-                        {canViewEmployees && (
-                          <Menu.Item
-                            component={Link}
-                            to="/employees"
-                            leftSection={<IconUsers size={16} />}
-                          >
-                            Employees
-                          </Menu.Item>
-                        )}
-                        {canViewDepartments && (
-                          <Menu.Item
-                            component={Link}
-                            to="/departments"
-                            leftSection={<IconBuildingCommunity size={16} />}
-                          >
-                            Departments
-                          </Menu.Item>
-                        )}
-                        {canViewRoles && (
-                          <Menu.Item
-                            component={Link}
-                            to="/roles"
-                            leftSection={<IconShieldCheck size={16} />}
-                          >
-                            Roles & Permissions
-                          </Menu.Item>
-                        )}
-                        <Menu.Divider />
-                      </>
+                    {canViewEmployees && (
+                      <Menu.Item
+                        component={Link}
+                        to="/employees"
+                        leftSection={<IconUsers size={16} />}
+                      >
+                        Employees
+                      </Menu.Item>
                     )}
-
-                    {/* Attendance & Schedules Section */}
-                    {(canViewCompanyAttendance || canViewAttendanceCorrections || canViewWorkSchedules) && (
-                      <>
-                        <Menu.Label>Attendance & Shifts</Menu.Label>
-                        {canViewCompanyAttendance && (
-                          <Menu.Item
-                            component={Link}
-                            to="/attendances/company"
-                            leftSection={<IconClock size={16} />}
-                          >
-                            Company Attendance
-                          </Menu.Item>
-                        )}
-                        {canViewAttendanceCorrections && (
-                          <Menu.Item
-                            component={Link}
-                            to="/attendances/corrections/company"
-                            leftSection={<IconClockCheck size={16} />}
-                          >
-                            Attendance Corrections
-                          </Menu.Item>
-                        )}
-                        {canViewWorkSchedules && (
-                          <Menu.Item
-                            component={Link}
-                            to="/work-schedules"
-                            leftSection={<IconCalendarEvent size={16} />}
-                          >
-                            Work Schedules
-                          </Menu.Item>
-                        )}
-                        <Menu.Divider />
-                      </>
+                    {canViewDepartments && (
+                      <Menu.Item
+                        component={Link}
+                        to="/departments"
+                        leftSection={<IconBuildingCommunity size={16} />}
+                      >
+                        Departments
+                      </Menu.Item>
                     )}
+                    {canViewRoles && (
+                      <Menu.Item
+                        component={Link}
+                        to="/roles"
+                        leftSection={<IconShieldCheck size={16} />}
+                      >
+                        Roles & Permissions
+                      </Menu.Item>
+                    )}
+                  </Menu.Dropdown>
+                </Menu>
+              )}
 
-                    {/* Leaves Section */}
-                    {(canViewCompanyLeaves || canViewLeaveTypes) && (
-                      <>
-                        <Menu.Label>Leaves & Vacations</Menu.Label>
-                        {canViewCompanyLeaves && (
-                          <Menu.Item
-                            component={Link}
-                            to="/leaves/company"
-                            leftSection={<IconFileCheck size={16} />}
-                          >
-                            Leave Approvals
-                          </Menu.Item>
-                        )}
-                        {canViewLeaveTypes && (
-                          <Menu.Item
-                            component={Link}
-                            to="/leaves/types"
-                            leftSection={<IconCalendarEvent size={16} />}
-                          >
-                            Leave Types Config
-                          </Menu.Item>
-                        )}
-                      </>
+              {/* 2. Attendance & Shifts Dropdown Menu */}
+              {(canViewCompanyAttendance || canViewAttendanceCorrections || canViewWorkSchedules) && (
+                <Menu position="bottom-start" shadow="md" width={230}>
+                  <Menu.Target>
+                    <UnstyledButton className={classes.link}>
+                      <Group gap={4}>
+                        <span>Attendance & Shifts</span>
+                        <IconChevronDown size={14} />
+                      </Group>
+                    </UnstyledButton>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    {canViewCompanyAttendance && (
+                      <Menu.Item
+                        component={Link}
+                        to="/attendances/company"
+                        leftSection={<IconClock size={16} />}
+                      >
+                        Company Attendance
+                      </Menu.Item>
+                    )}
+                    {canViewAttendanceCorrections && (
+                      <Menu.Item
+                        component={Link}
+                        to="/attendances/corrections/company"
+                        leftSection={<IconClockCheck size={16} />}
+                      >
+                        Attendance Corrections
+                      </Menu.Item>
+                    )}
+                    {canViewWorkSchedules && (
+                      <Menu.Item
+                        component={Link}
+                        to="/work-schedules"
+                        leftSection={<IconCalendarEvent size={16} />}
+                      >
+                        Work Schedules
+                      </Menu.Item>
+                    )}
+                  </Menu.Dropdown>
+                </Menu>
+              )}
+
+              {/* 3. Leaves & Vacations Dropdown Menu */}
+              {(canViewCompanyLeaves || canViewLeaveTypes) && (
+                <Menu position="bottom-start" shadow="md" width={220}>
+                  <Menu.Target>
+                    <UnstyledButton className={classes.link}>
+                      <Group gap={4}>
+                        <span>Leaves & Vacations</span>
+                        <IconChevronDown size={14} />
+                      </Group>
+                    </UnstyledButton>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    {canViewCompanyLeaves && (
+                      <Menu.Item
+                        component={Link}
+                        to="/leaves/company"
+                        leftSection={<IconFileCheck size={16} />}
+                      >
+                        Leave Approvals
+                      </Menu.Item>
+                    )}
+                    {canViewLeaveTypes && (
+                      <Menu.Item
+                        component={Link}
+                        to="/leaves/types"
+                        leftSection={<IconCalendarEvent size={16} />}
+                      >
+                        Leave Types Config
+                      </Menu.Item>
                     )}
                   </Menu.Dropdown>
                 </Menu>
@@ -292,12 +299,16 @@ export function HeaderMegaMenu() {
               </Group>
               <Divider />
 
-              <Button component={Link} to="/leaves/my" variant="subtle" onClick={drawer.close}>
-                My Leaves
-              </Button>
-              <Button component={Link} to="/attendances" variant="subtle" onClick={drawer.close}>
-                My Attendance
-              </Button>
+              {!isManagementUser && (
+                <>
+                  <Button component={Link} to="/leaves/my" variant="subtle" onClick={drawer.close}>
+                    My Leaves
+                  </Button>
+                  <Button component={Link} to="/attendances" variant="subtle" onClick={drawer.close}>
+                    My Attendance
+                  </Button>
+                </>
+              )}
 
               {canViewEmployees && (
                 <Button component={Link} to="/employees" variant="subtle" onClick={drawer.close}>

@@ -27,11 +27,9 @@ import {
     IconClock,
     IconClockCheck,
     IconRefresh,
-    IconSun,
-    IconUserCheck
 } from "@tabler/icons-react";
 
-export function EmployeeDasboard() {
+export function EmployeeDashboard() {
     const user = useAuthStore((state) => state.user);
     const [dashboardData, setDashboardData] = useState<EmployeeDashboardResponse | null>(null);
     const [isLoading, setIsLoading] = useState(true);

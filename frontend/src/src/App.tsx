@@ -19,7 +19,7 @@ import { CompanyAttendanceCorrectionsList } from "./features/Attendance/componen
 import { LeaveTypesList } from "./features/Leaves/components/LeaveTypesList";
 import { CompanyLeaveRequestsList } from "./features/Leaves/components/CompanyLeaveRequestsList";
 import { MyLeavesPage } from "./features/Leaves/components/MyLeavesPage";
-import { EmployeeDasboard } from "./features/Dashboard/components/EmployeeDasboard";
+import { BasicInfo } from "./features/Dashboard/components/BasicInfo";
 
 function App() {
   return (
@@ -30,7 +30,7 @@ function App() {
           <Routes>
             <Route element={<ProtectedRoute />}>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={<EmployeeDasboard />} />
+              <Route path="/dashboard" element={<BasicInfo />} />
               
 
               {/* Employee Routes (Self) */}
