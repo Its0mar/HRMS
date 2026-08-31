@@ -2,11 +2,15 @@
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Leaves.LeaveBalances.GetLeaveBalances;
+using HRMS.Application.Features.Leaves.LeaveRequests.ApproveLeaveRequest;
 using HRMS.Application.Features.Leaves.LeaveRequests.GetMyLeaveRequests;
+using HRMS.Application.Features.Leaves.LeaveRequests.GetOrganizationLeaveRequests;
+using HRMS.Application.Features.Leaves.LeaveRequests.RejectLeaveRequest;
 using HRMS.Application.Features.Leaves.LeaveRequests.SubmitLeaveRequest;
 using HRMS.Application.Features.Leaves.LeaveTypes.CreateLeaveType;
 using HRMS.Application.Features.Leaves.LeaveTypes.GetLeaveTypes;
 using HRMS.Application.Features.Leaves.LeaveTypes.UpdateLeaveType;
+using HRMS.Domain.Entities.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +24,7 @@ namespace HRMS.Api.Controllers
          IQueryDispatcher queryDispatcher,
          ICurrentUser currentUser) : ApiController
     {
-        [Authorize]
+        [Authorize(Policy = Permissions.LeaveTypes.Create)]
         [HttpPost("leaveTypes/create")]
         public async Task<IActionResult> Create(
             CreateLeaveTypeCommand command,
@@ -33,7 +37,7 @@ namespace HRMS.Api.Controllers
                 Problem);
         }
 
-        [Authorize]
+        [Authorize(Policy = Permissions.LeaveTypes.View)]
         [HttpGet("leavetypes/get")]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
@@ -45,7 +49,7 @@ namespace HRMS.Api.Controllers
                 Problem);
         }
 
-        [Authorize]
+        [Authorize(Policy = Permissions.LeaveTypes.Update)]
         [HttpPut("leavetypes/update")]
         public async Task<IActionResult> Update(UpdateLeaveTypeCommand command, CancellationToken cancellationToken)
         {
@@ -69,9 +73,9 @@ namespace HRMS.Api.Controllers
                 Problem);
         }
 
-        [Authorize]
+        [Authorize(Policy = Permissions.LeaveRequests.Submit)]
         [HttpPost("leaveRequests/apply")]
-        public async Task<IActionResult> Apply(SubmitLeaveRequestCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Apply([FromBody]SubmitLeaveRequestCommand command, CancellationToken cancellationToken)
         {
             var result = await commandDispatcher.SendAsync(command, cancellationToken);
 
@@ -90,6 +94,37 @@ namespace HRMS.Api.Controllers
             return result.Match(
                 Ok,
                 Problem);
+        }
+
+        [Authorize(Policy = Permissions.LeaveRequests.View)]
+        [HttpGet("leaveRequests/organization/list")]
+        public async Task<IActionResult> OrganizationRequests([FromQuery] GetOrganizationLeaveRequestsQuery query, CancellationToken cancellationToken)
+        {
+            var result = await queryDispatcher.SendAsync(query, cancellationToken);
+
+            return result.Match(
+                Ok,
+                Problem);
+        }
+
+        [Authorize(Policy = Permissions.LeaveRequests.ApproveAndReject)]
+        [HttpPost("requests/approve")]
+        public async Task<IActionResult> Approve(
+            ApproveLeaveRequestCommand command,
+            CancellationToken cancellationToken)
+        {
+            var result = await commandDispatcher.SendAsync(command, cancellationToken);
+            return result.Match(_ => Ok(), Problem);
+        }
+
+        [Authorize(Policy = Permissions.LeaveRequests.ApproveAndReject)]
+        [HttpPost("requests/reject")]
+        public async Task<IActionResult> Reject(
+            RejectLeaveRequestCommand command,
+            CancellationToken cancellationToken)
+        {
+            var result = await commandDispatcher.SendAsync(command, cancellationToken);
+            return result.Match(_ => Ok(), Problem);
         }
 
     }

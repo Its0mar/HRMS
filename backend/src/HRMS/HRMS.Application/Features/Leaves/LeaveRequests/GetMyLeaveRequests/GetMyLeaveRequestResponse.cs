@@ -1,12 +1,12 @@
 ﻿using HRMS.Domain.Entities.Leaves;
 
-namespace HRMS.Application.Features.Leaves.LeaveRequests
+namespace HRMS.Application.Features.Leaves.LeaveRequests.GetMyLeaveRequests
 {
-    public record LeaveRequestResponse(
+    public record GetMyLeaveRequestResponse(
         int Id,
         string TypeName,
-        DateTime StartDate,
-        DateTime EndDate,
+        DateOnly StartDate,
+        DateOnly EndDate,
         decimal TotalDays,
         string Reason,
         LeaveRequestStatus Status,

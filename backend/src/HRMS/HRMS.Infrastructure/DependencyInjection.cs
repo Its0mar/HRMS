@@ -74,6 +74,7 @@ public static class DependencyInjection
         services.AddScoped<IAttendanceRepository, AttendanceRepository>();
         services.AddScoped<IAttendanceCorrectionsRepository, AttendanceCorrectionsRepository>();
         services.AddScoped<ILeaveRepository, LeaveRepository>();
+        services.AddScoped<IDashboardRepository, DashboardRepository>();
 
         services.Configure<CloudinarySettings>(configuration.GetSection("Cloudinary"));
 

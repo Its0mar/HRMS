@@ -1,5 +1,6 @@
 ﻿using HRMS.Application.Abstractions.Persistence.Models;
-using HRMS.Application.Features.Leaves.LeaveRequests;
+using HRMS.Application.Features.Leaves.LeaveRequests.GetMyLeaveRequests;
+using HRMS.Application.Features.Leaves.LeaveRequests.GetOrganizationLeaveRequests;
 using HRMS.Domain.Entities.Leaves;
 
 namespace HRMS.Application.Abstractions.Persistence
@@ -16,7 +17,11 @@ namespace HRMS.Application.Abstractions.Persistence
         public Task<bool> CreateEmployeeBalance(EmployeeLeaveBalance balance, CancellationToken cancellationToken);
         public Task<bool> UpdatePendingDaysAsync(EmployeeLeaveBalance balance, CancellationToken cancellationToken);
         public Task<bool> CreateLeaveRequestAsync(LeaveRequest request, CancellationToken cancellationToken);
-        public Task<List<LeaveRequestResponse>> GetEmployeeLeaveRequestsAsync(int employeeId, int organizationId, CancellationToken cancellationToken);
+        public Task<List<GetMyLeaveRequestResponse>> GetEmployeeLeaveRequestsAsync(int employeeId, int organizationId, CancellationToken cancellationToken);
+        public Task<List<GetOrganizationLeaveRequestsResponse>> GetOrganizationLeaveRequestsAsync(int organizationId, int? status, CancellationToken cancellationToken);
+        public Task<bool> AcceptLeaveRequest(int organizationId, int leaveRequestId, CancellationToken cancellationToken);
+        Task<bool> ApproveLeaveRequestAsync(int requestId, int organizationId, int reviewedById, CancellationToken cancellationToken);
+        Task<bool> RejectLeaveRequestAsync(int requestId, int organizationId, int reviewedById, string rejectionReason, CancellationToken cancellationToken);
 
 
 

@@ -1,6 +1,7 @@
 ﻿using HRMS.Application.Abstractions.Persistence;
 using HRMS.Application.Abstractions.Persistence.Models;
-using HRMS.Application.Features.Leaves.LeaveRequests;
+using HRMS.Application.Features.Leaves.LeaveRequests.GetMyLeaveRequests;
+using HRMS.Application.Features.Leaves.LeaveRequests.GetOrganizationLeaveRequests;
 using HRMS.Domain.Entities.Leaves;
 using HRMS.Infrastructure.Mappers.Leaves;
 using HRMS.Infrastructure.Persistence;
@@ -143,17 +144,58 @@ namespace HRMS.Infrastructure.Repositories
                 
         }
 
-        public async Task<List<LeaveRequestResponse>> GetEmployeeLeaveRequestsAsync(int employeeId, int organizationId, CancellationToken cancellationToken)
+        public async Task<List<GetMyLeaveRequestResponse>> GetEmployeeLeaveRequestsAsync(int employeeId, int organizationId, CancellationToken cancellationToken)
         {
             return await sqlExecutor.QueryAsync(
                 "LeaveRequests_GetMyRequests",
-                LeaveRequestResponseMapper.Map,
+                GetMyLeaveRequestResponseMapper.Map,
                 cancellationToken,
                 Int("@EmployeeId", employeeId),
                 Int("@OrganizationId", organizationId)
                 );
         }
 
+        public async Task<List<GetOrganizationLeaveRequestsResponse>> GetOrganizationLeaveRequestsAsync(int organizationId, int? status, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.QueryAsync(
+                "dbo.LeaveRequests_GetOrganizationRequests",
+                GetOrganizationLeaveRequestsResponseMapper.Map,
+                cancellationToken,
+                Int("@OrganizationId", organizationId),
+                NullableInt("@Status", status)
+                );
+        }
+
+        public async Task<bool> AcceptLeaveRequest(int organizationId, int leaveRequestId, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.ExecuteScalarBoolAsync(
+                "dbo.LeaveRequests_Accept",
+                cancellationToken,
+                Int("@OrganizationId", organizationId),
+                Int("@LeaveRequestId", leaveRequestId)
+                );
+        }
+
+        public async Task<bool> ApproveLeaveRequestAsync(int requestId, int organizationId, int reviewedById, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.ExecuteScalarBoolAsync(
+                "dbo.Leaves_ApproveRequest",
+                cancellationToken,
+                Int("@RequestId", requestId),
+                Int("@OrganizationId", organizationId),
+                Int("@ReviewedById", reviewedById));
+        }
+
+        public async Task<bool> RejectLeaveRequestAsync(int requestId, int organizationId, int reviewedById, string rejectionReason, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.ExecuteScalarBoolAsync(
+                "dbo.Leaves_RejectRequest",
+                cancellationToken,
+                Int("@RequestId", requestId),
+                Int("@OrganizationId", organizationId),
+                Int("@ReviewedById", reviewedById),
+                VarChar("@RejectionReason", 300, rejectionReason));
+        }
 
         private LeaveType LeaveTypeMap(SqlDataReader reader)
         {
@@ -175,7 +217,7 @@ namespace HRMS.Infrastructure.Repositories
                   reader.GetInt32(reader.GetOrdinal("EmployeeId")),
                   reader.GetInt32(reader.GetOrdinal("LeaveTypeId")),
                   reader.GetInt32(reader.GetOrdinal("Year")),
-                  reader.GetInt32(reader.GetOrdinal("TotalEntitledDays")),
+                  (int)reader.GetDecimal(reader.GetOrdinal("TotalEntitledDays")),
                   reader.GetDecimal(reader.GetOrdinal("UsedDays")),
                   reader.GetDecimal(reader.GetOrdinal("PendingDays"))
                 );

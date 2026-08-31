@@ -1,5 +1,4 @@
 ﻿using Asp.Versioning;
-using ErrorOr;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.WorkSchedules.AssignEmployee;
@@ -8,6 +7,7 @@ using HRMS.Application.Features.WorkSchedules.GetWorkScheduleOptions;
 using HRMS.Application.Features.WorkSchedules.GetWorkSchedules;
 using HRMS.Application.Features.WorkSchedules.GetWorkScheduleWithDays;
 using HRMS.Application.Features.WorkSchedules.UpdateWorkSchedule;
+using HRMS.Domain.Entities.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +25,7 @@ namespace HRMS.Api.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = Permissions.WorkSchedules.Manage)]
         public async Task<IActionResult> CreateAsync(
             CreateWorkScheduleCommand command,
             [FromServices] ICommandDispatcher dispatcher,
@@ -39,7 +39,7 @@ namespace HRMS.Api.Controllers
         }
 
         [HttpPut]
-        [Authorize]
+        [Authorize(Policy = Permissions.WorkSchedules.Manage)]
         public async Task<IActionResult> UpdateAsync(
             UpdateWorkScheduleCommand command,
             [FromServices] ICommandDispatcher dispatcher,
@@ -53,7 +53,7 @@ namespace HRMS.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = Permissions.WorkSchedules.Manage)]
         public async Task<IActionResult> GetAllAsync(
             [FromServices] IQueryHandler<GetWorkSchedulesQuery, List<WorkScheduleResponse>> handler,
             CancellationToken cancellationToken)
@@ -67,7 +67,7 @@ namespace HRMS.Api.Controllers
         }
 
         [HttpPost("assignments")]
-        [Authorize]
+        [Authorize(Policy = Permissions.WorkSchedules.Manage)]
         public async Task<IActionResult> AssignEmployee(
             AssignEmployeeCommand command,
             [FromServices] ICommandHandler<AssignEmployeeCommand, bool> handler,
@@ -83,7 +83,7 @@ namespace HRMS.Api.Controllers
         }
 
         [HttpGet("options")]
-        [Authorize]
+        [Authorize(Policy = Permissions.WorkSchedules.Manage)]
         public async Task<IActionResult> GetOptions(
             [FromServices] IQueryDispatcher dispatcher,
             CancellationToken cancellationToken)

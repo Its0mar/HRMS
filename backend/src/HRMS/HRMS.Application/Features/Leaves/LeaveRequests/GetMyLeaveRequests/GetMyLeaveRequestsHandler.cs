@@ -6,13 +6,13 @@ using HRMS.Domain.Entities.Leaves;
 namespace HRMS.Application.Features.Leaves.LeaveRequests.GetMyLeaveRequests
 {
     public sealed class GetMyLeaveRequestsHandler(ILeaveRepository leaveRepository)
-        : IQueryHandler<GetMyLeaveRequestsQuery, IReadOnlyList<LeaveRequestResponse>>
+        : IQueryHandler<GetMyLeaveRequestsQuery, IReadOnlyList<GetMyLeaveRequestResponse>>
     {
-        public async Task<ErrorOr<IReadOnlyList<LeaveRequestResponse>>> HandleAsync(GetMyLeaveRequestsQuery query, CancellationToken cancellationToken)
+        public async Task<ErrorOr<IReadOnlyList<GetMyLeaveRequestResponse>>> HandleAsync(GetMyLeaveRequestsQuery query, CancellationToken cancellationToken)
         {
             var list = await leaveRepository.GetEmployeeLeaveRequestsAsync(query.EmployeeId, query.OrganizationId, cancellationToken);
 
-            return list;
+            return list.ToList();
         }
     }
 }

@@ -11,6 +11,7 @@ using HRMS.Application.Features.Attendance.GetOrganizationAttendance;
 using HRMS.Application.Features.Authentication.Login;
 using HRMS.Application.Features.Authentication.Logout;
 using HRMS.Application.Features.Authentication.RefreshToken;
+using HRMS.Application.Features.Dashboard.EmployeeDasboard;
 using HRMS.Application.Features.Departments.CreateDepartment;
 using HRMS.Application.Features.Departments.GetDepartments;
 using HRMS.Application.Features.Departments.UpdateDepartment;
@@ -21,8 +22,10 @@ using HRMS.Application.Features.Employees.GetEmployeeOptions;
 using HRMS.Application.Features.Employees.GetEmployees;
 using HRMS.Application.Features.Employees.UpdateEmployeeAccess;
 using HRMS.Application.Features.Leaves.LeaveBalances.GetLeaveBalances;
-using HRMS.Application.Features.Leaves.LeaveRequests;
+using HRMS.Application.Features.Leaves.LeaveRequests.ApproveLeaveRequest;
 using HRMS.Application.Features.Leaves.LeaveRequests.GetMyLeaveRequests;
+using HRMS.Application.Features.Leaves.LeaveRequests.GetOrganizationLeaveRequests;
+using HRMS.Application.Features.Leaves.LeaveRequests.RejectLeaveRequest;
 using HRMS.Application.Features.Leaves.LeaveRequests.SubmitLeaveRequest;
 using HRMS.Application.Features.Leaves.LeaveTypes.CreateLeaveType;
 using HRMS.Application.Features.Leaves.LeaveTypes.GetLeaveTypes;
@@ -217,9 +220,25 @@ public static class DependencyInjection
             SubmitLeaveRequestHandler>();
 
         services.AddScoped<
-            IQueryHandler<GetMyLeaveRequestsQuery, IReadOnlyList<LeaveRequestResponse>>,
+            IQueryHandler<GetMyLeaveRequestsQuery, IReadOnlyList<GetMyLeaveRequestResponse>>,
             GetMyLeaveRequestsHandler>();
 
+        services.AddScoped<
+            IQueryHandler<GetOrganizationLeaveRequestsQuery, IReadOnlyList<GetOrganizationLeaveRequestsResponse>>,
+            GetOrganizationLeaveRequestsHandler>();
+
+        services.AddScoped<
+            ICommandHandler<ApproveLeaveRequestCommand, bool>,
+            ApproveLeaveRequestHandler>();
+
+
+        services.AddScoped<
+            ICommandHandler<RejectLeaveRequestCommand, bool>,
+            RejectLeaveRequestHandler>();
+
+        services.AddScoped<
+            IQueryHandler<EmployeeDasboardQuery, EmployeeDashboardResponse>,
+            EmployeeDasboardHandler>();
 
         return services;
     }

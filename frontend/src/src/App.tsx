@@ -13,47 +13,103 @@ import { WorkSchedules } from "./features/WorkSchedules/components/WorkSchedules
 import { RolesList } from "./features/Roles/components/RolesList";
 import { PermissionRoute } from "./Components/PermissionRoute";
 import { PERMISSIONS } from "./features/Auth/constants/permissions";
-import { BasicInfo } from "./features/Dashboard/components/BasicInfo";
 import { AttendanceList } from "./features/Attendance/components/AttendanceList";
 import { CompanyAttendanceList } from "./features/Attendance/components/CompanyAttendanceList";
 import { CompanyAttendanceCorrectionsList } from "./features/Attendance/components/CompanyAttendanceCorrectionsList";
 import { LeaveTypesList } from "./features/Leaves/components/LeaveTypesList";
+import { CompanyLeaveRequestsList } from "./features/Leaves/components/CompanyLeaveRequestsList";
+import { MyLeavesPage } from "./features/Leaves/components/MyLeavesPage";
+import { EmployeeDasboard } from "./features/Dashboard/components/EmployeeDasboard";
 
 function App() {
   return (
     <MantineProvider>
       <BrowserRouter>
-        <HeaderMegaMenu/>
+        <HeaderMegaMenu />
         <div className="min-h-screen bg-gray-900 text-white">
           <Routes>
             <Route element={<ProtectedRoute />}>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={<BasicInfo />} />
-              <Route  path="/attendances/company" element={<CompanyAttendanceList />} />
-              <Route  path="/attendances/corrections/company" element={<CompanyAttendanceCorrectionsList />} />
-              <Route path="leave/types" element={<LeaveTypesList />} />
-
-              {/* <PermissionRoute permission={PERMISSIONS.DEPARTMENTS.VIEW}> */}
-                <Route path="/departments" element={ 
-                  <PermissionRoute permission={PERMISSIONS.DEPARTMENTS.VIEW}>
-                    <DepartmentsList /> 
-                  </PermissionRoute>}
-                  />
-
-                
-
-          
-                <Route path="/employees" element={
-                  <PermissionRoute permission={PERMISSIONS.EMPLOYEES.VIEW}>
-                    <EmployeesList />
-                    </PermissionRoute>}
-                  />
+              <Route path="/dashboard" element={<EmployeeDasboard />} />
               
 
+              {/* Employee Routes (Self) */}
+              <Route path="/attendances" element={<AttendanceList />} />
+              <Route path="/leaves/my" element={<MyLeavesPage />} />
+              <Route path="/my-leaves" element={<MyLeavesPage />} />
 
-              <Route path="/work-schedules" element={<WorkSchedules />} />
-              <Route path="/roles" element={<RolesList/>} />
-              <Route path="attendances" element={<AttendanceList />} />
+              {/* Company Supervision & Admin Routes (Permission Guarded) */}
+              <Route
+                path="/attendances/company"
+                element={
+                  <PermissionRoute permission={PERMISSIONS.ATTENDANCE.VIEW}>
+                    <CompanyAttendanceList />
+                  </PermissionRoute>
+                }
+              />
+
+              <Route
+                path="/attendances/corrections/company"
+                element={
+                  <PermissionRoute permission={PERMISSIONS.ATTENDANCE_CORRECTIONS.VIEW}>
+                    <CompanyAttendanceCorrectionsList />
+                  </PermissionRoute>
+                }
+              />
+
+              <Route
+                path="/leaves/types"
+                element={
+                  <PermissionRoute permission={PERMISSIONS.LEAVE_TYPES.VIEW}>
+                    <LeaveTypesList />
+                  </PermissionRoute>
+                }
+              />
+
+              <Route
+                path="/leaves/company"
+                element={
+                  <PermissionRoute permission={PERMISSIONS.LEAVE_REQUESTS.VIEW}>
+                    <CompanyLeaveRequestsList />
+                  </PermissionRoute>
+                }
+              />
+
+              <Route
+                path="/departments"
+                element={
+                  <PermissionRoute permission={PERMISSIONS.DEPARTMENTS.VIEW}>
+                    <DepartmentsList />
+                  </PermissionRoute>
+                }
+              />
+
+              <Route
+                path="/employees"
+                element={
+                  <PermissionRoute permission={PERMISSIONS.EMPLOYEES.VIEW}>
+                    <EmployeesList />
+                  </PermissionRoute>
+                }
+              />
+
+              <Route
+                path="/work-schedules"
+                element={
+                  <PermissionRoute permission={PERMISSIONS.WORK_SCHEDULES.MANAGE}>
+                    <WorkSchedules />
+                  </PermissionRoute>
+                }
+              />
+
+              <Route
+                path="/roles"
+                element={
+                  <PermissionRoute permission={PERMISSIONS.ROLES.VIEW}>
+                    <RolesList />
+                  </PermissionRoute>
+                }
+              />
             </Route>
 
             <Route element={<PublicRoute />}>

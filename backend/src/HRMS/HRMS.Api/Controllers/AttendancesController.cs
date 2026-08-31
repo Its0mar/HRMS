@@ -8,6 +8,7 @@ using HRMS.Application.Features.Attendance.ClockIn;
 using HRMS.Application.Features.Attendance.ClockOut;
 using HRMS.Application.Features.Attendance.GetEmployeeAttendance;
 using HRMS.Application.Features.Attendance.GetOrganizationAttendance;
+using HRMS.Domain.Entities.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +21,7 @@ namespace HRMS.Api.Controllers
         IQueryDispatcher queryDispatcher,
         ICurrentUser currentUser) : ApiController
     {
-        [Authorize]
+        [Authorize(Policy = Permissions.Attendance.ClockIn)]
         [HttpPost("ClockIn")]
         public async Task<IActionResult> ClockIn(CancellationToken cancellationToken)
         {
@@ -32,7 +33,7 @@ namespace HRMS.Api.Controllers
                 Problem);
         }
 
-        [Authorize]
+        [Authorize(Policy = Permissions.Attendance.ClockOut)]
         [HttpPost("ClockOut")]
         public async Task<IActionResult> ClockOut(CancellationToken cancellationToken)
         {
@@ -56,7 +57,7 @@ namespace HRMS.Api.Controllers
                 Problem);
         }
 
-        [Authorize]
+        [Authorize(Policy = Permissions.AttendanceCorrections.Submit)]
         [HttpPost("correct")]
         public async Task<IActionResult> Correct(SubmitCorrectionCommand command, CancellationToken cancellationToken)
         {
@@ -67,7 +68,7 @@ namespace HRMS.Api.Controllers
                 Problem);
         }
 
-        [Authorize]
+        [Authorize(Policy = Permissions.Attendance.View)]
         [HttpGet("Organization")]
         public async Task<IActionResult> GetOrganizationAttendance(
             [FromQuery] DateOnly? date,
@@ -82,7 +83,7 @@ namespace HRMS.Api.Controllers
                 Problem);
         }
 
-        [Authorize]
+        [Authorize(Policy = Permissions.AttendanceCorrections.View)]
         [HttpGet("corrections/organization")]
         public async Task<IActionResult> GetOrganizationAttendanceCorrection(
             [FromQuery] GetOrganizationAttendanceCorrectionQuery query,
@@ -95,7 +96,7 @@ namespace HRMS.Api.Controllers
                 Problem);
         }
 
-        [Authorize]
+        [Authorize(Policy = Permissions.AttendanceCorrections.ApproveAndReject)]
         [HttpPost("corrections/approve")]
         public async Task<IActionResult> Approve(
             AttendanceCorrectionApproveCommand command,

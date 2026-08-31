@@ -24,6 +24,7 @@ export function ClockWidget({ todayRecord, onPunchSuccess }: ClockWidgetProps) {
     // Determine current status
     const isClockedIn = todayRecord !== null && todayRecord !== undefined && todayRecord.clockOut === null;
     const isClockedOut = todayRecord !== null && todayRecord !== undefined && todayRecord.clockOut !== null;
+    const isOnLeave = todayRecord !== null && todayRecord !== undefined && todayRecord.status === "OnLeave";
 
     const handleClockIn = async () => {
         setIsLoading(true);
@@ -89,7 +90,12 @@ export function ClockWidget({ todayRecord, onPunchSuccess }: ClockWidgetProps) {
                     </div>
                     {/* Status Badge */}
                     <div>
-                        {isClockedOut ? (
+                        {isOnLeave ? (
+                            <Badge size="lg" color="gray" variant="light" leftSection={<IconCheck size={14} />}>
+                                On Leave for today
+                            </Badge>
+                        ):
+                        isClockedOut ? (
                             <Badge size="lg" color="gray" variant="light" leftSection={<IconCheck size={14} />}>
                                 Completed for today
                             </Badge>
@@ -129,7 +135,7 @@ export function ClockWidget({ todayRecord, onPunchSuccess }: ClockWidgetProps) {
                         variant="filled"
                         leftSection={<IconLogout size={20} />}
                         loading={isLoading}
-                        disabled={!isClockedIn || isLoading}
+                        disabled={!isClockedIn || isLoading || isOnLeave}
                         onClick={handleClockOut}
                     >
                         Clock Out

@@ -68,7 +68,7 @@ export function CompanyAttendanceList() {
     // Quick Stats
     const totalPresent = records.filter((r) => r.status === "Present").length;
     const totalLate = records.filter((r) => r.status === "Late").length;
-    const totalAbsent = records.filter((r) => r.status === "Absent").length;
+    const totalAbsent = records.filter((r) => r.status === "Absent" || r.status === "OnLeave").length;
 
     return (
         <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">

@@ -13,7 +13,7 @@ namespace HRMS.Infrastructure.Mappers.Leaves
                 reader.GetBoolean(reader.GetOrdinal("IsPaid")),
                 reader.GetBoolean(reader.GetOrdinal("RequiresApproval")),
                 reader.GetInt32(reader.GetOrdinal("Year")),
-                reader.GetInt32(reader.GetOrdinal("TotalEntitledDays")),
+                (int)reader.GetDecimal(reader.GetOrdinal("TotalEntitledDays")),
                 reader.GetDecimal(reader.GetOrdinal("UsedDays")),
                 reader.GetDecimal(reader.GetOrdinal("PendingDays")),
                 reader.GetDecimal(reader.GetOrdinal("RemainingDays")),

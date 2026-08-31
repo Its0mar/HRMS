@@ -8,6 +8,7 @@ using HRMS.Application.Features.Roles.GetRoles;
 using HRMS.Application.Features.Roles.GetRolesOptions;
 using HRMS.Application.Features.Roles.Permissions.GetPermissionOptions;
 using HRMS.Application.Features.Roles.UpdateRole;
+using HRMS.Domain.Entities.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +27,7 @@ namespace HRMS.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Permissions.Roles.View)]
         public async Task<IActionResult> GetAll(
             [FromServices] IQueryHandler<GetRolesQuery, IReadOnlyList<GetRoleResponse>> handler,
             CancellationToken cancellationToken)
@@ -40,7 +41,7 @@ namespace HRMS.Api.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Permissions.Roles.Create)]
         public async Task<IActionResult> Create(
             CreateRoleCommand command,
             [FromServices] ICommandDispatcher dispatcher,
@@ -57,7 +58,7 @@ namespace HRMS.Api.Controllers
         }
 
         [HttpGet("options")]
-        [Authorize]
+        [Authorize(Permissions.Roles.View)]
         public async Task<IActionResult> GetRolesOptions(
             [FromServices] IQueryHandler<GetRolesOptionsQuery, IReadOnlyList<GetRolesOptionsResponse>> handler,
             CancellationToken cancellationToken)
@@ -73,7 +74,7 @@ namespace HRMS.Api.Controllers
         }
 
         [HttpGet("permissions")]
-        [Authorize]
+        [Authorize(Permissions.SystemPermissions.View)]
         public async Task<IActionResult> GetPermissionOptions(
             [FromServices]
             IQueryHandler<GetPermissionOptionsQuery,IReadOnlyList<PermissionOptionResponse>> handler,
@@ -106,7 +107,7 @@ namespace HRMS.Api.Controllers
         }
 
         [HttpPut("{id:int}")]
-        [Authorize]
+        [Authorize(Permissions.Roles.Update)]
         public async Task<IActionResult> Update(
             int id,
             UpdateRoleRequest request,
