@@ -1,35 +1,28 @@
+using HRMS.Application.Abstractions.Authentication;
+using HRMS.Application.Common.Settings;
+using HRMS.Domain.Entities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using HRMS.Application.Abstractions.Authentication;
-using HRMS.Domain.Entities;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 
 namespace HRMS.Infrastructure.Security;
 
-internal sealed class JwtAccessTokenGenerator : IAccessTokenGenerator
+internal sealed class JwtAccessTokenGenerator(IOptions<JwtSettings> jwtOptions) : IAccessTokenGenerator
 {
-    private readonly IConfiguration _configuration;
-
-    public JwtAccessTokenGenerator(IConfiguration configuration) => _configuration = configuration;
+    private readonly JwtSettings _jwtSettings = jwtOptions.Value;
 
     public string Generate(User user, IReadOnlyCollection<string> permissions)
     {
-        var keyValue = _configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT signing key is not configured.");
-        var expiryValue = _configuration["Jwt:ExpireMinutes"] ?? throw new InvalidOperationException("JWT expiry is not configured.");
 
         if (user.Id is null)
         {
             throw new InvalidOperationException("Cannot generate a token for a user without an ID.");
         }
 
-        if (!int.TryParse(expiryValue, out var expiryMinutes))
-        {
-            throw new InvalidOperationException("JWT expiry must be a valid integer.");
-        }
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyValue));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
 
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -46,10 +39,10 @@ internal sealed class JwtAccessTokenGenerator : IAccessTokenGenerator
         claims.AddRange(permissions.Select(permission => new Claim("permission", permission)));
 
         var token = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"],
-            audience: _configuration["Jwt:Audience"],
+            issuer: _jwtSettings.Issuer,
+            audience: _jwtSettings.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(expiryMinutes),
+            expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
             signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler()
