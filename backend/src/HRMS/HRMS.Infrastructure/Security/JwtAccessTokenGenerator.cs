@@ -1,7 +1,6 @@
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Common.Settings;
 using HRMS.Domain.Entities;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
