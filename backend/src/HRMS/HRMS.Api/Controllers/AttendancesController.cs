@@ -23,7 +23,7 @@ namespace HRMS.Api.Controllers
         ICurrentUser currentUser) : ApiController
     {
         [Authorize(Policy = Permissions.Attendance.ClockIn)]
-        [HttpPost("ClockIn")]
+        [HttpPost("clock-in")]
         public async Task<IActionResult> ClockIn(CancellationToken cancellationToken)
         {
             var command = new ClockInCommand(currentUser.EmployeeId);
@@ -35,7 +35,7 @@ namespace HRMS.Api.Controllers
         }
 
         [Authorize(Policy = Permissions.Attendance.ClockOut)]
-        [HttpPost("ClockOut")]
+        [HttpPost("clock-out")]
         public async Task<IActionResult> ClockOut(CancellationToken cancellationToken)
         {
             var command = new ClockOutCommand(currentUser.EmployeeId);
@@ -59,7 +59,7 @@ namespace HRMS.Api.Controllers
         }
 
         [Authorize(Policy = Permissions.AttendanceCorrections.Submit)]
-        [HttpPost("correct")]
+        [HttpPost("corrections")]
         public async Task<IActionResult> Correct([FromBody] SubmitCorrectionRequest request, CancellationToken cancellationToken)
         {
             var command = new SubmitCorrectionCommand(
@@ -76,7 +76,7 @@ namespace HRMS.Api.Controllers
         }
 
         [Authorize(Policy = Permissions.Attendance.View)]
-        [HttpGet("Organization")]
+        [HttpGet("organization")]
         public async Task<IActionResult> GetOrganizationAttendance(
             [FromQuery] DateOnly? date,
             [FromQuery] string? searchTerm,

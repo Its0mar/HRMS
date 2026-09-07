@@ -15,7 +15,7 @@ namespace HRMS.Api.Controllers
     public class DepartmentsController : ApiController
     {
         [Authorize(Policy = Permissions.Departments.Create)]
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> CreateAsync(
             [FromBody] CreateDepartmentRequest request,
             [FromServices] ICommandDispatcher dispatcher,
@@ -36,7 +36,7 @@ namespace HRMS.Api.Controllers
         }
 
         [Authorize(Policy = Permissions.Departments.Update)]
-        [HttpPut("update")]
+        [HttpPut]
         public async Task<IActionResult> UpdateAsync(
             [FromBody] UpdateDepartmentRequest request,
             [FromServices] ICommandDispatcher dispatcher,

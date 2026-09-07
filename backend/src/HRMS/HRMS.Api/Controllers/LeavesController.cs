@@ -26,7 +26,7 @@ namespace HRMS.Api.Controllers
          ICurrentUser currentUser) : ApiController
     {
         [Authorize(Policy = Permissions.LeaveTypes.Create)]
-        [HttpPost("leaveTypes/create")]
+        [HttpPost("types")]
         public async Task<IActionResult> Create(
             CreateLeaveTypeCommand command,
             CancellationToken cancellationToken)
@@ -39,7 +39,7 @@ namespace HRMS.Api.Controllers
         }
 
         [Authorize(Policy = Permissions.LeaveTypes.View)]
-        [HttpGet("leavetypes/get")]
+        [HttpGet("types")]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
             var query = new GetLeaveTypesQuery(currentUser.OrganizationId);
@@ -51,7 +51,7 @@ namespace HRMS.Api.Controllers
         }
 
         [Authorize(Policy = Permissions.LeaveTypes.Update)]
-        [HttpPut("leavetypes/update")]
+        [HttpPut("types")]
         public async Task<IActionResult> Update(UpdateLeaveTypeCommand command, CancellationToken cancellationToken)
         {
             var result = await commandDispatcher.SendAsync(command, cancellationToken);
@@ -75,7 +75,7 @@ namespace HRMS.Api.Controllers
         }
 
         [Authorize(Policy = Permissions.LeaveRequests.Submit)]
-        [HttpPost("leaveRequests/apply")]
+        [HttpPost("requests")]
         public async Task<IActionResult> Apply([FromBody] ApplyLeaveRequest request, CancellationToken cancellationToken)
         {
             var command = new SubmitLeaveRequestCommand(
@@ -92,7 +92,7 @@ namespace HRMS.Api.Controllers
         }
 
         [Authorize]
-        [HttpGet("leaveRequests/list")]
+        [HttpGet("requests/my")]
         public async Task<IActionResult> MyRequests(CancellationToken cancellationToken)
         {
             var query = new GetMyLeaveRequestsQuery(currentUser.EmployeeId, currentUser.OrganizationId);
@@ -104,7 +104,7 @@ namespace HRMS.Api.Controllers
         }
 
         [Authorize(Policy = Permissions.LeaveRequests.View)]
-        [HttpGet("leaveRequests/organization/list")]
+        [HttpGet("requests/organization")]
         public async Task<IActionResult> OrganizationRequests([FromQuery] GetOrganizationLeaveRequestsQuery query, CancellationToken cancellationToken)
         {
             var result = await queryDispatcher.SendAsync(query, cancellationToken);
