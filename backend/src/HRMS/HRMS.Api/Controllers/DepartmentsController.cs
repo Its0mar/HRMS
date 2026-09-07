@@ -1,4 +1,5 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
+using HRMS.Api.Contracts.Departments;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Departments.CreateDepartment;
 using HRMS.Application.Features.Departments.GetDepartments;
@@ -6,7 +7,6 @@ using HRMS.Application.Features.Departments.UpdateDepartment;
 using HRMS.Domain.Entities.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace HRMS.Api.Controllers
 {   
@@ -17,10 +17,16 @@ namespace HRMS.Api.Controllers
         [Authorize(Policy = Permissions.Departments.Create)]
         [HttpPost("create")]
         public async Task<IActionResult> CreateAsync(
-            CreateDepartmentCommand command,
+            [FromBody] CreateDepartmentRequest request,
             [FromServices] ICommandDispatcher dispatcher,
             CancellationToken ct)
         {
+            var command = new CreateDepartmentCommand(
+                request.Name,
+                request.Code,
+                request.Description,
+                request.ManagerId);
+
             var result = await dispatcher.SendAsync(command, ct);
 
             return result.Match<IActionResult>(
@@ -32,16 +38,22 @@ namespace HRMS.Api.Controllers
         [Authorize(Policy = Permissions.Departments.Update)]
         [HttpPut("update")]
         public async Task<IActionResult> UpdateAsync(
-            UpdateDepartmentCommand command,
+            [FromBody] UpdateDepartmentRequest request,
             [FromServices] ICommandDispatcher dispatcher,
             CancellationToken ct)
         {
+            var command = new UpdateDepartmentCommand(
+                request.Id,
+                request.Name,
+                request.Description,
+                request.ManagerEmployeeId);
+
             var result = await dispatcher.SendAsync(command, ct);
 
             return result.Match<IActionResult>(
                 response => StatusCode(StatusCodes.Status200OK),
                 Problem
-                );
+             );
         }
 
         [HttpGet]

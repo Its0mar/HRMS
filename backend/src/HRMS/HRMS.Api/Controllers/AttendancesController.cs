@@ -1,4 +1,5 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
+using HRMS.Api.Contracts.Attendance;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Attendance.AttendanceCorrections.AttendanceCorrectionApprove;
@@ -59,8 +60,14 @@ namespace HRMS.Api.Controllers
 
         [Authorize(Policy = Permissions.AttendanceCorrections.Submit)]
         [HttpPost("correct")]
-        public async Task<IActionResult> Correct(SubmitCorrectionCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Correct([FromBody] SubmitCorrectionRequest request, CancellationToken cancellationToken)
         {
+            var command = new SubmitCorrectionCommand(
+                request.AttendanceLogId,
+                request.RequestedClockIn,
+                request.RequestedClockOut,
+                request.Reason);
+
             var result = await commandDispatcher.SendAsync(command, cancellationToken);
 
             return result.Match(
@@ -109,7 +116,4 @@ namespace HRMS.Api.Controllers
                 Problem);
         }
     }
-
-
-    
 }

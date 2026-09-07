@@ -1,4 +1,5 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
+using HRMS.Api.Contracts.Positions;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Positions.CreatePosition;
 using HRMS.Application.Features.Positions.GetPositions;
@@ -15,10 +16,11 @@ namespace HRMS.Api.Controllers
         [HttpPost]
         [Authorize(Policy = Permissions.Positions.Create)]
         public async Task<IActionResult> CreateAsync(
-            CreatePositionCommand command,
+            [FromBody] CreatePositionRequest request,
             [FromServices] ICommandDispatcher dispatcher,
             CancellationToken cancellationToken)
         {
+            var command = new CreatePositionCommand(request.Title, request.Description);
             var result = await dispatcher.SendAsync(command, cancellationToken);
 
             return result.Match(

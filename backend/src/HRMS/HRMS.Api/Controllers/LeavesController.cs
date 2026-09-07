@@ -1,4 +1,5 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
+using HRMS.Api.Contracts.Leaves;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Leaves.LeaveBalances.GetLeaveBalances;
@@ -17,7 +18,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HRMS.Api.Controllers
 {
-
     [ApiController]
     [ApiVersion(1)]
     public class LeavesController(
@@ -76,8 +76,14 @@ namespace HRMS.Api.Controllers
 
         [Authorize(Policy = Permissions.LeaveRequests.Submit)]
         [HttpPost("leaveRequests/apply")]
-        public async Task<IActionResult> Apply([FromBody]SubmitLeaveRequestCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Apply([FromBody] ApplyLeaveRequest request, CancellationToken cancellationToken)
         {
+            var command = new SubmitLeaveRequestCommand(
+                request.LeaveTypeId,
+                request.StartDate,
+                request.EndDate,
+                request.Reason);
+
             var result = await commandDispatcher.SendAsync(command, cancellationToken);
 
             return result.Match(
@@ -139,6 +145,5 @@ namespace HRMS.Api.Controllers
 
             return result.Match(_ => Ok(), Problem);
         }
-
     }
 }

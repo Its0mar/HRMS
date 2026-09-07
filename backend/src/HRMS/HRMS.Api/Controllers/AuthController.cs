@@ -1,12 +1,10 @@
 using Asp.Versioning;
-using HRMS.Application.Abstractions.Authentication;
+using HRMS.Api.Contracts.Auth;
 using HRMS.Application.Abstractions.Messaging;
-using HRMS.Application.Abstractions.Persistence;
 using HRMS.Application.Features.Authentication.ChangePassword;
 using HRMS.Application.Features.Authentication.Login;
 using HRMS.Application.Features.Authentication.Logout;
 using HRMS.Application.Features.Authentication.RefreshToken;
-using HRMS.Domain.Entities.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,14 +17,15 @@ public sealed class AuthController(ICommandDispatcher dispatcher) : ApiControlle
     private const string RefreshTokenCookieName = "refreshToken";
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
     {
+        var command = new LoginCommand(request.Identifier, request.Password);
         var result = await dispatcher.SendAsync(command, cancellationToken);
         return result.Match<IActionResult>(
             response =>
             {
                 SetRefreshTokenCookie(response.RefreshToken, response.RefreshTokenExpiresAt);
-                return Ok(new { response.User, response.AccessToken });
+                return Ok(new AuthResponse(response.User, response.AccessToken));
             },
             Problem);
     }
@@ -64,8 +63,9 @@ public sealed class AuthController(ICommandDispatcher dispatcher) : ApiControlle
 
     [Authorize]
     [HttpPost("change-password")]
-    public async Task<IActionResult> ChangePassword(ChangePasswordCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
     {
+        var command = new ChangePasswordCommand(request.OldPassword, request.NewPassword);
         var result = await dispatcher.SendAsync(command, cancellationToken);
         return result.Match<IActionResult>(
             _ => Ok(new { message = "Password updated successfully." }),

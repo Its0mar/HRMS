@@ -1,4 +1,4 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
 using HRMS.Api.Contracts.Roles;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
@@ -19,7 +19,7 @@ namespace HRMS.Api.Controllers
     [ApiVersion(1)]
     public class RolesController : ApiController
     {
-        private ICurrentUser _currentUser;
+        private readonly ICurrentUser _currentUser;
 
         public RolesController(ICurrentUser currentUser)
         {
@@ -29,11 +29,11 @@ namespace HRMS.Api.Controllers
         [HttpGet]
         [Authorize(Permissions.Roles.View)]
         public async Task<IActionResult> GetAll(
-            [FromServices] IQueryHandler<GetRolesQuery, IReadOnlyList<GetRoleResponse>> handler,
+            [FromServices] IQueryDispatcher dispatcher,
             CancellationToken cancellationToken)
         {
             var query = new GetRolesQuery();
-            var result = await handler.HandleAsync(query, cancellationToken);
+            var result = await dispatcher.SendAsync(query, cancellationToken);
 
             return result.Match<IActionResult>(
                 Ok,
@@ -43,63 +43,55 @@ namespace HRMS.Api.Controllers
         [HttpPost]
         [Authorize(Permissions.Roles.Create)]
         public async Task<IActionResult> Create(
-            CreateRoleCommand command,
+            [FromBody] CreateRoleRequest request,
             [FromServices] ICommandDispatcher dispatcher,
             CancellationToken cancellationToken)
         {
-            var result = await dispatcher.SendAsync(
-                command,
-                cancellationToken
-                );
+            var command = new CreateRoleCommand(request.Name, request.PermissionIds);
+            var result = await dispatcher.SendAsync(command, cancellationToken);
 
             return result.Match<IActionResult>(
-                result =>Ok(result),
+                result => Ok(result),
                 Problem);
         }
 
         [HttpGet("options")]
         [Authorize(Permissions.Roles.View)]
         public async Task<IActionResult> GetRolesOptions(
-            [FromServices] IQueryHandler<GetRolesOptionsQuery, IReadOnlyList<GetRolesOptionsResponse>> handler,
+            [FromServices] IQueryDispatcher dispatcher,
             CancellationToken cancellationToken)
         {
-            var result = await handler.HandleAsync(
-                new GetRolesOptionsQuery(_currentUser.OrganizationId),
-                cancellationToken);
+            var query = new GetRolesOptionsQuery(_currentUser.OrganizationId);
+            var result = await dispatcher.SendAsync(query, cancellationToken);
 
             return result.Match<IActionResult>(
                 Ok,
                 Problem);
-
         }
 
         [HttpGet("permissions")]
         [Authorize(Permissions.SystemPermissions.View)]
         public async Task<IActionResult> GetPermissionOptions(
-            [FromServices]
-            IQueryHandler<GetPermissionOptionsQuery,IReadOnlyList<PermissionOptionResponse>> handler,
+            [FromServices] IQueryDispatcher dispatcher,
             CancellationToken cancellationToken)
         {
-            var result = await handler.HandleAsync(
-                new GetPermissionOptionsQuery(),
-                cancellationToken);
+            var query = new GetPermissionOptionsQuery();
+            var result = await dispatcher.SendAsync(query, cancellationToken);
 
             return result.Match<IActionResult>(
                 Ok,
                 Problem);
         }
 
-
         [HttpGet("{id:int}")]
         [Authorize]
         public async Task<IActionResult> GetById(
             int id,
-            [FromServices] IQueryHandler<GetRoleByIdQuery, GetRoleDetailsResponse> handler,
+            [FromServices] IQueryDispatcher dispatcher,
             CancellationToken cancellationToken)
         {
-            var result = await handler.HandleAsync(
-                new GetRoleByIdQuery(id),
-                cancellationToken);
+            var query = new GetRoleByIdQuery(id);
+            var result = await dispatcher.SendAsync(query, cancellationToken);
 
             return result.Match<IActionResult>(
                 Ok,
@@ -110,7 +102,7 @@ namespace HRMS.Api.Controllers
         [Authorize(Permissions.Roles.Update)]
         public async Task<IActionResult> Update(
             int id,
-            UpdateRoleRequest request,
+            [FromBody] UpdateRoleRequest request,
             [FromServices] ICommandDispatcher dispatcher,
             CancellationToken cancellationToken)
         {
