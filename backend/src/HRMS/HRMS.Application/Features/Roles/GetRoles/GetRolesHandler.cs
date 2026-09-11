@@ -1,4 +1,3 @@
-﻿
 using ErrorOr;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
@@ -9,17 +8,15 @@ namespace HRMS.Application.Features.Roles.GetRoles
     public class GetRolesHandler : IQueryHandler<GetRolesQuery, IReadOnlyList<GetRoleResponse>>
     {
         private readonly IRolesRepository _rolesRepository;
-        private readonly ICurrentUser _currentUser;
 
-        public GetRolesHandler(IRolesRepository rolesRepository, ICurrentUser currentUser)
+        public GetRolesHandler(IRolesRepository rolesRepository)
         {
             _rolesRepository = rolesRepository;
-            _currentUser = currentUser;
         }
 
         public async Task<ErrorOr<IReadOnlyList<GetRoleResponse>>> HandleAsync(GetRolesQuery query, CancellationToken cancellationToken)
         {
-            var roles = await _rolesRepository.GetAllWithPermsAsync(_currentUser.OrganizationId, cancellationToken);
+            var roles = await _rolesRepository.GetAllWithPermsAsync(query.OrganizationId, cancellationToken);
 
             var rolesResponse = roles.Select(role => new GetRoleResponse(
                 role.Id!.Value,

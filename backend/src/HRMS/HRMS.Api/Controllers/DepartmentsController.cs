@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using HRMS.Api.Contracts.Departments;
+using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Departments.CreateDepartment;
 using HRMS.Application.Features.Departments.GetDepartments;
@@ -12,7 +13,7 @@ namespace HRMS.Api.Controllers
 {   
     [ApiController]
     [ApiVersion(1)]
-    public class DepartmentsController : ApiController
+    public class DepartmentsController(ICurrentUser currentUser) : ApiController
     {
         [Authorize(Policy = Permissions.Departments.Create)]
         [HttpPost]
@@ -25,7 +26,8 @@ namespace HRMS.Api.Controllers
                 request.Name,
                 request.Code,
                 request.Description,
-                request.ManagerId);
+                request.ManagerId,
+                currentUser.OrganizationId);
 
             var result = await dispatcher.SendAsync(command, ct);
 
@@ -46,7 +48,8 @@ namespace HRMS.Api.Controllers
                 request.Id,
                 request.Name,
                 request.Description,
-                request.ManagerEmployeeId);
+                request.ManagerEmployeeId,
+                currentUser.OrganizationId);
 
             var result = await dispatcher.SendAsync(command, ct);
 
@@ -62,7 +65,7 @@ namespace HRMS.Api.Controllers
             [FromServices] IQueryDispatcher dispatcher,
             CancellationToken cancellationToken)
         {
-            var query = new GetDepartmentsQuery();
+            var query = new GetDepartmentsQuery(currentUser.OrganizationId);
             var result = await dispatcher.SendAsync(query, cancellationToken);
 
             return result.Match(

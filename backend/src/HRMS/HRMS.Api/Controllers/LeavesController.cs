@@ -28,9 +28,17 @@ namespace HRMS.Api.Controllers
         [Authorize(Policy = Permissions.LeaveTypes.Create)]
         [HttpPost("types")]
         public async Task<IActionResult> Create(
-            CreateLeaveTypeCommand command,
+            [FromBody] CreateLeaveTypeRequest request,
             CancellationToken cancellationToken)
         {
+            var command = new CreateLeaveTypeCommand(
+                request.Name,
+                request.Code,
+                request.DefaultDaysPerYear,
+                request.IsPaid,
+                request.RequiresApproval,
+                currentUser.OrganizationId);
+
             var result = await commandDispatcher.SendAsync(command, cancellationToken);
 
             return result.Match(
@@ -52,8 +60,19 @@ namespace HRMS.Api.Controllers
 
         [Authorize(Policy = Permissions.LeaveTypes.Update)]
         [HttpPut("types")]
-        public async Task<IActionResult> Update(UpdateLeaveTypeCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update(
+            [FromBody] UpdateLeaveTypeRequest request,
+            CancellationToken cancellationToken)
         {
+            var command = new UpdateLeaveTypeCommand(
+                request.Id,
+                request.Name,
+                request.Code,
+                request.DefaultDaysPerYear,
+                request.IsPaid,
+                request.RequiresApproval,
+                currentUser.OrganizationId);
+
             var result = await commandDispatcher.SendAsync(command, cancellationToken);
 
             return result.Match(

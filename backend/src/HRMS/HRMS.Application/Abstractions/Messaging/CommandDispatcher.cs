@@ -1,7 +1,7 @@
-﻿using ErrorOr;
+using ErrorOr;
 using FluentValidation;
+using HRMS.Application.Abstractions.Services;
 using Microsoft.Extensions.DependencyInjection;
-using System.Data;
 
 namespace HRMS.Application.Abstractions.Messaging
 {
@@ -55,12 +55,23 @@ namespace HRMS.Application.Abstractions.Messaging
             var handlerType = typeof(ICommandHandler<,>)
                 .MakeGenericType(commandType, typeof(TResponse));
 
-            dynamic handler =
-                _serviceProvider.GetRequiredService(handlerType);
+            dynamic handler = _serviceProvider.GetRequiredService(handlerType);
 
-            return await handler.HandleAsync(
+            ErrorOr<TResponse> result = await handler.HandleAsync(
                 (dynamic)command,
                 cancellationToken);
+
+            //Automatic Cache Eviction upon successful command execution
+            if (!result.IsError && command is ICacheEvictingCommand evictingCommand)
+            {
+                var cacheService = _serviceProvider.GetService<ICacheService>();
+                if (!string.IsNullOrWhiteSpace(evictingCommand.CacheKeyToEvict))
+                {
+                    cacheService?.Remove(evictingCommand.CacheKeyToEvict);
+                }
+            }
+
+            return result;
         }
     }
 }

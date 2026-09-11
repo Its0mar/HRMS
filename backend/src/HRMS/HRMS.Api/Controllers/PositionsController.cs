@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using HRMS.Api.Contracts.Positions;
+using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Features.Positions.CreatePosition;
 using HRMS.Application.Features.Positions.GetPositions;
@@ -11,7 +12,7 @@ namespace HRMS.Api.Controllers
 {
     [ApiController]
     [ApiVersion(1)]
-    public class PositionsController : ApiController
+    public class PositionsController(ICurrentUser currentUser) : ApiController
     {
         [HttpPost]
         [Authorize(Policy = Permissions.Positions.Create)]
@@ -20,7 +21,7 @@ namespace HRMS.Api.Controllers
             [FromServices] ICommandDispatcher dispatcher,
             CancellationToken cancellationToken)
         {
-            var command = new CreatePositionCommand(request.Title, request.Description);
+            var command = new CreatePositionCommand(request.Title, request.Description, currentUser.OrganizationId);
             var result = await dispatcher.SendAsync(command, cancellationToken);
 
             return result.Match(
@@ -34,7 +35,7 @@ namespace HRMS.Api.Controllers
             [FromServices] IQueryDispatcher dispatcher,
             CancellationToken cancellationToken)
         {
-            var query = new GetPositionsQuery();
+            var query = new GetPositionsQuery(currentUser.OrganizationId);
             var result = await dispatcher.SendAsync(query, cancellationToken);
 
             return result.Match(

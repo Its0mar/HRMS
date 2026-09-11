@@ -1,4 +1,4 @@
-﻿using HRMS.Application.Abstractions.Messaging;
+using HRMS.Application.Abstractions.Messaging;
 
 namespace HRMS.Application.Features.Departments.CreateDepartment
 {
@@ -6,6 +6,10 @@ namespace HRMS.Application.Features.Departments.CreateDepartment
         string Name,
         string Code,
         string? Description,
-        int? ManagerId)
-    : ICommand<CreateDepartmentResponse>;
+        int? ManagerId,
+        int OrganizationId)
+    : ICommand<CreateDepartmentResponse>, ICacheEvictingCommand
+    {
+        public string CacheKeyToEvict => $"depts:org:{OrganizationId}";
+    }
 }

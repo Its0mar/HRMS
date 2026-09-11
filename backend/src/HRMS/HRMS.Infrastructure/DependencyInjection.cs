@@ -66,6 +66,11 @@ public static class DependencyInjection
         services.AddHttpContextAccessor();
         services.AddSingleton<IDbConnectionFactory>(new DbConnectionFactory(connectionString));
         services.AddScoped<ISqlExecutor, SqlExecutor>();
+
+        services.AddMemoryCache();
+        services.AddScoped<ICacheService, MemoryCacheService>();
+
+
         services.AddScoped<IRegistrationRepository, RegistrationRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPositionsRepository, PositionsRepository>();

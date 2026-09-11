@@ -1,4 +1,4 @@
-﻿using HRMS.Application.Abstractions.Messaging;
+using HRMS.Application.Abstractions.Messaging;
 
 namespace HRMS.Application.Features.Departments.UpdateDepartment
 {
@@ -6,7 +6,9 @@ namespace HRMS.Application.Features.Departments.UpdateDepartment
         int Id,
         string? Name,
         string? Description,
-        int? ManagerEmployeeId
-        ) : ICommand<bool>;
-    
+        int? ManagerEmployeeId,
+        int OrganizationId) : ICommand<bool>, ICacheEvictingCommand
+    {
+        public string CacheKeyToEvict => $"depts:org:{OrganizationId}";
+    }
 }

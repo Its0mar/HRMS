@@ -1,7 +1,10 @@
-﻿using HRMS.Application.Abstractions.Messaging;
-using HRMS.Domain.Entities.Roles;
+using HRMS.Application.Abstractions.Messaging;
 
 namespace HRMS.Application.Features.Roles.GetRolesOptions
 {
-    public record GetRolesOptionsQuery(int organisationId) : IQuery<IReadOnlyList<GetRolesOptionsResponse>>;
+    public record GetRolesOptionsQuery(int OrganizationId) : IQuery<IReadOnlyList<GetRolesOptionsResponse>>, ICachedQuery
+    {
+        public string CacheKey => $"rolesoptions:org:{OrganizationId}";
+        public TimeSpan? Expiration => TimeSpan.FromHours(1);
+    }
 }

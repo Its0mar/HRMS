@@ -19,7 +19,7 @@ public static class DependencyInjection
         services.AddScoped<ICommandDispatcher, CommandDispatcher>();
         services.AddScoped<IQueryDispatcher, QueryDispatcher>();
 
-        // Auto-register all Command and Query handlers dynamically via reflection
+        // Auto-register all Command and Query handlers dynamically via reflection (excluding generic decorator definitions)
         RegisterGenericHandlers(services, assembly, typeof(ICommandHandler<,>));
         RegisterGenericHandlers(services, assembly, typeof(IQueryHandler<,>));
 
@@ -29,7 +29,7 @@ public static class DependencyInjection
     private static void RegisterGenericHandlers(IServiceCollection services, Assembly assembly, Type genericInterfaceType)
     {
         var handlerMappings = assembly.GetTypes()
-            .Where(t => !t.IsAbstract && !t.IsInterface)
+            .Where(t => !t.IsAbstract && !t.IsInterface && !t.IsGenericTypeDefinition)
             .SelectMany(t => t.GetInterfaces(), (implementation, serviceInterface) => new { Implementation = implementation, Interface = serviceInterface })
             .Where(x => x.Interface.IsGenericType && x.Interface.GetGenericTypeDefinition() == genericInterfaceType);
 

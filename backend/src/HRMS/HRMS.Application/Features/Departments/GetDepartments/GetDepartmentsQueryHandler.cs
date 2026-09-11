@@ -1,29 +1,29 @@
-﻿using ErrorOr;
+using ErrorOr;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
 
-
 namespace HRMS.Application.Features.Departments.GetDepartments
 {
-    public sealed record GetDepartmentsQuery() : IQuery<List<DepartmentListItem>>;
+    public sealed record GetDepartmentsQuery(int OrganizationId) : IQuery<List<DepartmentListItem>>, ICachedQuery
+    {
+        public string CacheKey => $"depts:org:{OrganizationId}";
+        public TimeSpan? Expiration => TimeSpan.FromHours(1);
+    }
 
     public class GetDepartmentsQueryHandler
         : IQueryHandler<GetDepartmentsQuery, List<DepartmentListItem>>
     {
         private readonly IDepartmentRepository _departmentRepository;
-        private readonly ICurrentUser _currentUser;
 
-        public GetDepartmentsQueryHandler(IDepartmentRepository departmentRepository, ICurrentUser currentUser)
+        public GetDepartmentsQueryHandler(IDepartmentRepository departmentRepository)
         {
             _departmentRepository = departmentRepository;
-            _currentUser = currentUser;
         }
 
         public async Task<ErrorOr<List<DepartmentListItem>>> HandleAsync(GetDepartmentsQuery query, CancellationToken cancellationToken)
         {
-            var departments = await _departmentRepository.GetDepartmentsAsync(_currentUser.OrganizationId, cancellationToken);
-
+            var departments = await _departmentRepository.GetDepartmentsAsync(query.OrganizationId, cancellationToken);
             return departments;
         }
     }

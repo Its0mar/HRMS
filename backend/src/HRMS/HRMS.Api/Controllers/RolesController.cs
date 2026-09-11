@@ -32,7 +32,7 @@ namespace HRMS.Api.Controllers
             [FromServices] IQueryDispatcher dispatcher,
             CancellationToken cancellationToken)
         {
-            var query = new GetRolesQuery();
+            var query = new GetRolesQuery(_currentUser.OrganizationId);
             var result = await dispatcher.SendAsync(query, cancellationToken);
 
             return result.Match<IActionResult>(
@@ -47,7 +47,7 @@ namespace HRMS.Api.Controllers
             [FromServices] ICommandDispatcher dispatcher,
             CancellationToken cancellationToken)
         {
-            var command = new CreateRoleCommand(request.Name, request.PermissionIds);
+            var command = new CreateRoleCommand(request.Name, request.PermissionIds, _currentUser.OrganizationId);
             var result = await dispatcher.SendAsync(command, cancellationToken);
 
             return result.Match<IActionResult>(
@@ -109,7 +109,8 @@ namespace HRMS.Api.Controllers
             var command = new UpdateRoleCommand(
                 id,
                 request.Name,
-                request.PermissionIds);
+                request.PermissionIds,
+                _currentUser.OrganizationId);
 
             var result = await dispatcher.SendAsync(
                 command,
