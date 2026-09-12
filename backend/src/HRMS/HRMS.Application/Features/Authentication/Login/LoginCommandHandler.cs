@@ -1,7 +1,8 @@
-﻿using ErrorOr;
+using ErrorOr;
 using HRMS.Application.Abstractions.Authentication;
 using HRMS.Application.Abstractions.Messaging;
 using HRMS.Application.Abstractions.Persistence;
+using Microsoft.Extensions.Logging;
 
 namespace HRMS.Application.Features.Authentication.Login
 {
@@ -10,7 +11,8 @@ namespace HRMS.Application.Features.Authentication.Login
         IRefreshTokenRepository refreshTokenRepository,
         IPasswordHasher passwordHasher,
         IAccessTokenGenerator accessTokenGenerator,
-        IRefreshTokenGenerator refreshTokenGenerator)
+        IRefreshTokenGenerator refreshTokenGenerator,
+        ILogger<LoginCommandHandler> logger)
     : ICommandHandler<LoginCommand, LoginResponse>
     {
         public async Task<ErrorOr<LoginResponse>> HandleAsync(
@@ -26,8 +28,9 @@ namespace HRMS.Application.Features.Authentication.Login
 
             var user = await userRepository.GetByIdentifierAsync(identifier, cancellationToken);
 
-            if (user is null|| user.Id is not int userId || !user.CanAuthenticate || !passwordHasher.Verify(command.Password, user.PasswordHash))
+            if (user is null || user.Id is not int userId || !user.CanAuthenticate || !passwordHasher.Verify(command.Password, user.PasswordHash))
             {
+                logger.LogWarning("Failed authentication attempt for identifier {Identifier}", identifier);
                 return AuthenticationErrors.InvalidCredentials;
             }
 
@@ -41,6 +44,8 @@ namespace HRMS.Application.Features.Authentication.Login
 
             await refreshTokenRepository.CreateOrReplaceAsync(userId, refreshTokenHash, expiresAt, createdAt, cancellationToken);
             
+            logger.LogInformation("User {UserId} ({Email}) logged in successfully", userId, user.Email);
+
             return new LoginResponse(
                 User: AuthenticatedUserResponse.From(user, permissions),
                 AccessToken: accessToken,

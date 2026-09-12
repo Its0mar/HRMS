@@ -25,7 +25,11 @@ namespace HRMS.Application.Features.Authentication.ChangePassword
             }
 
             var newHash = passwordHasher.Hash(command.NewPassword);
-            var isUpdated = await userRepository.ChangePasswordAsync(currentUser.Id, newHash, cancellationToken);
+            
+            // Rich Domain Entity Method Execution
+            user.UpdatePassword(newHash);
+
+            var isUpdated = await userRepository.ChangePasswordAsync(currentUser.Id, user.PasswordHash, cancellationToken);
 
             if (!isUpdated)
             {

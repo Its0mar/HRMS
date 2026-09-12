@@ -1,4 +1,4 @@
-﻿using HRMS.Application.Abstractions.Persistence;
+using HRMS.Application.Abstractions.Persistence;
 using HRMS.Application.Abstractions.Persistence.Models;
 using HRMS.Application.Features.Leaves.LeaveRequests.GetMyLeaveRequests;
 using HRMS.Application.Features.Leaves.LeaveRequests.GetOrganizationLeaveRequests;
@@ -52,6 +52,16 @@ namespace HRMS.Infrastructure.Repositories
             return await sqlExecutor.QueryFirstOrDefaultAsync(
                 "dbo.LeaveTypes_GetById",
                 LeaveTypeMap,
+                cancellationToken,
+                Int("@Id", id),
+                Int("@OrganizationId", organizationId));
+        }
+
+        public async Task<LeaveRequest?> GetRequestByIdAsync(int id, int organizationId, CancellationToken cancellationToken)
+        {
+            return await sqlExecutor.QueryFirstOrDefaultAsync(
+                "dbo.LeaveRequests_GetById",
+                LeaveRequestMap,
                 cancellationToken,
                 Int("@Id", id),
                 Int("@OrganizationId", organizationId));
@@ -231,6 +241,24 @@ namespace HRMS.Infrastructure.Repositories
                   reader.GetDecimal(reader.GetOrdinal("UsedDays")),
                   reader.GetDecimal(reader.GetOrdinal("PendingDays"))
                 );
+        }
+
+        private LeaveRequest LeaveRequestMap(SqlDataReader reader)
+        {
+            return LeaveRequest.Restore(
+                reader.GetInt32(reader.GetOrdinal("Id")),
+                reader.GetInt32(reader.GetOrdinal("OrganizationId")),
+                reader.GetInt32(reader.GetOrdinal("EmployeeId")),
+                reader.GetInt32(reader.GetOrdinal("LeaveTypeId")),
+                reader.GetDateTime(reader.GetOrdinal("StartDate")),
+                reader.GetDateTime(reader.GetOrdinal("EndDate")),
+                reader.GetDecimal(reader.GetOrdinal("TotalDays")),
+                reader.GetString(reader.GetOrdinal("Reason")),
+                (LeaveRequestStatus)reader.GetInt32(reader.GetOrdinal("Status")),
+                reader.IsDBNull(reader.GetOrdinal("ReviewedById")) ? null : reader.GetInt32(reader.GetOrdinal("ReviewedById")),
+                reader.IsDBNull(reader.GetOrdinal("ReviewedAt")) ? null : reader.GetDateTime(reader.GetOrdinal("ReviewedAt")),
+                reader.IsDBNull(reader.GetOrdinal("RejectionReason")) ? null : reader.GetString(reader.GetOrdinal("RejectionReason"))
+            );
         }
     
     }

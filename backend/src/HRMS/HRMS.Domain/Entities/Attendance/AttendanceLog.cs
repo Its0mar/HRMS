@@ -1,13 +1,14 @@
-﻿
+using ErrorOr;
+
 namespace HRMS.Domain.Entities.Attendance
 {
-    public  class AttendanceLog
+    public class AttendanceLog
     {
         public int? Id { get; private set; }
         public int EmployeeId { get; private set; }
         public int WorkScheduleId { get; private set; }
         public int OrganizationId { get; private set; }
-        public DateOnly Date {  get; private set; } 
+        public DateOnly Date { get; private set; } 
         public DateTime ClockIn { get; private set; }
         public DateTime? ClockOut { get; private set; }
         public AttendanceStatus Status { get; private set; }
@@ -25,6 +26,24 @@ namespace HRMS.Domain.Entities.Attendance
             Status = status;
             LateMinutes = lateMinutes;
             ClockIn = DateTime.UtcNow;
+        }
+
+        public ErrorOr<Success> PerformClockOut(DateTime clockOutTime, int minimumWorkingMinutes)
+        {
+            if (ClockOut is not null)
+            {
+                return Error.Conflict("Attendance.AlreadyClockedOut", "Employee has already clocked out for today.");
+            }
+
+            if (clockOutTime < ClockIn)
+            {
+                return Error.Validation("Attendance.InvalidClockOut", "Clock-out timestamp cannot precede clock-in timestamp.");
+            }
+
+            ClockOut = clockOutTime;
+            TotalMinutes = (int)(clockOutTime - ClockIn).TotalMinutes;
+            OvertimeMinutes = Math.Max(0, TotalMinutes.Value - minimumWorkingMinutes);
+            return Result.Success;
         }
 
         public static AttendanceLog Restore(int? id, int employeeId, int workScheduleId, int organizationId, DateOnly date, DateTime clockIn, DateTime? clockOut, AttendanceStatus status, int? totalMinutes, int lateMinutes, int overtimeMinutes, string? notes)

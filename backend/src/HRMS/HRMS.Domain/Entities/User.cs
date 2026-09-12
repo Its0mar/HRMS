@@ -1,4 +1,4 @@
-﻿using HRMS.Domain.Entities.Common;
+using HRMS.Domain.Entities.Common;
 
 namespace HRMS.Domain.Entities
 {
@@ -31,6 +31,17 @@ namespace HRMS.Domain.Entities
             EmployeeId = employeeId;
         }
 
+        public void UpdatePassword(string newPasswordHash)
+        {
+            PasswordHash = newPasswordHash;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void Deactivate()
+        {
+            IsActive = false;
+            UpdatedAt = DateTime.UtcNow;
+        }
 
         public static User Restore(
             int id,
@@ -64,6 +75,5 @@ namespace HRMS.Domain.Entities
 
             return user;
         }
-
     }
 }
