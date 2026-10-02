@@ -13,18 +13,19 @@ namespace HRMS.Domain.Entities.Payroll
         public DateTime EffectiveFrom { get; private set; } = DateTime.UtcNow;
         public DateTime? EffectiveTo { get; private set; }
         public bool IsCurrent { get; private set; } = true;
-        public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; private set; }
         private readonly List<CompensationAllowance> _allowances = new();
 
         public IReadOnlyCollection<CompensationAllowance> Allowances => _allowances.AsReadOnly();
 
-        public EmployeeCompensation(int organizationId, int employeeId, decimal basicSalary, string currency, PayFrequency payFrequency)
+        public EmployeeCompensation(int organizationId, int employeeId, decimal basicSalary, string currency, PayFrequency payFrequency, DateTime? effectiveFrom = null)
         {
             OrganizationId = organizationId;
             EmployeeId = employeeId;
             BasicSalary = basicSalary;
             Currency = currency;
             PayFrequency = payFrequency;
+            EffectiveFrom = effectiveFrom ?? DateTime.UtcNow;
         }
 
         public void AddAllowance(string title, decimal amount)
@@ -56,10 +57,9 @@ namespace HRMS.Domain.Entities.Payroll
             DateTime createdAt,
             IEnumerable<CompensationAllowance>? allowances = null)
         {
-            var compensation = new EmployeeCompensation(organizationId, employeeId, basicSalary, currency, payFrequency)
+            var compensation = new EmployeeCompensation(organizationId, employeeId, basicSalary, currency, payFrequency, effectiveFrom)
             {
                 Id = id,
-                EffectiveFrom = effectiveFrom,
                 EffectiveTo = effectiveTo,
                 IsCurrent = isCurrent,
                 CreatedAt = createdAt
