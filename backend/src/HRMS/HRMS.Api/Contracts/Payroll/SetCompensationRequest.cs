@@ -4,11 +4,12 @@ using HRMS.Domain.Entities.Payroll.Enums;
 namespace HRMS.Api.Contracts.Payroll
 {
     public record SetCompensationRequest(
-         int EmployeeId,
+        int EmployeeId,
         decimal BasicSalary,
         string Currency,
         PayFrequency PayFrequency,
         DateTime EffectiveFrom,
-        List<CompensationAllowanceDto> Allowances
+        List<CompensationAllowanceDto>? Allowances = null,
+        List<CompensationDeductionDto>? Deductions = null
         );
 }

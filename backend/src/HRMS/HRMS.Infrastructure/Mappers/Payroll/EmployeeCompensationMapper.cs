@@ -16,10 +16,10 @@ namespace HRMS.Infrastructure.Mappers.Payroll
                 id: reader.GetInt32(reader.GetOrdinal("Id")),
                 organizationId: reader.GetInt32(reader.GetOrdinal("OrganizationId")),
                 employeeId: reader.GetInt32(reader.GetOrdinal("EmployeeId")),
-                basicSalary: reader.GetDecimal(reader.GetOrdinal("Salary")),
+                basicSalary: reader.GetDecimal(reader.GetOrdinal("BasicSalary")),
                 currency: reader.GetString(reader.GetOrdinal("Currency")),
                 payFrequency: (PayFrequency)reader.GetInt32(reader.GetOrdinal("PayFrequency")),
-                effectiveFrom: reader.GetDateTime(reader.GetOrdinal("EffectiveDate")),
+                effectiveFrom: reader.GetDateTime(reader.GetOrdinal("EffectiveFrom")),
                 effectiveTo: reader.IsDBNull(reader.GetOrdinal("EffectiveTo")) ? null : reader.GetDateTime(reader.GetOrdinal("EffectiveTo")),
                 isCurrent: reader.GetBoolean(reader.GetOrdinal("IsCurrent")),
                 createdAt: reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
@@ -39,6 +39,22 @@ namespace HRMS.Infrastructure.Mappers.Payroll
                     allowances.Add(allowance);
                 }
                 compensation.AddAllowances(allowances);
+            }
+
+            if (await reader.NextResultAsync(ct))
+            {
+                var deductions = new List<CompensationDeduction>();
+                while (await reader.ReadAsync(ct))
+                {
+                    var deduction = CompensationDeduction.Restore(
+                        id: reader.GetInt32(reader.GetOrdinal("Id")),
+                        compensationId: reader.GetInt32(reader.GetOrdinal("CompensationId")),
+                        title: reader.GetString(reader.GetOrdinal("Title")),
+                        amount: reader.GetDecimal(reader.GetOrdinal("Amount"))
+                    );
+                    deductions.Add(deduction);
+                }
+                compensation.AddDeductions(deductions);
             }
 
             return compensation;

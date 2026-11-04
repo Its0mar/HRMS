@@ -15,8 +15,10 @@ namespace HRMS.Domain.Entities.Payroll
         public bool IsCurrent { get; private set; } = true;
         public DateTime CreatedAt { get; private set; }
         private readonly List<CompensationAllowance> _allowances = new();
+        private readonly List<CompensationDeduction> _deductions = new();
 
         public IReadOnlyCollection<CompensationAllowance> Allowances => _allowances.AsReadOnly();
+        public IReadOnlyCollection<CompensationDeduction> Deductions => _deductions.AsReadOnly();
 
         public EmployeeCompensation(int organizationId, int employeeId, decimal basicSalary, string currency, PayFrequency payFrequency, DateTime? effectiveFrom = null)
         {
@@ -38,6 +40,16 @@ namespace HRMS.Domain.Entities.Payroll
             _allowances.AddRange(allowances);
         }
 
+        public void AddDeduction(string title, decimal amount)
+        {
+            _deductions.Add(new CompensationDeduction(Id ?? 0, title, amount));
+        }
+
+        public void AddDeductions(IEnumerable<CompensationDeduction> deductions)
+        {
+            _deductions.AddRange(deductions);
+        }
+
         public void Deactivate(DateTime effectiveToDate)
         {
             IsCurrent = false;
@@ -55,7 +67,8 @@ namespace HRMS.Domain.Entities.Payroll
             DateTime? effectiveTo,
             bool isCurrent,
             DateTime createdAt,
-            IEnumerable<CompensationAllowance>? allowances = null)
+            IEnumerable<CompensationAllowance>? allowances = null,
+            IEnumerable<CompensationDeduction>? deductions = null)
         {
             var compensation = new EmployeeCompensation(organizationId, employeeId, basicSalary, currency, payFrequency, effectiveFrom)
             {
@@ -68,6 +81,11 @@ namespace HRMS.Domain.Entities.Payroll
             if (allowances is not null)
             {
                 compensation.AddAllowances(allowances);
+            }
+
+            if (deductions is not null)
+            {
+                compensation.AddDeductions(deductions);
             }
 
             return compensation;

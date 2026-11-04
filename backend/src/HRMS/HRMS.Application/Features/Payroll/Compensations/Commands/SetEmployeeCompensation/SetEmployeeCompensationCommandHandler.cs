@@ -25,9 +25,14 @@ namespace HRMS.Application.Features.Payroll.Compensations.Commands.SetEmployeeCo
                 command.PayFrequency,
                 command.EffectiveFrom);
 
-            foreach (var allowance in command.Allowances)
+            foreach (var allowance in command.Allowances ?? [])
             {
                 employeeCompensation.AddAllowance(allowance.Title, allowance.Amount);
+            }
+
+            foreach (var deduction in command.Deductions ?? [])
+            {
+                employeeCompensation.AddDeduction(deduction.Title, deduction.Amount);
             }
 
             return employeeCompensation;

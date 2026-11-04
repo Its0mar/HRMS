@@ -10,6 +10,7 @@ namespace HRMS.Application.Features.Payroll.Compensations.Commands.SetEmployeeCo
         string Currency,
         PayFrequency PayFrequency,
         DateTime EffectiveFrom,
-        List<CompensationAllowanceDto> Allowances
+        List<CompensationAllowanceDto>? Allowances = null,
+        List<CompensationDeductionDto>? Deductions = null
         ) : ICommand<bool>;
 }
